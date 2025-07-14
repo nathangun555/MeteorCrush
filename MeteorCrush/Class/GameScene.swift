@@ -41,7 +41,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     private func setupRocket() {
         rocket = SKSpriteNode(imageNamed: "rocket")
-        rocket.size = CGSize(width: 100, height: 150)
+        rocket.size = CGSize(width: 100, height: 100)
         rocketY = size.height / 4
         rocket.position = CGPoint(x: size.width/2, y: rocketY)
         rocket.zPosition = 10

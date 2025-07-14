@@ -10,7 +10,6 @@ import SpriteKit
 class HUD: SKNode {
     private let scoreLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
     private let fuelLabel  = SKLabelNode(fontNamed: "AvenirNext-Bold")
-    private let debugLabel  = SKLabelNode(fontNamed: "AvenirNext-Bold")
 
     var score: Int = 0
     var fuel: CGFloat = 50
@@ -26,17 +25,11 @@ class HUD: SKNode {
         fuelLabel.position = CGPoint(x: 100, y: size.height - 50)
         fuelLabel.zPosition = 20; fuelLabel.text = "Fuel: \(Int(fuel))"
         addChild(fuelLabel)
-        
-        debugLabel.fontSize = 24; debugLabel.fontColor = .yellow
-        debugLabel.position = CGPoint(x: 100, y: size.height - 100)
-        debugLabel.zPosition = 20; debugLabel.text = "DISINI"
-        addChild(debugLabel)
     }
     required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     func updateLabels() {
         scoreLabel.text = "Score: \(score)"
         fuelLabel.text  = "Fuel: \(Int(fuel))"
-        debugLabel.text = "Jumlah bintang: \(starCount)"
     }
 }
