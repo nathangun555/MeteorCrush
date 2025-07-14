@@ -32,7 +32,7 @@ struct CollisionHandler {
             hud.score += 5
             other.node?.removeFromParent()
             
-            hud.starCount = scene.stars.count
+//            hud.starCount = scene.stars.count
 //            ObstacleSpawner.spawnStar(in: scene, atY: <#T##CGFloat#>)
         case PhysicsCategory.Fuel:
             hud.fuel = min(hud.fuel + 20, 100)
