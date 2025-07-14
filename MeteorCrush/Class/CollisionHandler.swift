@@ -21,6 +21,8 @@ struct CollisionHandler {
             gameOver.position = CGPoint(x: scene.size.width/2, y: scene.size.height/2)
             scene.addChild(gameOver)
         case PhysicsCategory.Star:
+            guard let starNode = other.node, starNode.parent != nil else { return }
+//            other.node?.physicsBody = nil
             hud.score += 5
             other.node?.removeFromParent()
             // remove the exact star that was collided on
@@ -33,6 +35,7 @@ struct CollisionHandler {
             print("Stars now : \(scene.stars.count)")
             
         case PhysicsCategory.Fuel:
+            guard let starNode = other.node, starNode.parent != nil else { return }
             hud.fuel = min(hud.fuel + 20, 100)
             other.node?.removeFromParent()
             let index = scene.fuels.firstIndex(where: {$0 === other.node}) ?? -1

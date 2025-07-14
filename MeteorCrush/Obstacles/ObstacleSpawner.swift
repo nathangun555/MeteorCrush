@@ -31,6 +31,7 @@ struct ObstacleSpawner {
     }
     static func spawnStar(in scene: SKScene, atY y: CGFloat) {
         let star = SKSpriteNode(imageNamed: "star")
+        print("Star spawned!")
         star.size = CGSize(width: 50, height: 50)
         let halfW = star.size.width/2
         star.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
@@ -42,6 +43,21 @@ struct ObstacleSpawner {
         star.physicsBody?.collisionBitMask = PhysicsCategory.None
         star.physicsBody?.affectedByGravity = false
         if let gs = scene as? GameScene {
+            let planetPadding: CGFloat = 30
+            for planet in gs.planets {
+                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
+                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
+                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
+                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
+                
+                if(star.position.x > lowBoundX && star.position.x < highBoundX){
+                    star.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
+                }
+                
+                if(star.position.y > lowBoundY && star.position.y < highBoundY){
+                    star.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
+                }
+            }
             gs.stars.append(star)
         }
         scene.addChild(star)
@@ -59,6 +75,21 @@ struct ObstacleSpawner {
         pickup.physicsBody?.collisionBitMask = PhysicsCategory.None
         pickup.physicsBody?.affectedByGravity = false
         if let gs = scene as? GameScene {
+            let planetPadding: CGFloat = 30
+            for planet in gs.planets {
+                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
+                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
+                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
+                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
+                
+                if(pickup.position.x > lowBoundX && pickup.position.x < highBoundX){
+                    pickup.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
+                }
+                
+                if(pickup.position.y > lowBoundY && pickup.position.y < highBoundY){
+                    pickup.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
+                }
+            }
             gs.fuels.append(pickup)
         }
         scene.addChild(pickup)
