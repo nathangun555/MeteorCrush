@@ -27,7 +27,7 @@ struct ObstacleSpawner {
         if let gs = scene as? GameScene {
             gs.planets.append(planet)
         }
-        scene.addChild(planet) // ✅ Perbaikan di sini
+        scene.addChild(planet)
     }
     static func spawnStar(in scene: SKScene, atY y: CGFloat) {
         let star = SKSpriteNode(imageNamed: "star")
@@ -45,7 +45,6 @@ struct ObstacleSpawner {
             gs.stars.append(star)
         }
         scene.addChild(star)
-        print("Star spawned")
     }
     static func spawnFuel(in scene: SKScene, atY y: CGFloat) {
         let pickup = SKSpriteNode(imageNamed: "fuel")

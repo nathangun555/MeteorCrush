@@ -23,12 +23,26 @@ struct CollisionHandler {
         case PhysicsCategory.Star:
             hud.score += 5
             other.node?.removeFromParent()
+            // remove the exact star that was collided on
+            let index = scene.stars.firstIndex(where: {$0 === other.node}) ?? -1
+            if(index >= 0){
+                scene.stars.remove(at: index)
+            }
+            let starNewY = scene.size.height * 1 + 100
+            ObstacleSpawner.spawnStar(in: scene, atY: starNewY)
+            print("Stars now : \(scene.stars.count)")
             
-            hud.starCount = scene.stars.count
-//            ObstacleSpawner.spawnStar(in: scene, atY: <#T##CGFloat#>)
         case PhysicsCategory.Fuel:
             hud.fuel = min(hud.fuel + 20, 100)
             other.node?.removeFromParent()
+            let index = scene.fuels.firstIndex(where: {$0 === other.node}) ?? -1
+            if(index >= 0){
+                scene.fuels.remove(at: index)
+            }
+            let fuelNewY = scene.size.height * 1 + 200
+            ObstacleSpawner.spawnFuel(in: scene, atY: fuelNewY)
+            print("Fuels now : \(scene.fuels.count)")
+            
         default: break
         }
     }
