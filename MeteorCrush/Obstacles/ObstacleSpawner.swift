@@ -123,6 +123,8 @@ struct ObstacleSpawner {
             gate.color = randomColor
             gate.colorBlendFactor = 1.0
         }
+        print("Spawn a new gate")
+        print(gate.color)
         gate.size = CGSize(width: scene.size.width * 0.4, height: scene.size.height * 0.3)
         let halfW = gate.size.width / 2
         gate.position = CGPoint(
@@ -156,7 +158,7 @@ struct ObstacleSpawner {
         
         gate.addChild(collisionRect)
         if let gs = scene as? GameScene {
-            gs.fuels.append(gate)
+            gs.gate.append(gate)
         }
         scene.addChild(gate)
     }
