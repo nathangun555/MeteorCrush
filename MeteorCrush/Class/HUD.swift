@@ -12,7 +12,7 @@ class HUD: SKNode {
     private let fuelLabel  = SKLabelNode(fontNamed: "AvenirNext-Bold")
 
     var score: Int = 0
-    var fuel: CGFloat = 5
+    var fuel: CGFloat = 100
     var starCount: Int = 0
     
     init(size: CGSize) {

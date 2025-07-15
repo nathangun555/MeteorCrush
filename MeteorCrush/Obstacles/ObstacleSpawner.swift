@@ -123,7 +123,7 @@ struct ObstacleSpawner {
             gate.color = randomColor
             gate.colorBlendFactor = 1.0
         }
-        gate.size = CGSize(width: 400, height: 500)
+        gate.size = CGSize(width: scene.size.width * 0.4, height: scene.size.height * 0.3)
         let halfW = gate.size.width / 2
         gate.position = CGPoint(
             x: CGFloat.random(in: halfW...(scene.size.width - halfW)),

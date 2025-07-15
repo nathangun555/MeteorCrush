@@ -17,6 +17,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var stars     = [SKSpriteNode]()
     var fuels     = [SKSpriteNode]()
     var gate      = [SKSpriteNode]()
+    var fireNode: SKSpriteNode!
+
     
     private var planetCount = Int.random(in: 1...3)
     private var starCount   = Int.random(in: 1...3)
@@ -52,6 +54,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             rocket.physicsBody?.collisionBitMask = PhysicsCategory.None
             rocket.physicsBody?.affectedByGravity = false
         }
+        
+        fireNode = SKSpriteNode(imageNamed: "fire1")
+        fireNode.size = CGSize(width: 40, height: 60)
+        fireNode.position = CGPoint(x: 0, y: -rocket.size.height/1.25)
+        fireNode.zPosition = 99
+        rocket.addChild(fireNode)
+
         addChild(rocket)
     }
     
@@ -106,8 +115,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
         guard !isGameOver else { return }
         joystick.updateRocket(rocket, fuel: &hud.fuel, rocketY: &rocketY) // bensinnya berkurang
+        updateFireEffect()
         hud.updateLabels()
         ObstacleSpawner.recycleOffscreen(in: self, speed: scrollSpeed)
+    }
+    
+    func updateFireEffect() {
+        guard hud.fuel > 0 else {
+            fireNode.isHidden = true
+            return
+        }
+
+        fireNode.isHidden = false
+
+        switch hud.fuel {
+        case 75...100:
+            fireNode.texture = SKTexture(imageNamed: "fire1")
+        case 30..<75:
+            fireNode.texture = SKTexture(imageNamed: "fire2")
+        case 1..<30:
+            fireNode.texture = SKTexture(imageNamed: "fire3")
+        default:
+            fireNode.isHidden = true
+        }
     }
 
     func didBegin(_ contact: SKPhysicsContact) {
