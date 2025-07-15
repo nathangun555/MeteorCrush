@@ -38,14 +38,17 @@ struct CollisionHandler {
             other.node?.removeFromParent()
         case PhysicsCategory.redGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketPink")
+            scene.rocket.color = .red
             scene.rocket.colorBlendFactor = 0
             print("lewat pink")        
         case PhysicsCategory.greenGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketGreen")
+            scene.rocket.color = .green
             scene.rocket.colorBlendFactor = 0
             print("lewat hijau")
         case PhysicsCategory.blueGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketBlue")
+            scene.rocket.color = .blue
             scene.rocket.colorBlendFactor = 0
             print("lewat biru")
         default: break
