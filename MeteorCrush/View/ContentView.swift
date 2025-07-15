@@ -11,18 +11,18 @@ import SpriteKit
 
 struct ContentView: View {
     @State private var sceneID = UUID()
-
+    
     @State private var isGameOver = false
     @State private var currentScore = 0
     @State private var bestScore = 0
     @State private var backToMenu = false
-
+    
     private var scene: SKScene {
         let scene = GameScene(size: UIScreen.main.bounds.size)
         scene.scaleMode = .resizeFill
         return scene
     }
-
+    
     var body: some View {
         ZStack {
             if backToMenu {
@@ -39,15 +39,15 @@ struct ContentView: View {
                             bestScore = max(score, bestScore)
                         }
                     }
-
+                
                 if isGameOver {
                     GameOverView(
                         currentScore: currentScore,
                         bestScore: bestScore,
                         onPlayAgain: {
-                                                   isGameOver = false
-                                                   sceneID = UUID() 
-                                               },
+                            isGameOver = false
+                            sceneID = UUID()
+                        },
                         onQuit: {
                             backToMenu = true
                         }
