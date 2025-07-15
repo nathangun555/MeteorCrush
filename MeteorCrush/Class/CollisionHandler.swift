@@ -84,6 +84,7 @@ struct CollisionHandler {
         }
         
         func starScoring(_ rocketColor: UIColor, _ starColor: UIColor){
+//            print(rocketColor, starColor)
             if (rocketColor == .red && starColor == .red) || (rocketColor == .green && starColor == .green) || (rocketColor == .blue && starColor == .blue)
             {
                 hud.score += 5

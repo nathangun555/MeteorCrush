@@ -60,7 +60,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private func setupRocket() {
         let randomRocket = ["rocketPink", "rocketGreen", "rocketBlue"]
-        var rocketPicker = randomRocket.randomElement()!
+        let rocketPicker = randomRocket.randomElement()!
         rocket = SKSpriteNode(imageNamed: rocketPicker)
         rocket.size = CGSize(width: 100, height: 100)
         rocketY = size.height / 4
@@ -69,9 +69,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if rocketPicker == "rocketPink" {
             rocket.color = .red
         } else  if rocketPicker == "rocketGreen" {
-            rocket.color = .red
-        } else
-        {
+            rocket.color = .green
+        } else {
             rocket.color = .blue
         }
         if let tex = rocket.texture {
