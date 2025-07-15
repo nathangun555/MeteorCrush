@@ -17,13 +17,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var stars     = [SKSpriteNode]()
     var fuels     = [SKSpriteNode]()
     var gate      = [SKSpriteNode]()
+    var fireNode: SKSpriteNode!
+    var distance: Int = 0
+
     
     private var planetCount = Int.random(in: 1...3)
     private var starCount   = Int.random(in: 1...3)
     private var fuelCount   = Int.random(in: 1...3)
     private var gateCount   = 1
-
-    private let scrollSpeed: CGFloat = 2.0
+    
+    private var scrollSpeed: CGFloat = 3.0
     private var rocketY: CGFloat = 0
     
     var isGameOver = false
@@ -32,19 +35,53 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         backgroundColor = .brown
         physicsWorld.gravity = .zero
         physicsWorld.contactDelegate = self
-
+        
         setupRocket()
         setupJoystick()
         setupHUD()
         spawnInitialObstacles()
+        let consume = SKAction.run { [weak self] in
+            guard let self = self, !self.isGameOver else { return }
+            self.hud.fuel -= 1
+            self.distance += 1
+            print(self.distance)
+            if(self.distance % 5*5 == 0){
+                self.scrollSpeed += 0.1
+                print("Increasing speed to \(self.scrollSpeed)")
+            }
+            self.hud.updateLabels()
+            if self.hud.fuel <= 0 {
+                NotificationCenter.default.post(
+                    name: Notification.Name("GameOver"),
+                    object: hud.score
+                )
+                self.removeAction(forKey: "fuelTimer")
+                
+                // 3 (opsional) panggil gameOver sequence/method
+                isGameOver = true
+            }
+        }
+        let wait = SKAction.wait(forDuration: 0.2)
+        let sequence = SKAction.sequence([wait, consume])
+        let repeatForever = SKAction.repeatForever(sequence)
+        run(repeatForever, withKey: "fuelTimer")
     }
-
+    
     private func setupRocket() {
-        rocket = SKSpriteNode(imageNamed: "rocket")
+        let randomRocket = ["rocketPink", "rocketGreen", "rocketBlue"]
+        let rocketPicker = randomRocket.randomElement()!
+        rocket = SKSpriteNode(imageNamed: rocketPicker)
         rocket.size = CGSize(width: 100, height: 100)
         rocketY = size.height / 4
         rocket.position = CGPoint(x: size.width/2, y: rocketY)
         rocket.zPosition = 10
+        if rocketPicker == "rocketPink" {
+            rocket.color = .red
+        } else  if rocketPicker == "rocketGreen" {
+            rocket.color = .green
+        } else {
+            rocket.color = .blue
+        }
         if let tex = rocket.texture {
             rocket.physicsBody = SKPhysicsBody(texture: tex, size: rocket.size)
             rocket.physicsBody?.categoryBitMask = PhysicsCategory.Rocket
@@ -52,6 +89,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             rocket.physicsBody?.collisionBitMask = PhysicsCategory.None
             rocket.physicsBody?.affectedByGravity = false
         }
+        
+        fireNode = SKSpriteNode(imageNamed: "fire1")
+        fireNode.size = CGSize(width: 40, height: 60)
+        fireNode.position = CGPoint(x: 0, y: -rocket.size.height/1.25)
+        fireNode.zPosition = 99
+        rocket.addChild(fireNode)
+
         addChild(rocket)
     }
     
@@ -59,23 +103,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rocket.color = color
         rocket.colorBlendFactor = 1  // 1.0 = full tint
     }
-
+    
     private func setupJoystick() {
         joystick = Joystick()
         addChild(joystick)
     }
-
+    
     private func setupHUD() {
         hud = HUD(size: size)
         addChild(hud)
     }
-
+    
     public func spawnInitialObstacles() {
         let startY: CGFloat = size.height * 0.8 // Mulai dari 80% tinggi layar
         let planetSpacing = size.height / CGFloat(planetCount)
-                for i in 0..<planetCount {
-                    ObstacleSpawner.spawnPlanet(in: self, atY: startY + CGFloat(i) * planetSpacing)
-                }
+        for i in 0..<planetCount {
+            ObstacleSpawner.spawnPlanet(in: self, atY: startY + CGFloat(i) * planetSpacing)
+        }
         let starSpacing = size.height / CGFloat(starCount)
         for i in 0..<starCount     { ObstacleSpawner.spawnStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
         let fuelSpacing = size.height / CGFloat(fuelCount)
@@ -85,29 +129,54 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for i in 0..<gateCount     { ObstacleSpawner.spawnGate(in: self, atY: startY + CGFloat(i) * gateSpacing + 200)
         }
     }
-
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let t = touches.first { joystick.begin(at: t.location(in: self)) }
     }
-
+    
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let t = touches.first { joystick.move(to: t.location(in: self)) }
     }
-
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        joystick.end()
+        joystick.end(rocket)
     }
-
+    
     override func update(_ currentTime: TimeInterval) {
         planets.forEach { $0.position.y -= scrollSpeed }
         stars.forEach   { $0.position.y -= scrollSpeed }
         fuels.forEach   { $0.position.y -= scrollSpeed }
         gate.forEach   { $0.position.y -= scrollSpeed }
-
-        guard !isGameOver else { return }
+        
+        guard !isGameOver else {
+            removeAction(forKey: "fuelTimer")
+            return
+        }
         joystick.updateRocket(rocket, fuel: &hud.fuel, rocketY: &rocketY) // bensinnya berkurang
+        updateFireEffect()
         hud.updateLabels()
         ObstacleSpawner.recycleOffscreen(in: self, speed: scrollSpeed)
+        
+    }
+    
+    func updateFireEffect() {
+        guard hud.fuel > 0 else {
+            fireNode.isHidden = true
+            return
+        }
+
+        fireNode.isHidden = false
+
+        switch hud.fuel {
+        case 75...100:
+            fireNode.texture = SKTexture(imageNamed: "fire1")
+        case 30..<75:
+            fireNode.texture = SKTexture(imageNamed: "fire2")
+        case 1..<30:
+            fireNode.texture = SKTexture(imageNamed: "fire3")
+        default:
+            fireNode.isHidden = true
+        }
     }
 
     func didBegin(_ contact: SKPhysicsContact) {

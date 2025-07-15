@@ -40,12 +40,22 @@ class Joystick: SKNode {
         }
     }
 
-    func end() {
-        isActive = false
-        let moveBack = SKAction.move(to: basePosition, duration: 0.2)
-        moveBack.timingMode = .easeOut
-        knob.run(moveBack) { self.base.isHidden = true; self.knob.isHidden = true }
-    }
+    func end(_ rocket: SKSpriteNode) {
+            isActive = false
+
+            let moveBack = SKAction.move(to: basePosition, duration: 0.2)
+            moveBack.timingMode = .easeOut
+            knob.run(moveBack) {
+                self.base.isHidden = true
+                self.knob.isHidden = true
+                
+                let resetRotation = SKAction.rotate(toAngle: 0,
+                                                    duration: 0.2,
+                                                    shortestUnitArc: true)
+                resetRotation.timingMode = .easeOut
+                rocket.run(resetRotation)
+            }
+        }
 
     func updateRocket(_ rocket: SKSpriteNode, fuel: inout CGFloat, rocketY: inout CGFloat) {
         guard isActive else { return }
@@ -57,6 +67,5 @@ class Joystick: SKNode {
         newX = max(halfW, min(rocket.scene!.size.width - halfW, newX))
         rocket.position = CGPoint(x: newX, y: rocketY)
         rocket.zRotation = -norm * 0.3
-        fuel = max(fuel - abs(norm) * 0.2, 0)
     }
 }

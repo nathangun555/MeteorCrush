@@ -10,7 +10,7 @@ import SpriteKit
 struct ObstacleSpawner {
     static func spawnPlanet(in scene: SKScene, atY y: CGFloat) {
         let planet = SKSpriteNode(imageNamed: "planet")
-        let randomSize = CGFloat.random(in: 70...150)
+        let randomSize = CGFloat.random(in: 150...300)
         planet.size = CGSize(width: randomSize, height: randomSize)
         let halfW = planet.size.width / 2
         planet.position = CGPoint(
@@ -43,7 +43,7 @@ struct ObstacleSpawner {
     }
     static func spawnStar(in scene: SKScene, atY y: CGFloat) {
         let starColors = ["redStar", "greenStar", "blueStar"]
-        var starPicker = starColors.randomElement()!
+        let starPicker = starColors.randomElement()!
         let star = SKSpriteNode(imageNamed: starPicker)
         star.size = CGSize(width: 50, height: 50)
         let halfW = star.size.width/2
@@ -123,10 +123,10 @@ struct ObstacleSpawner {
             gate.color = randomColor
             gate.colorBlendFactor = 1.0
         }
-        gate.size = CGSize(width: 400, height: 500)
+        gate.size = CGSize(width: scene.size.width * 0.4, height: scene.size.height * 0.3)
         let halfW = gate.size.width / 2
         gate.position = CGPoint(
-            x: CGFloat.random(in: halfW...(scene.size.width - halfW)),
+            x: halfW,
             y: y
         )
         gate.zPosition = 5
@@ -170,21 +170,29 @@ struct ObstacleSpawner {
             }
         }
         scene.stars.forEach { s in
+            if s.size.width/2 >= (scene.size.width-s.size.width/2) {
+                print("Issue in star! \(50 / 2) < \(scene.size.width-50/2)")
+            }
             if s.position.y < offscreenY {
-                s.position.y = topY + CGFloat.random(in: 0...200)
                 s.position.x = CGFloat.random(in: s.size.width/2...(scene.size.width-s.size.width/2))
+                s.position.y = topY + CGFloat.random(in: 0...200)
             }
         }
         scene.fuels.forEach { f in
+            if 25 >= (scene.size.width-25) {
+                print("Issue in fuel! \(25) < \(scene.size.width-25)")
+            }
+//            print(f.size.width / 2, scene.size.width - f.size.width / 2)
             if f.position.y < offscreenY {
+                f.position.x = CGFloat.random(in: 25...(scene.size.width-25))
                 f.position.y = topY + CGFloat.random(in: 0...200)
-                f.position.x = CGFloat.random(in: f.size.width/2...(scene.size.width-f.size.width/2))
             }
         }
         scene.gate.forEach { g in
             if g.position.y < offscreenY {
-                g.position.y = topY + CGFloat.random(in: 0...200)
-                g.position.x = CGFloat.random(in: g.size.width/2...(scene.size.width-g.size.width/2))
+                scene.gate.removeAll()
+                spawnGate(in: scene, atY: topY + CGFloat.random(in: 0...200))
+//                g.position.x = CGFloat.random(in: g.size.width/2...(scene.size.width-g.size.width/2))
             }
         }
     }
