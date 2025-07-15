@@ -89,7 +89,9 @@ struct CollisionHandler {
                 hud.score += 5
             } else
             {
-                hud.score -= 1
+                if hud.score > 0{
+                    hud.score -= 1
+                }
             }
         }
     }

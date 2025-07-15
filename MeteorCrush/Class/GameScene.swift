@@ -124,7 +124,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        joystick.end()
+        joystick.end(rocket)
     }
     
     override func update(_ currentTime: TimeInterval) {
