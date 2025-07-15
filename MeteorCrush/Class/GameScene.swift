@@ -16,10 +16,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var planets   = [SKSpriteNode]()
     var stars     = [SKSpriteNode]()
     var fuels     = [SKSpriteNode]()
+    var gate      = [SKSpriteNode]()
     
     private var planetCount = Int.random(in: 1...3)
     private var starCount   = Int.random(in: 1...3)
     private var fuelCount   = Int.random(in: 1...3)
+    private var gateCount   = 1
+
     private let scrollSpeed: CGFloat = 2.0
     private var rocketY: CGFloat = 0
     
@@ -38,18 +41,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 
     private func setupRocket() {
         rocket = SKSpriteNode(imageNamed: "rocket")
-        rocket.size = CGSize(width: 100, height: 150)
+        rocket.size = CGSize(width: 100, height: 100)
         rocketY = size.height / 4
         rocket.position = CGPoint(x: size.width/2, y: rocketY)
         rocket.zPosition = 10
         if let tex = rocket.texture {
             rocket.physicsBody = SKPhysicsBody(texture: tex, size: rocket.size)
             rocket.physicsBody?.categoryBitMask = PhysicsCategory.Rocket
-            rocket.physicsBody?.contactTestBitMask = PhysicsCategory.Planet | PhysicsCategory.Star | PhysicsCategory.Fuel
+            rocket.physicsBody?.contactTestBitMask = PhysicsCategory.Planet | PhysicsCategory.redStar | PhysicsCategory.blueStar | PhysicsCategory.greenStar | PhysicsCategory.Fuel
             rocket.physicsBody?.collisionBitMask = PhysicsCategory.None
             rocket.physicsBody?.affectedByGravity = false
         }
         addChild(rocket)
+    }
+    
+    func changeRocketColor(_ color: UIColor)    {
+        rocket.color = color
+        rocket.colorBlendFactor = 1  // 1.0 = full tint
     }
 
     private func setupJoystick() {
@@ -73,6 +81,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let fuelSpacing = size.height / CGFloat(fuelCount)
         for i in 0..<fuelCount     { ObstacleSpawner.spawnFuel(in: self, atY: startY + CGFloat(i) * fuelSpacing + 200)
         }
+        let gateSpacing = size.height / CGFloat(gateCount)
+        for i in 0..<gateCount     { ObstacleSpawner.spawnGate(in: self, atY: startY + CGFloat(i) * gateSpacing + 200)
+        }
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -91,6 +102,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         planets.forEach { $0.position.y -= scrollSpeed }
         stars.forEach   { $0.position.y -= scrollSpeed }
         fuels.forEach   { $0.position.y -= scrollSpeed }
+        gate.forEach   { $0.position.y -= scrollSpeed }
+
         guard !isGameOver else { return }
         joystick.updateRocket(rocket, fuel: &hud.fuel, rocketY: &rocketY) // bensinnya berkurang
         hud.updateLabels()

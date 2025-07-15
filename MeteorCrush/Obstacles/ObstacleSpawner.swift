@@ -10,7 +10,7 @@ import SpriteKit
 struct ObstacleSpawner {
     static func spawnPlanet(in scene: SKScene, atY y: CGFloat) {
         let planet = SKSpriteNode(imageNamed: "planet")
-        let randomSize = CGFloat.random(in: 50...100)
+        let randomSize = CGFloat.random(in: 70...150)
         planet.size = CGSize(width: randomSize, height: randomSize)
         let halfW = planet.size.width / 2
         planet.position = CGPoint(
@@ -18,27 +18,49 @@ struct ObstacleSpawner {
             y: y
         )
         planet.zPosition = 5
-        planet.blendMode = .alpha
-        planet.physicsBody = SKPhysicsBody(circleOfRadius: halfW)
-        planet.physicsBody?.categoryBitMask = PhysicsCategory.Planet
-        planet.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
-        planet.physicsBody?.collisionBitMask = PhysicsCategory.None
-        planet.physicsBody?.affectedByGravity = false
+        
+        let collisionRadius = halfW / 1.5
+        let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
+        collisionCircle.position    = .zero
+        collisionCircle.strokeColor = .yellow
+        collisionCircle.lineWidth   = 2
+        collisionCircle.fillColor   = .clear
+        collisionCircle.zPosition   = -1   // agar di belakang planet
+        
+        let body = SKPhysicsBody(circleOfRadius: collisionRadius)
+        body.isDynamic            = false  // statis, ikut planet
+        body.categoryBitMask      = PhysicsCategory.Planet
+        body.contactTestBitMask   = PhysicsCategory.Rocket
+        body.collisionBitMask     = PhysicsCategory.None
+        collisionCircle.physicsBody = body
+        
+        planet.addChild(collisionCircle)
+        
         if let gs = scene as? GameScene {
             gs.planets.append(planet)
         }
         scene.addChild(planet)
     }
     static func spawnStar(in scene: SKScene, atY y: CGFloat) {
-        let star = SKSpriteNode(imageNamed: "star")
-        print("Star spawned!")
+        let starColors = ["redStar", "greenStar", "blueStar"]
+        var starPicker = starColors.randomElement()!
+        let star = SKSpriteNode(imageNamed: starPicker)
         star.size = CGSize(width: 50, height: 50)
         let halfW = star.size.width/2
         star.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
         star.zPosition = 5
         star.blendMode = .alpha
         star.physicsBody = SKPhysicsBody(circleOfRadius: halfW)
-        star.physicsBody?.categoryBitMask = PhysicsCategory.Star
+        if starPicker == "redStar"
+        {
+            star.physicsBody?.categoryBitMask = PhysicsCategory.redStar
+        } else if starPicker == "greenStar"
+        {
+            star.physicsBody?.categoryBitMask = PhysicsCategory.greenStar
+        } else
+        {
+            star.physicsBody?.categoryBitMask = PhysicsCategory.blueStar
+        }
         star.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
         star.physicsBody?.collisionBitMask = PhysicsCategory.None
         star.physicsBody?.affectedByGravity = false
@@ -94,6 +116,51 @@ struct ObstacleSpawner {
         }
         scene.addChild(pickup)
     }
+    static func spawnGate(in scene: SKScene, atY y: CGFloat) {
+        let gate = SKSpriteNode(imageNamed: "whiteGate")
+        let colors: [SKColor] = [.red, .green, .blue]
+        if let randomColor = colors.randomElement() {
+            gate.color = randomColor
+            gate.colorBlendFactor = 1.0
+        }
+        gate.size = CGSize(width: 400, height: 500)
+        let halfW = gate.size.width / 2
+        gate.position = CGPoint(
+            x: CGFloat.random(in: halfW...(scene.size.width - halfW)),
+            y: y
+        )
+        gate.zPosition = 5
+        let rectSize = CGSize(width: gate.size.width, height: gate.size.height * 0.001)
+        let collisionRect = SKShapeNode(rectOf: rectSize, cornerRadius: 0)
+        collisionRect.position    = .zero
+        collisionRect.strokeColor = .yellow    // untuk debug, tandanya
+        collisionRect.lineWidth   = 2
+        collisionRect.fillColor   = .clear
+        collisionRect.zPosition   = -1         // di belakang gate
+        
+        let body = SKPhysicsBody(rectangleOf: rectSize)
+        body.isDynamic            = false
+        
+        switch gate.color {
+        case .red:
+            body.categoryBitMask = PhysicsCategory.redGate
+        case .green:
+            body.categoryBitMask = PhysicsCategory.greenGate
+        default:
+            body.categoryBitMask = PhysicsCategory.blueGate
+        }
+        
+        body.contactTestBitMask   = PhysicsCategory.Rocket
+        body.collisionBitMask     = PhysicsCategory.None
+        collisionRect.physicsBody = body
+        
+        gate.addChild(collisionRect)
+        if let gs = scene as? GameScene {
+            gs.fuels.append(gate)
+        }
+        scene.addChild(gate)
+    }
+    
     static func recycleOffscreen(in scene: GameScene, speed: CGFloat) {
         let offscreenY: CGFloat = -100, topY: CGFloat = scene.size.height + 10
         scene.planets.forEach { p in
@@ -112,6 +179,12 @@ struct ObstacleSpawner {
             if f.position.y < offscreenY {
                 f.position.y = topY + CGFloat.random(in: 0...200)
                 f.position.x = CGFloat.random(in: f.size.width/2...(scene.size.width-f.size.width/2))
+            }
+        }
+        scene.gate.forEach { g in
+            if g.position.y < offscreenY {
+                g.position.y = topY + CGFloat.random(in: 0...200)
+                g.position.x = CGFloat.random(in: g.size.width/2...(scene.size.width-g.size.width/2))
             }
         }
     }
