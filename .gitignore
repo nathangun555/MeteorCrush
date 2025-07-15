@@ -1,13 +1,14 @@
 # Xcode
 DerivedData/
-*.xcuserdata/
 *.xcuserstate
-*.xcworkspace/xcuserdata/
 *.moved-aside
 *.hmap
 *.ipa
-*.xcuserdatad
 *.swp
+
+# Ignore user-specific Xcode data
+*.xcuserdatad/
+*/xcuserdata/
 
 # SwiftPM
 .build/
@@ -21,8 +22,7 @@ Carthage/Build/
 # Fastlane
 fastlane/report.xml
 fastlane/Preview.html
-fastlane/screenshots
+fastlane/screenshots/
 
-# Others
+# macOS junk
 .DS_Store
-
