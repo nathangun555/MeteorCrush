@@ -18,6 +18,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var fuels     = [SKSpriteNode]()
     var gate      = [SKSpriteNode]()
     var fireNode: SKSpriteNode!
+    var distance: Int = 0
 
     
     private var planetCount = Int.random(in: 1...3)
@@ -25,7 +26,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var fuelCount   = Int.random(in: 1...3)
     private var gateCount   = 1
     
-    private let scrollSpeed: CGFloat = 2.0
+    private var scrollSpeed: CGFloat = 3.0
     private var rocketY: CGFloat = 0
     
     var isGameOver = false
@@ -42,6 +43,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let consume = SKAction.run { [weak self] in
             guard let self = self, !self.isGameOver else { return }
             self.hud.fuel -= 1
+            self.distance += 1
+            print(self.distance)
+            if(self.distance % 5*5 == 0){
+                self.scrollSpeed += 0.1
+                print("Increasing speed to \(self.scrollSpeed)")
+            }
             self.hud.updateLabels()
             if self.hud.fuel <= 0 {
                 NotificationCenter.default.post(
@@ -54,7 +61,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 isGameOver = true
             }
         }
-        let wait = SKAction.wait(forDuration: 0.5)
+        let wait = SKAction.wait(forDuration: 0.2)
         let sequence = SKAction.sequence([wait, consume])
         let repeatForever = SKAction.repeatForever(sequence)
         run(repeatForever, withKey: "fuelTimer")

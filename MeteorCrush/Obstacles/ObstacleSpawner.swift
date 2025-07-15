@@ -10,7 +10,7 @@ import SpriteKit
 struct ObstacleSpawner {
     static func spawnPlanet(in scene: SKScene, atY y: CGFloat) {
         let planet = SKSpriteNode(imageNamed: "planet")
-        let randomSize = CGFloat.random(in: 70...150)
+        let randomSize = CGFloat.random(in: 150...300)
         planet.size = CGSize(width: randomSize, height: randomSize)
         let halfW = planet.size.width / 2
         planet.position = CGPoint(
