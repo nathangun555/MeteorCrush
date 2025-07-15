@@ -8,39 +8,92 @@
 import SpriteKit
 
 struct ObstacleSpawner {
+//    static func spawnPlanet(in scene: SKScene, atY y: CGFloat) {
+//        let planet = SKSpriteNode(imageNamed: "planet")
+//        let randomSize = CGFloat.random(in: 150...300)
+//        planet.size = CGSize(width: randomSize, height: randomSize)
+//        let halfW = planet.size.width / 2
+//        planet.position = CGPoint(
+//            x: CGFloat.random(in: halfW...(scene.size.width - halfW)),
+//            y: y
+//        )
+//        planet.zPosition = 5
+//        
+//        let collisionRadius = halfW / 1.5
+//        let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
+//        collisionCircle.position    = .zero
+//        collisionCircle.strokeColor = .yellow
+//        collisionCircle.lineWidth   = 2
+//        collisionCircle.fillColor   = .clear
+//        collisionCircle.zPosition   = -1   // agar di belakang planet
+//        
+//        let body = SKPhysicsBody(circleOfRadius: collisionRadius)
+//        body.isDynamic            = false  // statis, ikut planet
+//        body.categoryBitMask      = PhysicsCategory.Planet
+//        body.contactTestBitMask   = PhysicsCategory.Rocket
+//        body.collisionBitMask     = PhysicsCategory.None
+//        collisionCircle.physicsBody = body
+//        
+//        planet.addChild(collisionCircle)
+//        
+//        if let gs = scene as? GameScene {
+//            gs.planets.append(planet)
+//        }
+//        scene.addChild(planet)
+//    }
     static func spawnPlanet(in scene: SKScene, atY y: CGFloat) {
-        let planet = SKSpriteNode(imageNamed: "planet")
-        let randomSize = CGFloat.random(in: 150...300)
-        planet.size = CGSize(width: randomSize, height: randomSize)
-        let halfW = planet.size.width / 2
-        planet.position = CGPoint(
-            x: CGFloat.random(in: halfW...(scene.size.width - halfW)),
-            y: y
-        )
-        planet.zPosition = 5
-        
-        let collisionRadius = halfW / 1.5
-        let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
-        collisionCircle.position    = .zero
-        collisionCircle.strokeColor = .yellow
-        collisionCircle.lineWidth   = 2
-        collisionCircle.fillColor   = .clear
-        collisionCircle.zPosition   = -1   // agar di belakang planet
-        
-        let body = SKPhysicsBody(circleOfRadius: collisionRadius)
-        body.isDynamic            = false  // statis, ikut planet
-        body.categoryBitMask      = PhysicsCategory.Planet
-        body.contactTestBitMask   = PhysicsCategory.Rocket
-        body.collisionBitMask     = PhysicsCategory.None
-        collisionCircle.physicsBody = body
-        
-        planet.addChild(collisionCircle)
-        
-        if let gs = scene as? GameScene {
-            gs.planets.append(planet)
+            let planet = SKSpriteNode(imageNamed: "planet")
+            let randomSize = CGFloat.random(in: 150...300)
+            planet.size = CGSize(width: randomSize, height: randomSize)
+            let halfW = planet.size.width / 2
+            let maxOutsideFraction: CGFloat = 0.3
+            let offset = planet.size.width * maxOutsideFraction
+
+            let newX = CGFloat.random(in: -offset...(scene.size.width + offset))
+            let newY = y
+
+            // ➤ Cek jarak dengan planet yang sudah ada
+            if let gs = scene as? GameScene {
+                let minHorizontalGap: CGFloat = 2
+                let minVerticalGap: CGFloat = 5
+
+                for existing in gs.planets {
+                    let dx = abs(existing.position.x - newX)
+                    let dy = abs(existing.position.y - newY)
+                    if dx < minHorizontalGap && dy < minVerticalGap {
+                        // terlalu dekat, batal spawn
+                        return
+                    }
+                }
+            }
+
+            planet.position = CGPoint(x: newX, y: newY)
+            planet.zPosition = 5
+
+            let collisionRadius = halfW / 1.5
+            let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
+            collisionCircle.position    = .zero
+            collisionCircle.strokeColor = .yellow
+            collisionCircle.lineWidth   = 2
+            collisionCircle.fillColor   = .clear
+            collisionCircle.zPosition   = -1
+
+            let body = SKPhysicsBody(circleOfRadius: collisionRadius)
+            body.isDynamic = false
+            body.categoryBitMask = PhysicsCategory.Planet
+            body.contactTestBitMask = PhysicsCategory.Rocket
+            body.collisionBitMask = PhysicsCategory.None
+            collisionCircle.physicsBody = body
+
+            planet.addChild(collisionCircle)
+
+            if let gs = scene as? GameScene {
+                gs.planets.append(planet)
+            }
+
+            scene.addChild(planet)
         }
-        scene.addChild(planet)
-    }
+    
     static func spawnStar(in scene: SKScene, atY y: CGFloat) {
         let starColors = ["redStar", "greenStar", "blueStar"]
         let starPicker = starColors.randomElement()!
@@ -119,10 +172,10 @@ struct ObstacleSpawner {
     static func spawnGate(in scene: SKScene, atY y: CGFloat) {
         let gate = SKSpriteNode(imageNamed: "whiteGate")
         let colors: [SKColor] = [.red, .green, .blue]
-        if let randomColor = colors.randomElement() {
-            gate.color = randomColor
-            gate.colorBlendFactor = 1.0
-        }
+        let randomIndex = Int.random(in: 0...2)
+        gate.color = colors[randomIndex]
+        gate.colorBlendFactor = 1.0
+        
         print("Spawn a new gate")
         print(gate.color)
         gate.size = CGSize(width: scene.size.width * 0.4, height: scene.size.height * 0.3)
