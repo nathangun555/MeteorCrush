@@ -57,6 +57,5 @@ class Joystick: SKNode {
         newX = max(halfW, min(rocket.scene!.size.width - halfW, newX))
         rocket.position = CGPoint(x: newX, y: rocketY)
         rocket.zRotation = -norm * 0.3
-        fuel = max(fuel - abs(norm) * 0.2, 0)
     }
 }
