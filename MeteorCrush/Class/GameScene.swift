@@ -44,10 +44,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             guard let self = self, !self.isGameOver else { return }
             self.hud.fuel -= 1
             self.distance += 1
-            print(self.distance)
+//            print(self.distance)
             if(self.distance % 5*5 == 0){
                 self.scrollSpeed += 0.1
-                print("Increasing speed to \(self.scrollSpeed)")
+//                print("Increasing speed to \(self.scrollSpeed)")
             }
             self.hud.updateLabels()
             if self.hud.fuel <= 0 {
