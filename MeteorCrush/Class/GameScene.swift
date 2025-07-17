@@ -14,16 +14,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var hud: HUD!
     
     var planets   = [SKSpriteNode]()
-    var stars     = [SKSpriteNode]()
+  //  var stars     = [SKSpriteNode]()
+    var redStar     = [SKSpriteNode]()
+    var greenStar     = [SKSpriteNode]()
+    var blueStar     = [SKSpriteNode]()
     var fuels     = [SKSpriteNode]()
     var gate      = [SKSpriteNode]()
     var fireNode: SKSpriteNode!
     var distance: Int = 0
-
     
-    private var planetCount = Int.random(in: 1...3)
-    private var starCount   = Int.random(in: 1...3)
-    private var fuelCount   = Int.random(in: 1...3)
+    private var planetCount = 100
+    private var starCount   = 100
+    private var fuelCount   = 1
     private var gateCount   = 1
     
     private var scrollSpeed: CGFloat = 3.0
@@ -115,13 +117,50 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     public func spawnInitialObstacles() {
+        var planetUnitRandom = Int.random(in:3...5)
+        var starUnit = planetUnitRandom * 2 - 1
+        var counter = 0
+        
         let startY: CGFloat = size.height * 0.8 // Mulai dari 80% tinggi layar
-        let planetSpacing = size.height / CGFloat(planetCount)
-        for i in 0..<planetCount {
+        let planetSpacing = size.height / CGFloat(planetUnitRandom)
+        for i in 0..<planetUnitRandom {
             ObstacleSpawner.spawnPlanet(in: self, atY: startY + CGFloat(i) * planetSpacing)
         }
-        let starSpacing = size.height / CGFloat(starCount)
-        for i in 0..<starCount     { ObstacleSpawner.spawnStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
+        let starSpacing = size.height / CGFloat(starUnit)
+        // LOGIC STAR ROCKET DISINI
+        let rocketColor = rocket.color
+        var redStarUnit = 0
+        var greenStarUnit = 0
+        var blueStarUnit = 0
+
+                if rocketColor == .red {
+                    redStarUnit = Int((Double(starUnit) * 0.75).rounded())
+                    let remaining = starUnit - redStarUnit
+                        if remaining > 0 {
+                            greenStarUnit = Int.random(in: 0...remaining)
+                            blueStarUnit = remaining - greenStarUnit
+                        }
+                } else if rocketColor == .green {
+                    greenStarUnit = Int((Double(starUnit) * 0.75).rounded())
+                       let remaining = starUnit - greenStarUnit
+                       
+                       if remaining > 0 {
+                           redStarUnit = Int.random(in: 0...remaining)
+                           blueStarUnit = remaining - redStarUnit
+                       }
+                } else {
+                    blueStarUnit = Int((Double(starUnit) * 0.75).rounded())
+                       let remaining = starUnit - blueStarUnit
+                       
+                       if remaining > 0 {
+                           redStarUnit = Int.random(in: 0...remaining)
+                           greenStarUnit = remaining - redStarUnit
+                       }
+                }
+        for i in 0..<redStarUnit     { ObstacleSpawner.spawnRedStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
+        for i in 0..<greenStarUnit     { ObstacleSpawner.spawnGreenStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
+        for i in 0..<blueStarUnit     { ObstacleSpawner.spawnBlueStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
+//        for i in 0..<starUnit     { ObstacleSpawner.spawnStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
         let fuelSpacing = size.height / CGFloat(fuelCount)
         for i in 0..<fuelCount     { ObstacleSpawner.spawnFuel(in: self, atY: startY + CGFloat(i) * fuelSpacing + 200)
         }
@@ -144,7 +183,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func update(_ currentTime: TimeInterval) {
         planets.forEach { $0.position.y -= scrollSpeed }
-        stars.forEach   { $0.position.y -= scrollSpeed }
+        redStar.forEach   { $0.position.y -= scrollSpeed }
+        greenStar.forEach   { $0.position.y -= scrollSpeed }
+        blueStar.forEach   { $0.position.y -= scrollSpeed }
         fuels.forEach   { $0.position.y -= scrollSpeed }
         gate.forEach   { $0.position.y -= scrollSpeed }
         

@@ -8,15 +8,36 @@
 
 import SpriteKit
 
-func removeStar(in scene: GameScene, star: inout SKNode) {
+func removeStar(in scene: GameScene, star: inout SKNode, starColor: String) {
     star.removeFromParent()
-    let index = scene.stars.firstIndex(where: {$0 === star}) ?? -1
-    if(index >= 0){
-        scene.stars.remove(at: index)
+    if starColor == "redStar"{
+        let index = scene.redStar.firstIndex(where: {$0 === star}) ?? -1
+        if(index >= 0){
+            scene.redStar.remove(at: index)
+        }
+        let starNewY = scene.size.height * 1 + 100
+        // respawn
+        ObstacleSpawner.spawnRedStar(in: scene, atY: starNewY)
+    } else if starColor == "greenStar"
+    {
+        let index = scene.greenStar.firstIndex(where: {$0 === star}) ?? -1
+        if(index >= 0){
+            scene.greenStar.remove(at: index)
+        }
+        let starNewY = scene.size.height * 1 + 100
+        // respawn
+        ObstacleSpawner.spawnGreenStar(in: scene, atY: starNewY)
+    } else
+    {
+        let index = scene.blueStar.firstIndex(where: {$0 === star}) ?? -1
+        if(index >= 0){
+            scene.blueStar.remove(at: index)
+        }
+        let starNewY = scene.size.height * 1 + 100
+        // respawn
+        ObstacleSpawner.spawnBlueStar(in: scene, atY: starNewY)
     }
-    let starNewY = scene.size.height * 1 + 100
-    // respawn
-    ObstacleSpawner.spawnStar(in: scene, atY: starNewY)
+   
 }
 
 struct CollisionHandler {
@@ -43,18 +64,15 @@ struct CollisionHandler {
             guard var starNode = other.node, starNode.parent != nil else { return }
             starScoring(scene.rocket.color, .red)
             // other.node?.removeFromParent()
-            removeStar(in: scene, star: &starNode)
-            hud.starCount = scene.stars.count
+            removeStar(in: scene, star: &starNode, starColor: "redStar")
         case PhysicsCategory.blueStar:
             guard var starNode = other.node, starNode.parent != nil else { return }
             starScoring(scene.rocket.color, .blue)
-            removeStar(in: scene, star: &starNode)
-            hud.starCount = scene.stars.count
+            removeStar(in: scene, star: &starNode, starColor: "blueStar")
         case PhysicsCategory.greenStar:
             guard var starNode = other.node, starNode.parent != nil else { return }
             starScoring(scene.rocket.color, .green)
-            removeStar(in: scene, star: &starNode)
-            hud.starCount = scene.stars.count
+            removeStar(in: scene, star: &starNode, starColor: "greenStar")
         case PhysicsCategory.Fuel:
             guard let starNode = other.node, starNode.parent != nil else { return }
             hud.fuel = min(hud.fuel + 20, 100)
