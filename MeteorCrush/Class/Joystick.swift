@@ -15,8 +15,17 @@ class Joystick: SKNode {
     
     override init() {
         super.init()
-        base.fillColor = .gray; base.alpha = 0.4; base.zPosition = 100; base.isHidden = true
-        knob.fillColor = .white; knob.alpha = 0.8; knob.zPosition = 101; knob.isHidden = true
+        base.fillColor = .clear
+        base.alpha = 0.0
+        base.zPosition = 100
+        base.isHidden = false  // ← jangan hidden, biar tetap interaktif
+
+        knob.fillColor = .clear
+        knob.alpha = 0.0
+        knob.zPosition = 101
+        knob.isHidden = false
+ 
+        
         addChild(base); addChild(knob)
     }
     required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -63,9 +72,13 @@ class Joystick: SKNode {
         let norm = dx / 60
         let speed: CGFloat = 5
         var newX = rocket.position.x + norm * speed
-        let halfW = rocket.size.width / 2
-        newX = max(halfW, min(rocket.scene!.size.width - halfW, newX))
-        rocket.position = CGPoint(x: newX, y: rocketY)
-        rocket.zRotation = -norm * 0.3
+        
+        if let sceneWidth = rocket.scene?.size.width {
+            let halfW = rocket.size.width / 2
+            newX = max(halfW, min(sceneWidth - halfW, newX))
+            rocket.position = CGPoint(x: newX, y: rocketY)
+            rocket.zRotation = -norm * 0.3
+        }
+
     }
 }

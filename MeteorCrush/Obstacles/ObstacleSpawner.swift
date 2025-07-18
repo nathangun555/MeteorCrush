@@ -13,34 +13,54 @@ struct ObstacleSpawner {
         let randomSize = CGFloat.random(in: 150...300)
         planet.size = CGSize(width: randomSize, height: randomSize)
         let halfW = planet.size.width / 2
-        planet.position = CGPoint(
-            x: CGFloat.random(in: halfW...(scene.size.width - halfW)),
-            y: y
-        )
+        let maxOutsideFraction: CGFloat = 0.3
+        let offset = planet.size.width * maxOutsideFraction
+
+        let newX = CGFloat.random(in: -offset...(scene.size.width + offset))
+        let newY = y
+
+        // ➤ Cek jarak dengan planet yang sudah ada
+        if let gs = scene as? GameScene {
+            let minHorizontalGap: CGFloat = 2
+            let minVerticalGap: CGFloat = 5
+
+            for existing in gs.planets {
+                let dx = abs(existing.position.x - newX)
+                let dy = abs(existing.position.y - newY)
+                if dx < minHorizontalGap && dy < minVerticalGap {
+                    // terlalu dekat, batal spawn
+                    return
+                }
+            }
+        }
+
+        planet.position = CGPoint(x: newX, y: newY)
         planet.zPosition = 5
-        
+
         let collisionRadius = halfW / 1.5
         let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
         collisionCircle.position    = .zero
         collisionCircle.strokeColor = .yellow
         collisionCircle.lineWidth   = 2
         collisionCircle.fillColor   = .clear
-        collisionCircle.zPosition   = -1   // agar di belakang planet
-        
+        collisionCircle.zPosition   = -1
+
         let body = SKPhysicsBody(circleOfRadius: collisionRadius)
-        body.isDynamic            = false  // statis, ikut planet
-        body.categoryBitMask      = PhysicsCategory.Planet
-        body.contactTestBitMask   = PhysicsCategory.Rocket
-        body.collisionBitMask     = PhysicsCategory.None
+        body.isDynamic = false
+        body.categoryBitMask = PhysicsCategory.Planet
+        body.contactTestBitMask = PhysicsCategory.Rocket
+        body.collisionBitMask = PhysicsCategory.None
         collisionCircle.physicsBody = body
-        
+
         planet.addChild(collisionCircle)
-        
+
         if let gs = scene as? GameScene {
             gs.planets.append(planet)
         }
+
         scene.addChild(planet)
     }
+
     static func spawnStar(in scene: SKScene, atY y: CGFloat) {
         let starColors = ["redStar", "greenStar", "blueStar"]
         let starPicker = starColors.randomElement()!
