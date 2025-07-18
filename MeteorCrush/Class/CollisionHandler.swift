@@ -26,19 +26,20 @@ struct CollisionHandler {
         let other = contact.bodyA.categoryBitMask == PhysicsCategory.Rocket ? contact.bodyB : contact.bodyA
         switch other.categoryBitMask {
         case PhysicsCategory.Planet:
-            scene.isGameOver = true
-            scene.isPaused = true
-
-            NotificationCenter.default.post(
-                name: Notification.Name("GameOver"),
-                object: hud.score
-            )
-
-            let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
-            gameOver.text = "Game Over"
-            gameOver.fontSize = 48
-            gameOver.position = CGPoint(x: scene.size.width/2, y: scene.size.height/2)
-            scene.addChild(gameOver)
+//            scene.isGameOver = true
+//            scene.isPaused = true
+//
+//            NotificationCenter.default.post(
+//                name: Notification.Name("GameOver"),
+//                object: hud.score
+//            )
+//
+//            let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
+//            gameOver.text = "Game Over"
+//            gameOver.fontSize = 48
+//            gameOver.position = CGPoint(x: scene.size.width/2, y: scene.size.height/2)
+//            scene.addChild(gameOver)
+            hud.score += 0
         case PhysicsCategory.redStar:
             guard var starNode = other.node, starNode.parent != nil else { return }
             starScoring(scene.rocket.color, .red)
