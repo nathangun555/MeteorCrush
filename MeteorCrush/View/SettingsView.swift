@@ -74,6 +74,9 @@ struct SettingsView: View {
                                         UserDefaults.standard.set(2, forKey: "joystickSensitivity")
                                     }
                                 }
+                                .onChange(of: joystickValue) {
+                                    // joystick
+                                }
                             }
                         )
                     Button(action: {

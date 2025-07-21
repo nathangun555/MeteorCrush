@@ -53,7 +53,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //            print(self.distance)
             if(self.distance % 5*5 == 0){
                 self.scrollSpeed += 0.1
-                background.scrollSpeed += 50
+                // background speed controller
+                background.bgScrollSpeed += 10
                 background.updateScrollingSpeed()
 //                print("Increasing speed to \(self.scrollSpeed)")
             }
