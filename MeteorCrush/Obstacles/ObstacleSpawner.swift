@@ -236,7 +236,7 @@ struct ObstacleSpawner {
     static func recycleOffscreen(in scene: GameScene, speed: CGFloat) {
         let offscreenY: CGFloat = -100, topY: CGFloat = scene.size.height + 10
         scene.planets.enumerated().forEach { pIdx, p in
-            if p.position.y < offscreenY {
+            if p.position.y / 2 < -p.size.height / 2 {
                 print("Planet passed")
                 p.position.y = topY + CGFloat.random(in: 0...200)
                 p.position.x = getPlanetXPos(scene: scene, planet: p, index: pIdx)
