@@ -19,6 +19,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var gate      = [SKSpriteNode]()
     var fireNode: SKSpriteNode!
     var distance: Int = 0
+    
+    var isPowerupSpawned: Bool = false
 
     
     private var planetCount = 4
@@ -59,6 +61,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 // 3 (opsional) panggil gameOver sequence/method
                 isGameOver = true
+            }
+            if self.distance > 1 {
+                self.isPowerupSpawned = true
             }
         }
         let wait = SKAction.wait(forDuration: 0.2)
@@ -116,7 +121,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     public func spawnInitialObstacles() {
         let startY: CGFloat = size.height * 0.8 // Mulai dari 80% tinggi layar
-        let planetSpacing = size.height / CGFloat(planetCount)
         for i in 0..<planetCount {
             ObstacleSpawner.spawnPlanet(in: self, atY: startY + 500 + 100 + CGFloat(i) * 400, index: i)
         }
