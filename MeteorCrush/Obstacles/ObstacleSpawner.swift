@@ -8,6 +8,39 @@
 import SpriteKit
 
 struct ObstacleSpawner {
+//    static func spawnPlanet(in scene: SKScene, atY y: CGFloat) {
+//        let planet = SKSpriteNode(imageNamed: "planet")
+//        let randomSize = CGFloat.random(in: 150...300)
+//        planet.size = CGSize(width: randomSize, height: randomSize)
+//        let halfW = planet.size.width / 2
+//        planet.position = CGPoint(
+//            x: CGFloat.random(in: halfW...(scene.size.width - halfW)),
+//            y: y
+//        )
+//        planet.zPosition = 5
+//        
+//        let collisionRadius = halfW / 1.5
+//        let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
+//        collisionCircle.position    = .zero
+//        collisionCircle.strokeColor = .yellow
+//        collisionCircle.lineWidth   = 2
+//        collisionCircle.fillColor   = .clear
+//        collisionCircle.zPosition   = -1   // agar di belakang planet
+//        
+//        let body = SKPhysicsBody(circleOfRadius: collisionRadius)
+//        body.isDynamic            = false  // statis, ikut planet
+//        body.categoryBitMask      = PhysicsCategory.Planet
+//        body.contactTestBitMask   = PhysicsCategory.Rocket
+//        body.collisionBitMask     = PhysicsCategory.None
+//        collisionCircle.physicsBody = body
+//        
+//        planet.addChild(collisionCircle)
+//        
+//        if let gs = scene as? GameScene {
+//            gs.planets.append(planet)
+//        }
+//        scene.addChild(planet)
+//    }
     static func spawnPlanet(in scene: SKScene, atY y: CGFloat) {
         let planet = SKSpriteNode(imageNamed: "planet")
         let randomSize = CGFloat.random(in: 150...300)
@@ -139,10 +172,12 @@ struct ObstacleSpawner {
     static func spawnGate(in scene: SKScene, atY y: CGFloat) {
         let gate = SKSpriteNode(imageNamed: "whiteGate")
         let colors: [SKColor] = [.red, .green, .blue]
-        if let randomColor = colors.randomElement() {
-            gate.color = randomColor
-            gate.colorBlendFactor = 1.0
-        }
+        let randomIndex = Int.random(in: 0...2)
+        gate.color = colors[randomIndex]
+        gate.colorBlendFactor = 1.0
+        
+        print("Spawn a new gate")
+        print(gate.color)
         gate.size = CGSize(width: scene.size.width * 0.4, height: scene.size.height * 0.3)
         let halfW = gate.size.width / 2
         gate.position = CGPoint(
@@ -176,7 +211,7 @@ struct ObstacleSpawner {
         
         gate.addChild(collisionRect)
         if let gs = scene as? GameScene {
-            gs.fuels.append(gate)
+            gs.gate.append(gate)
         }
         scene.addChild(gate)
     }
