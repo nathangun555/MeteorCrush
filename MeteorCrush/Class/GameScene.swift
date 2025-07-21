@@ -14,20 +14,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var meteorSpawner: FallingMeteorSpawner!
     private var joystick: Joystick!
     private var hud: HUD!
+    private var tutorialLabel: SKLabelNode!
+    private var tutorialBackground: SKSpriteNode!
+    private var hand: SKSpriteNode!
     
     var planets   = [SKSpriteNode]()
     var stars     = [SKSpriteNode]()
     var fuels     = [SKSpriteNode]()
     var gate      = [SKSpriteNode]()
     var distance: Int = 0
-
     
     private var planetCount = Int.random(in: 1...3)
     private var starCount   = Int.random(in: 1...3)
     private var fuelCount   = Int.random(in: 1...3)
     private var gateCount   = 1
     
-     var scrollSpeed: CGFloat = 3.0
+    var scrollSpeed: CGFloat = 3.0
     private var rocketY: CGFloat = 0
     
     var isGameOver = false
@@ -37,12 +39,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.gravity = .zero
         physicsWorld.contactDelegate = self
         meteorSpawner = FallingMeteorSpawner(scene: self)
-
+        
         setupRocket()
         setupJoystick()
         setupHUD()
         spawnInitialObstacles()
         
+        
+        TutorialOverlay()
+        
+        // Set up the timer to remove tutorial after 5 seconds
+        run(SKAction.wait(forDuration: 5.0)) {
+            self.removeTutorialOverlay()
+        }
+        
+        // Consume fuel, manage scroll speed, and check for game over
         let consume = SKAction.run { [weak self] in
             guard let self = self, !self.isGameOver else { return }
             self.hud.fuel -= 1
@@ -60,14 +71,58 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 )
                 self.removeAction(forKey: "fuelTimer")
                 
-                // 3 (opsional) panggil gameOver sequence/method
                 isGameOver = true
             }
         }
+        
         let wait = SKAction.wait(forDuration: 0.2)
         let sequence = SKAction.sequence([wait, consume])
         let repeatForever = SKAction.repeatForever(sequence)
         run(repeatForever, withKey: "fuelTimer")
+    }
+    
+    private func TutorialOverlay() {
+        tutorialBackground = SKSpriteNode(color: .gray, size: CGSize(width: size.width * 2, height: size.height))
+        tutorialBackground.alpha = 0.5
+        tutorialBackground.zPosition = 100
+        addChild(tutorialBackground)
+        
+        // Tutorial label
+        tutorialLabel = SKLabelNode(text: "Swipe to move the rocket!")
+        
+        
+        tutorialLabel.fontColor = .white
+        tutorialLabel.fontSize = 40
+        tutorialLabel.position = CGPoint(x: size.width/2, y: size.height/4)
+        tutorialLabel.zPosition = 101
+        addChild(tutorialLabel)
+        
+        // Menggunakan SF Symbol hand.draw.fill
+        let handImage = UIImage(systemName: "hand.draw.fill")!
+      //  handImage = handImage.withTintColor(.white)
+        let handTexture = SKTexture(image: handImage)
+        
+        // Membuat sprite dengan texture dari SF Symbol
+        hand = SKSpriteNode(texture: handTexture)
+        hand.position = CGPoint(x: size.width / 3, y: size.height / 8) // Di bawah teks
+        hand.zPosition = 102
+        addChild(hand)
+        
+        hand.setScale(5.0)
+            
+        // Animasi geser tangan
+        let moveRight = SKAction.moveBy(x: 200, y: 0, duration: 0.7)
+        let moveLeft = SKAction.moveBy(x: -200, y: 0, duration: 0.7)
+        let moveSequence = SKAction.sequence([moveRight, moveLeft])
+        let repeatAction = SKAction.repeatForever(moveSequence)
+        hand.run(repeatAction)
+    }
+    
+    private func removeTutorialOverlay() {
+        tutorialBackground.removeFromParent()
+        tutorialLabel.removeFromParent()
+        hand.removeFromParent()
+        
     }
     
     private func setupRocket() {
@@ -78,7 +133,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rocketY = size.height / 4
         rocket.position = CGPoint(x: size.width/2, y: rocketY)
         rocket.zPosition = 10
-
+        
         // Set warna roket
         if rocketPicker == "rocketPink" {
             rocket.color = .red
@@ -87,17 +142,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else {
             rocket.color = .blue
         }
-
         
         let collisionBoxSize = CGSize(width: 35, height: 80)
         let roundedRect = CGRect(origin: CGPoint(x: -collisionBoxSize.width/2, y: -collisionBoxSize.height/2), size: collisionBoxSize)
-
+        
         let collisionBox = SKShapeNode(rect: roundedRect, cornerRadius: 8)
         collisionBox.fillColor = .red
-        collisionBox.alpha = 1  
+        collisionBox.alpha = 1
         collisionBox.zPosition = -1
         collisionBox.position = CGPoint(x: 0, y: 0)
-
         
         collisionBox.physicsBody = SKPhysicsBody(rectangleOf: collisionBoxSize)
         collisionBox.physicsBody?.categoryBitMask = PhysicsCategory.Rocket
@@ -105,16 +158,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         collisionBox.physicsBody?.collisionBitMask = PhysicsCategory.None
         collisionBox.physicsBody?.affectedByGravity = false
         collisionBox.physicsBody?.isDynamic = true
-
+        
         rocket.physicsBody = nil
-
         rocket.addChild(collisionBox)
         rocketFire = RocketFire(rocketSize: rocket.size)
         rocket.addChild(rocketFire.node)
         addChild(rocket)
     }
-
-    func changeRocketColor(_ color: UIColor)    {
+    
+    func changeRocketColor(_ color: UIColor) {
         rocket.color = color
         rocket.colorBlendFactor = 1  // 1.0 = full tint
     }
@@ -136,13 +188,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             ObstacleSpawner.spawnPlanet(in: self, atY: startY + CGFloat(i) * planetSpacing)
         }
         let starSpacing = size.height / CGFloat(starCount)
-        for i in 0..<starCount     { ObstacleSpawner.spawnStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
+        for i in 0..<starCount { ObstacleSpawner.spawnStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
         let fuelSpacing = size.height / CGFloat(fuelCount)
-        for i in 0..<fuelCount     { ObstacleSpawner.spawnFuel(in: self, atY: startY + CGFloat(i) * fuelSpacing + 200)
-        }
+        for i in 0..<fuelCount { ObstacleSpawner.spawnFuel(in: self, atY: startY + CGFloat(i) * fuelSpacing + 200) }
         let gateSpacing = size.height / CGFloat(gateCount)
-        for i in 0..<gateCount     { ObstacleSpawner.spawnGate(in: self, atY: startY + CGFloat(i) * gateSpacing + 200)
-        }
+        for i in 0..<gateCount { ObstacleSpawner.spawnGate(in: self, atY: startY + CGFloat(i) * gateSpacing + 200) }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -167,16 +217,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             removeAction(forKey: "fuelTimer")
             return
         }
-        joystick.updateRocket(rocket, fuel: &hud.fuel, rocketY: &rocketY) // bensinnya berkurang
+        joystick.updateRocket(rocket, fuel: &hud.fuel, rocketY: &rocketY)
         rocketFire.update(fuel: hud.fuel)
         
         hud.updateLabels()
         ObstacleSpawner.recycleOffscreen(in: self, speed: scrollSpeed)
-        
     }
-    
     
     func didBegin(_ contact: SKPhysicsContact) {
         CollisionHandler.handle(contact, in: self, hud: hud)
     }
 }
+
