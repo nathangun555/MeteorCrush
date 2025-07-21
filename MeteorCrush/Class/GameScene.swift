@@ -21,7 +21,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var distance: Int = 0
 
     
-    private var planetCount = Int.random(in: 1...3)
+    private var planetCount = 4
     private var starCount   = Int.random(in: 1...3)
     private var fuelCount   = Int.random(in: 1...3)
     private var gateCount   = 1
@@ -118,7 +118,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let startY: CGFloat = size.height * 0.8 // Mulai dari 80% tinggi layar
         let planetSpacing = size.height / CGFloat(planetCount)
         for i in 0..<planetCount {
-            ObstacleSpawner.spawnPlanet(in: self, atY: startY + CGFloat(i) * planetSpacing)
+            ObstacleSpawner.spawnPlanet(in: self, atY: startY + 500 + 100 + CGFloat(i) * 400, index: i)
         }
         let starSpacing = size.height / CGFloat(starCount)
         for i in 0..<starCount     { ObstacleSpawner.spawnStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }

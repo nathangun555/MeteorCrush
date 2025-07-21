@@ -26,9 +26,11 @@ struct GameOverView: View {
 
             Text("You Just Scored")
                 .font(.subheadline)
+                .foregroundColor(.black)
 
             Text("\(currentScore)")
                 .font(.system(size: 40, weight: .bold))
+                .foregroundColor(.black)
 
             Button(action: onPlayAgain) {
                 Text("Play Again")

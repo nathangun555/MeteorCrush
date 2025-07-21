@@ -17,7 +17,7 @@ class Joystick: SKNode {
         super.init()
         base.fillColor = .gray; base.alpha = 0.4; base.zPosition = 100; base.isHidden = true
         knob.fillColor = .white; knob.alpha = 0.8; knob.zPosition = 101; knob.isHidden = true
-        addChild(base); addChild(knob)
+//        addChild(base); addChild(knob)
     }
     required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
