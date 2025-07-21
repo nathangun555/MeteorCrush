@@ -47,12 +47,12 @@ struct ObstacleSpawner {
         if planetPosType == 0 {
             // 0 = kanan
             upperBoundX = scene.size.width + planet.size.width / 2 - 100
-            lowerBoundX = upperBoundX - planet.size.width / 2 + 10 - 100
+            lowerBoundX = scene.size.width
             print("Kanan")
         }else if(planetPosType == 1){
             // 1 = kiri
             lowerBoundX = -planet.size.width / 2 + 100
-            upperBoundX = 0.0 + 100
+            upperBoundX = 0.0
             print("Kiri")
         }
         
