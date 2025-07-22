@@ -1,0 +1,28 @@
+# Xcode
+DerivedData/
+*.xcuserstate
+*.moved-aside
+*.hmap
+*.ipa
+*.swp
+
+# Ignore user-specific Xcode data
+*.xcuserdatad/
+*/xcuserdata/
+
+# SwiftPM
+.build/
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+
+# macOS junk
+.DS_Store

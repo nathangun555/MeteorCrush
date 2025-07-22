@@ -11,7 +11,7 @@ import SwiftUI
 struct MeteorCrushApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+           MainMenuView()
         }
     }
 }
