@@ -31,7 +31,7 @@ struct CollisionHandler {
             (first.categoryBitMask == PhysicsCategory.Meteor && second.categoryBitMask == PhysicsCategory.Rocket) {
             
             print("[Collision] 🚨 Rocket hit meteor!")
-            
+            vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
                 NotificationCenter.default.post(
                     name: Notification.Name("GameOver"),
@@ -59,6 +59,8 @@ struct CollisionHandler {
                 name: Notification.Name("GameOver"),
                 object: hud.score
             )
+
+            vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
                 
                 scene.isGameOver = true
