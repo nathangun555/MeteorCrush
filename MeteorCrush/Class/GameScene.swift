@@ -12,6 +12,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var rocket: SKSpriteNode!
     private var joystick: Joystick!
     private var hud: HUD!
+    private var tutorialOverlay: TutorialOverlay!
     
     var planets   = [SKSpriteNode]()
     var stars     = [SKSpriteNode]()
@@ -26,7 +27,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var fuelCount   = Int.random(in: 1...3)
     private var gateCount   = 1
     
-    private var scrollSpeed: CGFloat = 3.0
+    
+    var scrollSpeed: CGFloat = 3.0
     private var rocketY: CGFloat = 0
     
     var isGameOver = false
@@ -40,14 +42,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         setupJoystick()
         setupHUD()
         spawnInitialObstacles()
+        
+        tutorialOverlay = TutorialOverlay(scene: self)
+        
+        run(SKAction.wait(forDuration: 5.0)) {
+            self.tutorialOverlay.removeOverlay()
+        }
+        
+        // Consume fuel, manage scroll speed, and check for game over
         let consume = SKAction.run { [weak self] in
             guard let self = self, !self.isGameOver else { return }
             self.hud.fuel -= 1
             self.distance += 1
-//            print(self.distance)
+            //            print(self.distance)
             if(self.distance % 5*5 == 0){
                 self.scrollSpeed += 0.1
-//                print("Increasing speed to \(self.scrollSpeed)")
             }
             self.hud.updateLabels()
             if self.hud.fuel <= 0 {
@@ -68,14 +77,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func setupRocket() {
-        let randomRocket = ["rocketPink", "rocketGreen", "rocketBlue"]
+        let randomRocket = ["rocketRed", "rocketGreen", "rocketBlue"]
         let rocketPicker = randomRocket.randomElement()!
         rocket = SKSpriteNode(imageNamed: rocketPicker)
         rocket.size = CGSize(width: 100, height: 100)
         rocketY = size.height / 4
         rocket.position = CGPoint(x: size.width/2, y: rocketY)
         rocket.zPosition = 10
-        if rocketPicker == "rocketPink" {
+        
+        // Set warna roket
+        if rocketPicker == "rocketRed" {
             rocket.color = .red
         } else  if rocketPicker == "rocketGreen" {
             rocket.color = .green

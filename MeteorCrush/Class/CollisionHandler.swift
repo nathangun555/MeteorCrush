@@ -66,7 +66,7 @@ struct CollisionHandler {
             let fuelNewY = scene.size.height * 1 + 200
             ObstacleSpawner.spawnFuel(in: scene, atY: fuelNewY)
         case PhysicsCategory.redGate:
-            scene.rocket.texture = SKTexture(imageNamed: "rocketPink")
+            scene.rocket.texture = SKTexture(imageNamed: "rocketRed")
             scene.rocket.color = .red
             scene.rocket.colorBlendFactor = 0
 //            print("lewat pink")        
