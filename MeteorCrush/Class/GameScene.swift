@@ -13,6 +13,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var rocketFire: RocketFire!
     var meteorSpawner: FallingMeteorSpawner!
     private var joystick: Joystick!
+    var sensitivity: CGFloat = UserDefaults.standard.double(forKey: "joystickSensitivity")
     private var hud: HUD!
     private var tutorialLabel: SKLabelNode!
     private var tutorialBackground: SKSpriteNode!
@@ -35,7 +36,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var isGameOver = false
     
     override func didMove(to view: SKView) {
-        backgroundColor = .purple
+        let background = BackgroundNode(sceneSize: self.size) // misalnya ini adalah SKSpriteNode
+        background.zPosition = -1 // pastikan ada di belakang semua elemen
+        background.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        addChild(background)
+
+        //backgroundColor = .brown
         physicsWorld.gravity = .zero
         physicsWorld.contactDelegate = self
         meteorSpawner = FallingMeteorSpawner(scene: self)
@@ -61,6 +67,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 //            print(self.distance)
             if(self.distance % 5*5 == 0){
                 self.scrollSpeed += 0.1
+                // background speed controller
+                background.bgScrollSpeed += 10
+                background.updateScrollingSpeed()
 //                print("Increasing speed to \(self.scrollSpeed)")
             }
             self.hud.updateLabels()
@@ -173,6 +182,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private func setupJoystick() {
         joystick = Joystick()
+        joystick.sensitivity = sensitivity
         addChild(joystick)
     }
     

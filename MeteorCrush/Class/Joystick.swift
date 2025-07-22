@@ -8,6 +8,8 @@
 import SpriteKit
 
 class Joystick: SKNode {
+    var sensitivity: CGFloat = 1
+    private var trackingTouch: UITouch?
     private let base = SKShapeNode(circleOfRadius: 60)
     private let knob = SKShapeNode(circleOfRadius: 30)
     private(set) var isActive = false
@@ -68,17 +70,18 @@ class Joystick: SKNode {
 
     func updateRocket(_ rocket: SKSpriteNode, fuel: inout CGFloat, rocketY: inout CGFloat) {
         guard isActive else { return }
+
         let dx = knob.position.x - basePosition.x
         let norm = dx / 60
         let speed: CGFloat = 5
-        var newX = rocket.position.x + norm * speed
-        
-        if let sceneWidth = rocket.scene?.size.width {
-            let halfW = rocket.size.width / 2
-            newX = max(halfW, min(sceneWidth - halfW, newX))
-            rocket.position = CGPoint(x: newX, y: rocketY)
-            rocket.zRotation = -norm * 0.3
-        }
+        let adjustedSpeed = norm * speed * sensitivity  // ✅ pengaruh sensitivitas dimasukkan di sini
 
+        var newX = rocket.position.x + adjustedSpeed
+        let halfW = rocket.size.width / 2
+        newX = max(halfW, min(rocket.scene!.size.width - halfW, newX))
+        rocket.position = CGPoint(x: newX, y: rocketY)
+
+        rocket.zRotation = -norm * 0.3
     }
+
 }
