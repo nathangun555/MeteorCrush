@@ -23,22 +23,69 @@ struct CollisionHandler {
     let scene: GameScene
     let hud: HUD
     static func handle(_ contact: SKPhysicsContact, in scene: GameScene, hud: HUD) {
+        let first = contact.bodyA
+        let second = contact.bodyB
+        
+        // Cek jika salah satu adalah Rocket dan satu lagi Meteor
+        if (first.categoryBitMask == PhysicsCategory.Rocket && second.categoryBitMask == PhysicsCategory.Meteor) ||
+            (first.categoryBitMask == PhysicsCategory.Meteor && second.categoryBitMask == PhysicsCategory.Rocket) {
+            
+            print("[Collision] 🚨 Rocket hit meteor!")
+            
+            ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
+                NotificationCenter.default.post(
+                    name: Notification.Name("GameOver"),
+                    object: hud.score
+                )
+                scene.isGameOver = true
+                scene.isPaused = true
+                
+                let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
+                gameOver.text = "Game Over"
+                gameOver.fontSize = 48
+                gameOver.position = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
+                gameOver.zPosition = 1000
+                scene.addChild(gameOver)
+            }
+            return
+        }
+        
         let other = contact.bodyA.categoryBitMask == PhysicsCategory.Rocket ? contact.bodyB : contact.bodyA
         switch other.categoryBitMask {
+            
         case PhysicsCategory.Planet:
-            scene.isGameOver = true
-            scene.isPaused = true
-
+            
             NotificationCenter.default.post(
                 name: Notification.Name("GameOver"),
                 object: hud.score
             )
-
-            let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
-            gameOver.text = "Game Over"
-            gameOver.fontSize = 48
-            gameOver.position = CGPoint(x: scene.size.width/2, y: scene.size.height/2)
-            scene.addChild(gameOver)
+            ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
+                
+                scene.isGameOver = true
+                scene.isPaused = true
+                
+                let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
+                gameOver.text = "Game Over"
+                gameOver.fontSize = 48
+                gameOver.position = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
+                gameOver.zPosition = 1000
+                scene.addChild(gameOver)
+            }
+            return
+            //                        scene.isGameOver = true
+            //                        scene.isPaused = true
+            //
+            //                        NotificationCenter.default.post(
+            //                            name: Notification.Name("GameOver"),
+            //                            object: hud.score
+            //                        )
+            //
+            //                        let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
+            //                        gameOver.text = "Game Over"
+            //                        gameOver.fontSize = 48
+            //                        gameOver.position = CGPoint(x: scene.size.width/2, y: scene.size.height/2)
+            //                        scene.addChild(gameOver)
+            
         case PhysicsCategory.redStar:
             guard var starNode = other.node, starNode.parent != nil else { return }
             starScoring(scene.rocket.color, .red)
@@ -69,22 +116,22 @@ struct CollisionHandler {
             scene.rocket.texture = SKTexture(imageNamed: "rocketPink")
             scene.rocket.color = .red
             scene.rocket.colorBlendFactor = 0
-//            print("lewat pink")        
+            //            print("lewat pink")
         case PhysicsCategory.greenGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketGreen")
             scene.rocket.color = .green
             scene.rocket.colorBlendFactor = 0
-//            print("lewat hijau")
+            //            print("lewat hijau")
         case PhysicsCategory.blueGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketBlue")
             scene.rocket.color = .blue
             scene.rocket.colorBlendFactor = 0
-//            print("lewat biru")
+            //            print("lewat biru")
         default: break
         }
         
         func starScoring(_ rocketColor: UIColor, _ starColor: UIColor){
-//            print(rocketColor, starColor)
+            //            print(rocketColor, starColor)
             if (rocketColor == .red && starColor == .red) || (rocketColor == .green && starColor == .green) || (rocketColor == .blue && starColor == .blue)
             {
                 hud.score += 5

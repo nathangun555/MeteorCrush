@@ -18,4 +18,6 @@ struct PhysicsCategory {
     static let redGate:   UInt32 = 1 << 6
     static let greenGate: UInt32 = 1 << 7
     static let blueGate:  UInt32 = 1 << 8
+    static let Meteor: UInt32 = 1 << 9
+
 }
