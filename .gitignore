@@ -26,3 +26,5 @@ fastlane/screenshots/
 
 # macOS junk
 .DS_Store
+
+MeteorCrush.xcodeproj/project.xcworkspace
