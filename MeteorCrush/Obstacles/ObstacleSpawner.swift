@@ -273,9 +273,9 @@ struct ObstacleSpawner {
             }
         }
         
-        if(scene.isPowerupSpawned){
-            spawnPowerup(in: scene, y: scene.position.y)
-            scene.isPowerupSpawned = false
-        }
+//        if(scene.isPowerupSpawned){
+//            spawnPowerup(in: scene, y: scene.position.y)
+//            scene.isPowerupSpawned = false
+//        }
     }
 }

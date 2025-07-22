@@ -8,26 +8,50 @@
 import Foundation
 import SpriteKit
 
-enum PowerupType {
+enum PowerupType: String {
     case doubleScore
     case shield
 }
 
 struct PowerUpSpawner {
-    static func spawnPowerup(in scene: SKScene, y: CGFloat) {
-        let powerUpType: PowerupType
+    var lastSpawnTime: Int = 0
+    
+    static func spawnPowerup(in scene: GameScene, y: CGFloat) {
+        let powerUpType: PowerupType = Bool.random() ? .doubleScore : .doubleScore
+
+        let powerup = SKSpriteNode(imageNamed: powerUpType == .doubleScore ? "powerUp2x" : "powerUpShield")
+        let diameter = 200.0
+        powerup.size = CGSize(width: diameter, height: diameter)
+        powerup.position = CGPoint(x: CGFloat.random(in: 0...(scene.size.width)), y: y)
+        powerup.zPosition = 5
+        powerup.userData = ["type": powerUpType.rawValue] // ✅ Store string only
         
-        if(Int.random(in: 0...1) == 0){
-            powerUpType = .doubleScore
-        }else{
-            powerUpType = .shield
+        let body = SKPhysicsBody(circleOfRadius: diameter / 2)
+        body.categoryBitMask = PhysicsCategory.powerUp
+        body.contactTestBitMask = PhysicsCategory.Rocket
+        body.collisionBitMask = PhysicsCategory.None
+        powerup.physicsBody = body
+
+        scene.powerups.append(powerup)
+        scene.addChild(powerup)
+
+        print("Powerup spawned. Type: \(powerUpType.rawValue)")
+    }
+
+    
+    static func recyclePowerup(in scene: GameScene, speed: CGFloat) {
+        let offscreenY: CGFloat = -100
+        let second = Int(floor(CGFloat(scene.distance / 5)))
+        let startingSecond = 1
+        let interval = 3
+        if(second >= startingSecond && (second - startingSecond) % interval == 0 && scene.powerups.count == 0){
+            spawnPowerup(in: scene, y: scene.size.height)
         }
         
-        
-        let powerup = SKSpriteNode(imageNamed: powerUpType == .doubleScore ? "powerUp2x" : "powerUpShield")
-        powerup.size = CGSize(width: 50, height: 50)
-        powerup.position = CGPoint(x: CGFloat.random(in: (500.0 / 2)...(scene.size.width - 500.0 / 2)), y: y)
-        powerup.zPosition = 10
-        scene.addChild(powerup)
+        scene.powerups.forEach { powerup in
+            if powerup.position.y < offscreenY {
+                scene.powerups.removeAll { $0 === powerup }
+            }
+        }
     }
 }

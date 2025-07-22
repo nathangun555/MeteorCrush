@@ -17,10 +17,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var stars     = [SKSpriteNode]()
     var fuels     = [SKSpriteNode]()
     var gate      = [SKSpriteNode]()
+    var powerups  = [SKSpriteNode]()
     var fireNode: SKSpriteNode!
     var distance: Int = 0
     
     var isPowerupSpawned: Bool = false
+    var isShield: Bool = false
+    var multiplier: Int = 1
+    var isDoublePoint: Bool = false
 
     
     private var planetCount = 4
@@ -151,6 +155,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         stars.forEach   { $0.position.y -= scrollSpeed }
         fuels.forEach   { $0.position.y -= scrollSpeed }
         gate.forEach   { $0.position.y -= scrollSpeed }
+        powerups.forEach { $0.position.y -= scrollSpeed }
         
         guard !isGameOver else {
             removeAction(forKey: "fuelTimer")
@@ -160,6 +165,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         updateFireEffect()
         hud.updateLabels()
         ObstacleSpawner.recycleOffscreen(in: self, speed: scrollSpeed)
+        PowerUpSpawner.recyclePowerup(in: self, speed: scrollSpeed)
         
     }
     

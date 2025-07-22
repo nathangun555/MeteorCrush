@@ -26,6 +26,7 @@ struct CollisionHandler {
         let other = contact.bodyA.categoryBitMask == PhysicsCategory.Rocket ? contact.bodyB : contact.bodyA
         switch other.categoryBitMask {
         case PhysicsCategory.Planet:
+            if scene.isShield { return }
             scene.isGameOver = true
             scene.isPaused = true
 
@@ -80,6 +81,24 @@ struct CollisionHandler {
             scene.rocket.color = .blue
             scene.rocket.colorBlendFactor = 0
 //            print("lewat biru")
+        case PhysicsCategory.powerUp:
+             guard let nodeData = other.node?.userData else { return }
+             switch nodeData["type"] as? String {
+             case "shield":
+                 print("Shield active!")
+                 scene.isShield = true
+                
+             case "doubleScore":
+                 print("Double score active!")
+                 scene.multiplier = 2
+                
+             default:
+                 print("Unknown! Data : \(nodeData)")
+                 break
+             }
+            other.node?.removeFromParent()
+            
+            print("Powerup activated!")
         default: break
         }
         
@@ -87,7 +106,7 @@ struct CollisionHandler {
 //            print(rocketColor, starColor)
             if (rocketColor == .red && starColor == .red) || (rocketColor == .green && starColor == .green) || (rocketColor == .blue && starColor == .blue)
             {
-                hud.score += 5
+                hud.score += 5 * scene.multiplier
             } else
             {
                 if hud.score > 0{
