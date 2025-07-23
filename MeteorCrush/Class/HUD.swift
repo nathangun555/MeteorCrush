@@ -28,7 +28,7 @@ class HUD: SKNode {
     
     init(size: CGSize) {
         self.shieldPos = CGPoint(x: size.width - 80, y: size.height - 100)
-        self.multiplierPos = CGPoint(x: self.shieldPos.x, y: self.shieldPos.y + 50)
+        self.multiplierPos = CGPoint(x: self.shieldPos.x, y: self.shieldPos.y - powerupSize - 50)
 
         super.init()
         scoreLabel.fontSize = 24; scoreLabel.fontColor = .white
@@ -55,7 +55,7 @@ class HUD: SKNode {
         addChild(shieldTimerLabel)
         
         multiplierLabel.size = CGSize(width: powerupSize, height: powerupSize)
-        multiplierLabel.position = CGPoint(x: shieldPos.x, y: shieldPos.y + 50)
+        multiplierLabel.position = self.multiplierPos
         multiplierLabel.zPosition = 20
         multiplierLabel.isHidden = true
         addChild(multiplierLabel)
