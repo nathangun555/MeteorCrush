@@ -29,12 +29,75 @@
 		7C74B9842E1FA43100659A5B /* MeteorCrushUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MeteorCrushUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		7C74B96F2E1FA43000659A5B /* MeteorCrush */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MeteorCrush;
-			sourceTree = "<group>";
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		98C2A2AD2E30BF9F004434F0 /* Exceptions for "MeteorCrush" folder in "MeteorCrush" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				Class/CollisionHandler.swift,
+				Class/ExplosionEffects.swift,
+				Class/Font.swift,
+				Class/GameScene.swift,
+				Class/Haptic.swift,
+				Class/HUD.swift,
+				Class/Joystick.swift,
+				Class/PhysicsCategory.swift,
+				Class/RocketFire.swift,
+				Class/SFX.swift,
+				"Font/Baloo2-ExtraBold.ttf",
+				MeteorCrushApp.swift,
+				Obstacles/FallingMeteorSpawner.swift,
+				Obstacles/ObstacleSpawner.swift,
+				SFX/collectStar.wav,
+				SFX/gameOver.wav,
+				SFX/incomingMeteor.wav,
+				SFX/rocketTakeOff.wav,
+				View/BackgroundNode.swift,
+				View/ContentView.swift,
+				View/galaxyGameView.swift,
+				View/GameOverView.swift,
+				View/GameViewController.swift,
+				View/MainMenuView.swift,
+				View/SettingsView.swift,
+			);
+			target = 7C74B96C2E1FA43000659A5B /* MeteorCrush */;
 		};
+		98C2A2AE2E30BF9F004434F0 /* Exceptions for "MeteorCrush" folder in "MeteorCrushUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Assets.xcassets,
+				Class/CollisionHandler.swift,
+				Class/ExplosionEffects.swift,
+				Class/Font.swift,
+				Class/GameScene.swift,
+				Class/Haptic.swift,
+				Class/HUD.swift,
+				Class/Joystick.swift,
+				Class/PhysicsCategory.swift,
+				Class/RocketFire.swift,
+				Class/SFX.swift,
+				"Font/Baloo2-ExtraBold.ttf",
+				Info.plist,
+				MeteorCrushApp.swift,
+				Obstacles/FallingMeteorSpawner.swift,
+				Obstacles/ObstacleSpawner.swift,
+				SFX/collectStar.wav,
+				SFX/gameOver.wav,
+				SFX/incomingMeteor.wav,
+				SFX/rocketTakeOff.wav,
+				View/BackgroundNode.swift,
+				View/ContentView.swift,
+				View/galaxyGameView.swift,
+				View/GameOverView.swift,
+				View/GameViewController.swift,
+				View/MainMenuView.swift,
+				View/SettingsView.swift,
+			);
+			target = 7C74B9832E1FA43100659A5B /* MeteorCrushUITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
 		7C74B97D2E1FA43100659A5B /* MeteorCrushTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MeteorCrushTests;
@@ -43,6 +106,15 @@
 		7C74B9872E1FA43100659A5B /* MeteorCrushUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = MeteorCrushUITests;
+			sourceTree = "<group>";
+		};
+		98C2A2932E30BF9F004434F0 /* MeteorCrush */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				98C2A2AD2E30BF9F004434F0 /* Exceptions for "MeteorCrush" folder in "MeteorCrush" target */,
+				98C2A2AE2E30BF9F004434F0 /* Exceptions for "MeteorCrush" folder in "MeteorCrushUITests" target */,
+			);
+			path = MeteorCrush;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -75,7 +147,7 @@
 		7C74B9642E1FA43000659A5B = {
 			isa = PBXGroup;
 			children = (
-				7C74B96F2E1FA43000659A5B /* MeteorCrush */,
+				98C2A2932E30BF9F004434F0 /* MeteorCrush */,
 				7C74B97D2E1FA43100659A5B /* MeteorCrushTests */,
 				7C74B9872E1FA43100659A5B /* MeteorCrushUITests */,
 				7C74B96E2E1FA43000659A5B /* Products */,
@@ -106,9 +178,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				7C74B96F2E1FA43000659A5B /* MeteorCrush */,
 			);
 			name = MeteorCrush;
 			packageProductDependencies = (
@@ -155,6 +224,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				7C74B9872E1FA43100659A5B /* MeteorCrushUITests */,
+				98C2A2932E30BF9F004434F0 /* MeteorCrush */,
 			);
 			name = MeteorCrushUITests;
 			packageProductDependencies = (
@@ -400,6 +470,7 @@
 				DEVELOPMENT_TEAM = 8GYS2UJJ74;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MeteorCrush/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -429,6 +500,7 @@
 				DEVELOPMENT_TEAM = 8GYS2UJJ74;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MeteorCrush/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

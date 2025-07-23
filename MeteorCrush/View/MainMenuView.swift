@@ -9,10 +9,6 @@
 import SwiftUI
 
 struct MainMenuView: View {
-    @State private var joystickSensitivity: Double = {
-        let value = UserDefaults.standard.double(forKey: "joystickSensitivity")
-        return value == 0 ? 1.0 : value  // nilai default 1.0 kalau belum pernah diset
-    }()
     @State private var showGame = false
     @State private var showLeaderboard = false
     @State private var showSettings = false
@@ -70,6 +66,16 @@ struct MainMenuView: View {
                         .font(.title)
                         .padding()
                 }
+            }
+        }
+        .onAppear()
+        {
+            if UserDefaults.standard.double(forKey: "joystickSensitivity") == nil
+            {
+                UserDefaults.standard.set(1.0, forKey: "joystickSensitivity")
+                UserDefaults.standard.set(false, forKey: "joystickVisibility")
+                UserDefaults.standard.set(true, forKey: "hapticManager")
+                UserDefaults.standard.set(true, forKey: "musicManager")
             }
         }
     }

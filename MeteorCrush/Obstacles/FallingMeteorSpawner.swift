@@ -28,6 +28,7 @@ class FallingMeteorSpawner {
         spawnTimer = Timer.scheduledTimer(withTimeInterval: Double.random(in: 3...5), repeats: true) { [weak self] _ in
             guard let self = self, let gameScene = self.scene as? GameScene else { return }
             if gameScene.isGameOver { return } // ⛔ stop spawn
+            SoundManager.shared.playSFX(named: "incomingMeteor", withExtension: "wav")
             self.spawnMeteor()
         }
     }
@@ -99,4 +100,3 @@ class FallingMeteorSpawner {
         spawnTimer = nil
     }
 }
-

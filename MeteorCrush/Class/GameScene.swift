@@ -36,20 +36,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var isGameOver = false
     
     override func didMove(to view: SKView) {
-<<<<<<< HEAD
-        backgroundColor = .purple
-=======
         let background = BackgroundNode(sceneSize: self.size) // misalnya ini adalah SKSpriteNode
         background.zPosition = -1 // pastikan ada di belakang semua elemen
         background.position = CGPoint(x: size.width / 2, y: size.height / 2)
         addChild(background)
 
         //backgroundColor = .brown
->>>>>>> origin/feature/background
         physicsWorld.gravity = .zero
         physicsWorld.contactDelegate = self
         meteorSpawner = FallingMeteorSpawner(scene: self)
         
+        SoundManager.shared.playSFX(named: "rocketTakeOff", withExtension: "wav")
         setupRocket()
         setupJoystick()
         setupHUD()

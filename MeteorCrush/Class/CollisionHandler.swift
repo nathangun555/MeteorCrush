@@ -39,6 +39,7 @@ struct CollisionHandler {
                 )
                 scene.isGameOver = true
                 scene.isPaused = true
+                scene.meteorSpawner.stopSpawning()
                 
                 let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
                 gameOver.text = "Game Over"
@@ -59,12 +60,13 @@ struct CollisionHandler {
                 name: Notification.Name("GameOver"),
                 object: hud.score
             )
-
+            SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
             vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
                 
                 scene.isGameOver = true
                 scene.isPaused = true
+                scene.meteorSpawner.stopSpawning()
                 
                 let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
                 gameOver.text = "Game Over"
@@ -136,6 +138,7 @@ struct CollisionHandler {
             //            print(rocketColor, starColor)
             if (rocketColor == .red && starColor == .red) || (rocketColor == .green && starColor == .green) || (rocketColor == .blue && starColor == .blue)
             {
+                SoundManager.shared.playSFX(named: "collectStar", withExtension: "wav")
                 hud.score += 5
             } else
             {
