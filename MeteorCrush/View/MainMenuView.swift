@@ -12,56 +12,92 @@ struct MainMenuView: View {
     @State private var showGame = false
     @State private var showLeaderboard = false
     @State private var showSettings = false
+    @State private var rotateRocket = 0.0
+    @State private var meteorSpawner: FallingMeteorSpawner?
 
+    let radius: CGFloat = 270
     var body: some View {
         if showGame {
-            ContentView() // masuk ke game utama
+            ContentView()
         } else {
             ZStack {
-                // Background gradasi ungu
-                LinearGradient(gradient: Gradient(colors: [Color.purple, Color.black]),
-                               startPoint: .top,
-                               endPoint: .bottom)
+                Image("bgHomeScreen")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .clipped()
                     .ignoresSafeArea()
-
-                VStack(spacing: 40) {
+                
+                VStack(spacing: -80) {
                     Spacer()
+                    ZStack {
+                        Image("logo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 300)
+                        
+                        
+                        Image("rocketBlue")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 90, height: 90)
+                            .offset(x: -radius * cos(CGFloat(rotateRocket) * .pi / 180),
+                                    y: radius * sin(CGFloat(rotateRocket) * .pi / 180))
+                            .rotationEffect(.degrees(rotateRocket))
+                    }
                     
-                    // Logo Game
-                    Image("logo") // ganti dengan logo kamu
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 200)
-                        .shadow(radius: 10)
-
+                    
                     Spacer()
                     
                     // Tombol Start
-                    Button(action: {
-                        showGame = true
-                    }) {
-                        menuButtonLabel("🚀 Start Game")
+                    ZStack {
+                        Image("buttonStart")
+                            .resizable()
+                            .scaledToFit()
+                        Button(action: {
+                            showGame = true
+                        }) {
+                            RoundedRectangle(cornerRadius: 100)
+                                .fill(Color.red.opacity(0))
+                                .frame(width: 250, height: 50)
+                        }
                     }
-
+                    
                     // Tombol Leaderboard
-                    Button(action: {
-                        showLeaderboard = true
-                    }) {
-                        menuButtonLabel("🏆 Leaderboard")
+                    ZStack {
+                        Image("buttonLeaderboard")
+                            .resizable()
+                            .scaledToFit()
+                        Button(action: {
+                            showLeaderboard = true
+                        }) {
+                            RoundedRectangle(cornerRadius: 100)
+                                .fill(Color.red.opacity(0))
+                                .frame(width: 250, height: 50)
+                        }
                     }
-
-                    // Tombol Settings
-                    Button(action: {
-                        showSettings = true
-                    }) {
-                        menuButtonLabel("⚙️ Settings")
+                    ZStack {
+                        Image("buttonSettings")
+                            .resizable()
+                            .scaledToFit()
+                        Button(action: {
+                            showSettings = true
+                        }) {
+                            RoundedRectangle(cornerRadius: 100)
+                                .fill(Color.red.opacity(0))
+                                .frame(width: 250, height: 50)
+                        }
                     }
-
-                    Spacer()
+                    
                 }
                 .padding()
+                .padding(.bottom, 10)
+                .onAppear {
+                    withAnimation(.linear(duration: 6).repeatForever(autoreverses: false)) {
+                        rotateRocket = 360
+                    }
+                }
             }
-            // Optional: pop-up dummy buat leaderboard & setting
             .sheet(isPresented: $showLeaderboard) {
                 Text("Leaderboard View (coming soon)")
                     .font(.title)
@@ -74,16 +110,10 @@ struct MainMenuView: View {
             }
         }
     }
-
-    // Komponen tombol reusable
-    func menuButtonLabel(_ title: String) -> some View {
-        Text(title)
-            .font(.title2)
-            .fontWeight(.semibold)
-            .foregroundColor(.white)
-            .frame(width: 250, height: 50)
-            .background(Color.blue.opacity(0.8))
-            .cornerRadius(15)
-            .shadow(color: .white.opacity(0.3), radius: 5, x: 0, y: 3)
-    }
 }
+
+#Preview {
+    MainMenuView()
+}
+
+

@@ -31,7 +31,7 @@ class TutorialOverlay {
             let handTexture = SKTexture(image: handImage)
             let handSprite = SKSpriteNode(texture: handTexture)
             handSprite.position = CGPoint(x: scene.size.width / 3, y: scene.size.height / 8)
-            handSprite.zPosition = 102
+            handSprite.zPosition = 999
             scene.addChild(handSprite)
             handSprite.setScale(0.07)
             handSprite.alpha = 0.7

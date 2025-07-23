@@ -8,6 +8,7 @@
 import SpriteKit
 
 struct ObstacleSpawner {
+    
     static func spawnPlanet(in scene: SKScene, atY y: CGFloat) {
             let planet = SKSpriteNode(imageNamed: "planet")
             let randomSize = CGFloat.random(in: 150...300)
@@ -104,37 +105,74 @@ struct ObstacleSpawner {
         scene.addChild(star)
     }
     static func spawnFuel(in scene: SKScene, atY y: CGFloat) {
-        let pickup = SKSpriteNode(imageNamed: "fuel")
-        pickup.size = CGSize(width: 50, height: 50)
-        let halfW = pickup.size.width/2
-        pickup.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
+        let fuelColors = ["fuel10", "fuel20", "fuel30", "fuel40"]
+        let fuelPicker = fuelColors.randomElement()!
+        let pickup = SKSpriteNode(imageNamed: fuelPicker)
+        pickup.size = CGSize(width: 200, height: 200)
+
+        // Assign the fuel value based on the name of the image
+        let fuelValue: Int
+        switch fuelPicker {
+        case "fuel10":
+            fuelValue = 10
+        case "fuel20":
+            fuelValue = 20
+        case "fuel30":
+            fuelValue = 30
+        case "fuel40":
+            fuelValue = 40
+        default:
+            fuelValue = 0
+        }
+
+        // Store the fuel value in the user data
+        pickup.userData = ["fuelValue": fuelValue]
+
+        let halfW = pickup.size.width / 2
+        pickup.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width - halfW)), y: y)
         pickup.zPosition = 5
         pickup.blendMode = .alpha
-        pickup.physicsBody = SKPhysicsBody(circleOfRadius: halfW)
+
+        // Setup physics body
+        pickup.physicsBody = SKPhysicsBody(circleOfRadius: halfW/3.5)
         pickup.physicsBody?.categoryBitMask = PhysicsCategory.Fuel
         pickup.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
         pickup.physicsBody?.collisionBitMask = PhysicsCategory.None
         pickup.physicsBody?.affectedByGravity = false
+
+        // Collision circle (for debugging or visual purposes)
+        let collisionCircle = SKShapeNode(circleOfRadius: halfW/3.5 )
+        collisionCircle.position = .zero
+        collisionCircle.strokeColor = .yellow
+        collisionCircle.lineWidth = 2
+        collisionCircle.fillColor = .clear
+        collisionCircle.zPosition = -1
+        pickup.addChild(collisionCircle)
+
+        // Check for collisions with planets
         if let gs = scene as? GameScene {
             let planetPadding: CGFloat = 30
             for planet in gs.planets {
-                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
-                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
-                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
-                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
-                
-                if(pickup.position.x > lowBoundX && pickup.position.x < highBoundX){
+                let lowBoundX = planet.position.x - planet.size.width / 2 - planetPadding
+                let highBoundX = planet.position.x + planet.size.width / 2 + planetPadding
+                let lowBoundY = planet.position.y - planet.size.height / 2 - planetPadding
+                let highBoundY = planet.position.y + planet.size.height / 2 + planetPadding
+
+                if pickup.position.x > lowBoundX && pickup.position.x < highBoundX {
                     pickup.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
                 }
-                
-                if(pickup.position.y > lowBoundY && pickup.position.y < highBoundY){
+
+                if pickup.position.y > lowBoundY && pickup.position.y < highBoundY {
                     pickup.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
                 }
             }
             gs.fuels.append(pickup)
         }
+
         scene.addChild(pickup)
     }
+
+
     static func spawnGate(in scene: SKScene, atY y: CGFloat) {
         let gate = SKSpriteNode(imageNamed: "whiteGate")
         let colors: [SKColor] = [.red, .green, .blue]

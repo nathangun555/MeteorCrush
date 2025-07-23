@@ -57,14 +57,18 @@ struct CollisionHandler {
             hud.starCount = scene.stars.count
         case PhysicsCategory.Fuel:
             guard let starNode = other.node, starNode.parent != nil else { return }
-            hud.fuel = min(hud.fuel + 20, 100)
+            if let fuelValue = (starNode as? SKSpriteNode)?.userData?["fuelValue"] as? Int {
+
+                hud.fuel = min(hud.fuel + CGFloat(fuelValue), 100)
+                print("New fuel level: \(hud.fuel)")
+            }
             other.node?.removeFromParent()
-            let index = scene.fuels.firstIndex(where: {$0 === other.node}) ?? -1
-            if(index >= 0){
+            if let index = scene.fuels.firstIndex(where: { $0 === other.node }) {
                 scene.fuels.remove(at: index)
             }
             let fuelNewY = scene.size.height * 1 + 200
             ObstacleSpawner.spawnFuel(in: scene, atY: fuelNewY)
+
         case PhysicsCategory.redGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketRed")
             scene.rocket.color = .red
