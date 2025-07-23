@@ -96,6 +96,7 @@ class FallingMeteorSpawner {
 
 
     func stopSpawning() {
+        print("stop")
         spawnTimer?.invalidate()
         spawnTimer = nil
     }
