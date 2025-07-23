@@ -9,9 +9,16 @@ import SwiftUI
 
 @main
 struct MeteorCrushApp: App {
+    @StateObject private var userData = UserData()
+
     var body: some Scene {
         WindowGroup {
+<<<<<<< Updated upstream
             ContentView()
+=======
+            UsernameEntryView()
+                .environmentObject(userData)
+>>>>>>> Stashed changes
         }
     }
 }
