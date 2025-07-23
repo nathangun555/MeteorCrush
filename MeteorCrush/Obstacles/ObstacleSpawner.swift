@@ -60,7 +60,10 @@ struct ObstacleSpawner {
     }
     
     static func spawnPlanet(in scene: SKScene, atY y: CGFloat, index: Int) {
-            let planet = SKSpriteNode(imageNamed: "planet")
+        let planets = [SKSpriteNode(imageNamed: "planet1"), SKSpriteNode(imageNamed: "planet2"), SKSpriteNode(imageNamed: "planet3"), SKSpriteNode(imageNamed: "planet4"), SKSpriteNode(imageNamed: "planet5")]
+        let planetPicker = planets.randomElement()!
+
+            let planet = planetPicker
             let randomSize = 500.0
             planet.size = CGSize(width: randomSize, height: randomSize)
             let halfW = planet.size.width / 2
