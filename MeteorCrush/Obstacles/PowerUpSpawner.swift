@@ -17,21 +17,22 @@ struct PowerUpSpawner {
     var lastSpawnTime: Int = 0
     
     static func spawnPowerup(in scene: GameScene, y: CGFloat) {
-        let powerUpType: PowerupType = Bool.random() ? .doubleScore : .doubleScore
+        let powerUpType: PowerupType = Bool.random() ? .doubleScore : .shield
 
         let powerup = SKSpriteNode(imageNamed: powerUpType == .doubleScore ? "powerUp2x" : "powerUpShield")
         let diameter = 200.0
         powerup.size = CGSize(width: diameter, height: diameter)
         powerup.position = CGPoint(x: CGFloat.random(in: 0...(scene.size.width)), y: y)
         powerup.zPosition = 5
-        powerup.userData = ["type": powerUpType.rawValue] // ✅ Store string only
+        powerup.userData = ["type": powerUpType.rawValue]
         
-        let body = SKPhysicsBody(circleOfRadius: diameter / 2)
+        let body = SKPhysicsBody(circleOfRadius: diameter / 6)
+        body.isDynamic = false
         body.categoryBitMask = PhysicsCategory.powerUp
         body.contactTestBitMask = PhysicsCategory.Rocket
         body.collisionBitMask = PhysicsCategory.None
         powerup.physicsBody = body
-
+    
         scene.powerups.append(powerup)
         scene.addChild(powerup)
 
@@ -52,6 +53,12 @@ struct PowerUpSpawner {
             if powerup.position.y < offscreenY {
                 scene.powerups.removeAll { $0 === powerup }
             }
+        }
+    }
+    
+    static func refreshPowerup(in scene: GameScene) {
+        if(scene.isShield) {
+            scene.shieldTimer
         }
     }
 }

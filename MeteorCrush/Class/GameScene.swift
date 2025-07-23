@@ -25,6 +25,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var isShield: Bool = false
     var multiplier: Int = 1
     var isDoublePoint: Bool = false
+    var multiplierTimer: CGFloat = 0
+    var shieldTimer: CGFloat = 0
 
     
     private var planetCount = 4
@@ -66,25 +68,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 // 3 (opsional) panggil gameOver sequence/method
                 isGameOver = true
             }
-            if self.distance > 1 {
-                self.isPowerupSpawned = true
-            }
         }
         let wait = SKAction.wait(forDuration: 0.2)
         let sequence = SKAction.sequence([wait, consume])
         let repeatForever = SKAction.repeatForever(sequence)
         run(repeatForever, withKey: "fuelTimer")
+        
+        let powerupAction = SKAction.run { [weak self] in
+            guard let self = self, !self.isGameOver else { return }
+            
+            if(self.isShield) { self.shieldTimer -= 0.1; print("Shield time : \(self.shieldTimer)") }
+            if(self.isDoublePoint) { self.multiplierTimer -= 0.1; print("Multiplier time : \(self.multiplierTimer)") }
+            
+            if(self.shieldTimer <= 0) { self.isShield = false }
+            if(self.multiplierTimer <= 0) { self.isDoublePoint = false; self.multiplier = 1 }
+        }
+        
+        let powerupWait = SKAction.wait(forDuration: 0.1)
+        let powerupSequence = SKAction.sequence([powerupWait, powerupAction])
+        run(SKAction.repeatForever(powerupSequence), withKey: "powerupTimer")
     }
     
     private func setupRocket() {
-        let randomRocket = ["rocketPink", "rocketGreen", "rocketBlue"]
+        let randomRocket = ["rocketRed", "rocketGreen", "rocketBlue"]
         let rocketPicker = randomRocket.randomElement()!
         rocket = SKSpriteNode(imageNamed: rocketPicker)
         rocket.size = CGSize(width: 100, height: 100)
         rocketY = size.height / 4
         rocket.position = CGPoint(x: size.width/2, y: rocketY)
         rocket.zPosition = 10
-        if rocketPicker == "rocketPink" {
+        if rocketPicker == "rocketRed" {
             rocket.color = .red
         } else  if rocketPicker == "rocketGreen" {
             rocket.color = .green
@@ -166,6 +179,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hud.updateLabels()
         ObstacleSpawner.recycleOffscreen(in: self, speed: scrollSpeed)
         PowerUpSpawner.recyclePowerup(in: self, speed: scrollSpeed)
+        PowerUpSpawner.refreshPowerup(in: self)
         
     }
     
