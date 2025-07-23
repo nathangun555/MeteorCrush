@@ -90,6 +90,7 @@ struct CollisionHandler {
              case "doubleScore":
                  print("Double score active!")
                  scene.multiplier = 2
+                 scene.isDoublePoint = true
                  scene.multiplierTimer = 10
                 
              default:

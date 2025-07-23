@@ -177,9 +177,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         joystick.updateRocket(rocket, fuel: &hud.fuel, rocketY: &rocketY) // bensinnya berkurang
         updateFireEffect()
         hud.updateLabels()
+        hud.updatePowerupState(in: self)
         ObstacleSpawner.recycleOffscreen(in: self, speed: scrollSpeed)
         PowerUpSpawner.recyclePowerup(in: self, speed: scrollSpeed)
-        PowerUpSpawner.refreshPowerup(in: self)
         
     }
     

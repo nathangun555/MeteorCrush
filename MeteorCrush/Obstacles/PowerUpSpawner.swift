@@ -55,10 +55,4 @@ struct PowerUpSpawner {
             }
         }
     }
-    
-    static func refreshPowerup(in scene: GameScene) {
-        if(scene.isShield) {
-            scene.shieldTimer
-        }
-    }
 }
