@@ -60,14 +60,14 @@ struct CollisionHandler {
                 name: Notification.Name("GameOver"),
                 object: hud.score
             )
-            SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
+            
             vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
                 
                 scene.isGameOver = true
                 scene.isPaused = true
-                scene.meteorSpawner.stopSpawning()
-                
+               scene.meteorSpawner.stopSpawning()
+
                 let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
                 gameOver.text = "Game Over"
                 gameOver.fontSize = 48
@@ -83,7 +83,7 @@ struct CollisionHandler {
                 name: Notification.Name("GameOver"),
                 object: hud.score
             )
-            SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
+           // SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
             vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
                 

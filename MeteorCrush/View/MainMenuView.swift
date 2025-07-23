@@ -39,6 +39,7 @@ struct MainMenuView: View {
                         
                         // Tombol Start
                         Button(action: {
+                            SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
                             showGame = true
                         }) {
                             menuButtonLabel("🚀 Start Game")
@@ -46,15 +47,24 @@ struct MainMenuView: View {
                         
                         // Tombol Leaderboard
                         Button(action: {
+                            SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
                             showLeaderboard = true
                         }) {
                             menuButtonLabel("🏆 Leaderboard")
                         }
                         
                         // Tombol Settings
-                        NavigationLink(destination: SettingsView()) {
-                            menuButtonLabel("⚙️ Settings")
-                        }
+                        Button(action: {
+                                   SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
+                            showSettings = true
+                               }) {
+                                   menuButtonLabel("⚙️ Settings")
+                               }
+
+                               NavigationLink(destination: SettingsView(), isActive: $showSettings) {
+                                   EmptyView()
+                               }
+
                         
                         Spacer()
                     }
@@ -70,6 +80,7 @@ struct MainMenuView: View {
         }
         .onAppear()
         {
+            SoundManager.shared.playLobbyMusic()
             if UserDefaults.standard.double(forKey: "joystickSensitivity") == nil
             {
                 UserDefaults.standard.set(1.0, forKey: "joystickSensitivity")

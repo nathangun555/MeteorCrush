@@ -96,6 +96,7 @@ struct SettingsView: View {
                             }
                         )
                     Button(action: {
+                        SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
                                     dismiss()
                                 }) {
                                     Text("Back")

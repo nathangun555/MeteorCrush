@@ -54,6 +54,14 @@ struct GameOverView: View {
         .background(Color.white)
         .cornerRadius(20)
         .shadow(radius: 10)
+        
+        .onAppear {
+            SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                SoundManager.shared.stopAllSounds()
+            }
+        }
     }
 }
 
