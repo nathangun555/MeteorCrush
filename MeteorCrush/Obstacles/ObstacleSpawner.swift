@@ -41,30 +41,77 @@ struct ObstacleSpawner {
 //        }
 //        scene.addChild(planet)
 //    }
-    static func spawnPlanet(in scene: SKScene, atY y: CGFloat) {
-        let planet = SKSpriteNode(imageNamed: "planet")
-        let randomSize = CGFloat.random(in: 150...300)
-        planet.size = CGSize(width: randomSize, height: randomSize)
-        let halfW = planet.size.width / 2
-        let maxOutsideFraction: CGFloat = 0.3
-        let offset = planet.size.width * maxOutsideFraction
+    static func getPlanetXPos(scene: SKScene, planet: SKSpriteNode, index: Int) -> CGFloat {
+        var upperBoundX: CGFloat = 0.0, lowerBoundX: CGFloat = 0.0
+        let planetPosType = index % 2
+        if planetPosType == 0 {
+            // 0 = kanan
+            upperBoundX = scene.size.width + planet.size.width / 2 - 100
+            lowerBoundX = scene.size.width
+            print("Kanan")
+        }else if(planetPosType == 1){
+            // 1 = kiri
+            lowerBoundX = -planet.size.width / 2 + 100
+            upperBoundX = 0.0
+            print("Kiri")
+        }
+        
+        return CGFloat.random(in: lowerBoundX...upperBoundX)
+    }
+    
+    static func spawnPlanet(in scene: SKScene, atY y: CGFloat, index: Int) {
+        let planets = [SKSpriteNode(imageNamed: "planet1"), SKSpriteNode(imageNamed: "planet2"), SKSpriteNode(imageNamed: "planet3"), SKSpriteNode(imageNamed: "planet4"), SKSpriteNode(imageNamed: "planet5")]
+        let planetPicker = planets.randomElement()!
 
-        let newX = CGFloat.random(in: -offset...(scene.size.width + offset))
-        let newY = y
+            let planet = planetPicker
+            let randomSize = 500.0
+            planet.size = CGSize(width: randomSize, height: randomSize)
+            let halfW = planet.size.width / 2
+        
+        let newX = getPlanetXPos(scene: scene, planet: planet, index: index)
+            let newY = y
 
-        // ➤ Cek jarak dengan planet yang sudah ada
-        if let gs = scene as? GameScene {
-            let minHorizontalGap: CGFloat = 2
-            let minVerticalGap: CGFloat = 5
+            // ➤ Cek jarak dengan planet yang sudah ada
+//            if let gs = scene as? GameScene {
+//                let minHorizontalGap: CGFloat = 2
+//                let minVerticalGap: CGFloat = 5
+//
+//                for existing in gs.planets {
+//                    let dx = abs(existing.position.x - newX)
+//                    let dy = abs(existing.position.y - newY)
+//                    if dx < minHorizontalGap && dy < minVerticalGap {
+//                        // terlalu dekat, batal spawn
+//                        return
+//                    }
+//                }
+//            }
 
-            for existing in gs.planets {
-                let dx = abs(existing.position.x - newX)
-                let dy = abs(existing.position.y - newY)
-                if dx < minHorizontalGap && dy < minVerticalGap {
-                    // terlalu dekat, batal spawn
-                    return
-                }
+            planet.position = CGPoint(x: newX, y: newY)
+            planet.zPosition = 5
+            print(newX, newY)
+
+            let collisionRadius = halfW / 1.5
+            let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
+            collisionCircle.position    = .zero
+            collisionCircle.strokeColor = .yellow
+            collisionCircle.lineWidth   = 2
+            collisionCircle.fillColor   = .clear
+            collisionCircle.zPosition   = -1
+
+            let body = SKPhysicsBody(circleOfRadius: collisionRadius)
+            body.isDynamic = false
+            body.categoryBitMask = PhysicsCategory.Planet
+            body.contactTestBitMask = PhysicsCategory.Rocket
+            body.collisionBitMask = PhysicsCategory.None
+            collisionCircle.physicsBody = body
+
+            planet.addChild(collisionCircle)
+
+            if let gs = scene as? GameScene {
+                gs.planets.append(planet)
             }
+
+            scene.addChild(planet)
         }
 
         planet.position = CGPoint(x: newX, y: newY)
@@ -218,10 +265,15 @@ struct ObstacleSpawner {
     
     static func recycleOffscreen(in scene: GameScene, speed: CGFloat) {
         let offscreenY: CGFloat = -100, topY: CGFloat = scene.size.height + 10
-        scene.planets.forEach { p in
-            if p.position.y < offscreenY {
+        scene.planets.enumerated().forEach { pIdx, p in
+            if p.position.y / 2 < -p.size.height / 2 {
+                print("Planet passed")
                 p.position.y = topY + CGFloat.random(in: 0...200)
-                p.position.x = CGFloat.random(in: p.size.width/2...(scene.size.width-p.size.width/2))
+                p.position.x = getPlanetXPos(scene: scene, planet: p, index: pIdx)
+//                scene.planets.removeLast(1)
+//                print("Before \(scene.planets.count)")
+//                spawnPlanet(in: scene, atY: topY + 200)
+//                print("After ")
             }
         }
         scene.stars.forEach { s in
