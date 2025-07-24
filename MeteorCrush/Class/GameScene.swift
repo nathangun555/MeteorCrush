@@ -94,8 +94,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     object: hud.score
                 )
                 self.removeAction(forKey: "fuelTimer")
-                
                 isGameOver = true
+                isPaused = true
             }
         }
         

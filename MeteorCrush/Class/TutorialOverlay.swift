@@ -14,11 +14,13 @@ class TutorialOverlay {
     private var hand: SKSpriteNode!
 
     init(scene: SKScene) {
+        // Latar belakang tutorial
         tutorialBackground = SKSpriteNode(color: .gray, size: CGSize(width: scene.size.width * 2, height: scene.size.height / 1.5))
         tutorialBackground.alpha = 0.5
         tutorialBackground.zPosition = 100
         scene.addChild(tutorialBackground)
 
+        // Tutorial label
         tutorialLabel = SKLabelNode(text: "Swipe to move the rocket!")
         tutorialLabel.fontColor = .white
         tutorialLabel.fontSize = 30
@@ -27,11 +29,12 @@ class TutorialOverlay {
         tutorialLabel.zPosition = 101
         scene.addChild(tutorialLabel)
 
+        // Menambahkan gambar tangan
         if let handImage = UIImage(named: "hand") {
             let handTexture = SKTexture(image: handImage)
             let handSprite = SKSpriteNode(texture: handTexture)
             handSprite.position = CGPoint(x: scene.size.width / 3, y: scene.size.height / 8)
-            handSprite.zPosition = 999
+            handSprite.zPosition = 102
             scene.addChild(handSprite)
             handSprite.setScale(0.07)
             handSprite.alpha = 0.7

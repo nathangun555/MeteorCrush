@@ -46,7 +46,7 @@ struct RocketFire {
         var newLevel = 0
         var firePrefix = ""
         var fireSize = CGSize(width: 40, height: 100)
-        var fireOffsetY: CGFloat = -rocketSize.height / 1.05
+        var fireOffsetY: CGFloat = -rocketSize.height / 1
 
         switch fuel {
         case 75...100:
