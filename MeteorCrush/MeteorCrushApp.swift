@@ -7,11 +7,22 @@
 
 import SwiftUI
 
+class UserData: ObservableObject {
+    @Published var username: String = ""
+}
+
 @main
 struct MeteorCrushApp: App {
+    @StateObject private var userData = UserData()
+
     var body: some Scene {
         WindowGroup {
-           MainMenuView()
+            MainMenuView().environmentObject(userData)
+
+// <<<<<<< Updated upstream
+//             ContentView()
+// =======
+//             UsernameEntryView()
         }
     }
 }
