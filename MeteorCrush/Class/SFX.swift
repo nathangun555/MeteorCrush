@@ -13,6 +13,8 @@ class SoundManager {
     private var musicPlayer: AVAudioPlayer?
     private var sfxPlayer: AVAudioPlayer?
     private var collectStar: AVAudioPlayer?
+    private var wrongStar: AVAudioPlayer?
+
     
     var playSound = true
     func playSFX(named fileName: String, withExtension ext: String = "mp3") {
@@ -25,9 +27,17 @@ class SoundManager {
             do {
                 if fileName == "collectStar"{
                     collectStar = try AVAudioPlayer(contentsOf: url)
+                    musicPlayer?.volume = 0.4
                     collectStar?.prepareToPlay()
                     collectStar?.play()
-                } else {
+                } else if fileName == "wrongStar"
+                {
+                    wrongStar = try AVAudioPlayer(contentsOf: url)
+                    musicPlayer?.volume = 0.4
+                    wrongStar?.prepareToPlay()
+                    wrongStar?.play()
+                }
+                else {
                     sfxPlayer = try AVAudioPlayer(contentsOf: url)
                     sfxPlayer?.prepareToPlay()
                     sfxPlayer?.play()

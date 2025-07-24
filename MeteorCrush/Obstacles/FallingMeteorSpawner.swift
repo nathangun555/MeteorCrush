@@ -29,7 +29,10 @@ class FallingMeteorSpawner {
             guard let self = self, let gameScene = self.scene as? GameScene else { return }
             if gameScene.isGameOver { return } // ⛔ stop spawn
             SoundManager.shared.playSFX(named: "incomingMeteor", withExtension: "wav")
-            self.spawnMeteor()
+                // kasih delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.spawnMeteor()
+            }
         }
     }
     private func spawnMeteor() {

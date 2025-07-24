@@ -175,6 +175,7 @@ struct CollisionHandler {
             } else
             {
                 if hud.score > 0{
+                    SoundManager.shared.playSFX(named: "wrongStar", withExtension: "wav")
                     hud.score -= 1
                 }
             }
