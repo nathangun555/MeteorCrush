@@ -1,11 +1,11 @@
 {
   "images" : [
     {
+      "filename" : "buttonLeaderboard.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "rocketGreen@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },

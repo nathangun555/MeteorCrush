@@ -64,7 +64,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             guard let self = self, !self.isGameOver else { return }
             self.hud.fuel -= 1
             self.distance += 1
-//            print(self.distance)
+            //            print(self.distance)
             if(self.distance % 5*5 == 0){
                 self.scrollSpeed += 0.1
                 // background speed controller
@@ -135,7 +135,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func setupRocket() {
-        let randomRocket = ["rocketPink", "rocketGreen", "rocketBlue"]
+        let randomRocket = ["rocketRed", "rocketGreen", "rocketBlue"]
         let rocketPicker = randomRocket.randomElement()!
         rocket = SKSpriteNode(imageNamed: rocketPicker)
         rocket.size = CGSize(width: 100, height: 100)

@@ -36,9 +36,8 @@ class FallingMeteorSpawner {
         
         let meteor = SKSpriteNode(texture: textures[0])
         meteor.size = CGSize(width: 40, height: 250)
-        meteor.zPosition = 999
+        meteor.zPosition = 1
 
-        // Visual debug
         meteor.color = .red
         meteor.colorBlendFactor = 0.0
         meteor.alpha = 1
@@ -47,7 +46,6 @@ class FallingMeteorSpawner {
         let ballRadius: CGFloat = 13
         let offsetY = -meteor.size.height / 2 + ballRadius + 5
 
-        // Physics body khusus bola depan
         meteor.physicsBody = SKPhysicsBody(circleOfRadius: ballRadius, center: CGPoint(x: 0, y: offsetY))
         meteor.physicsBody?.categoryBitMask = PhysicsCategory.Meteor
         meteor.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
@@ -60,7 +58,7 @@ class FallingMeteorSpawner {
         debugCircle.strokeColor = .green
         debugCircle.lineWidth = 2
         debugCircle.position = CGPoint(x: 0, y: offsetY)
-        debugCircle.zPosition = 1000
+        debugCircle.zPosition = -1
         meteor.addChild(debugCircle)
 
 

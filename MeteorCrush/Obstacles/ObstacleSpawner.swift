@@ -63,13 +63,13 @@ struct ObstacleSpawner {
         let planets = [SKSpriteNode(imageNamed: "planet1"), SKSpriteNode(imageNamed: "planet2"), SKSpriteNode(imageNamed: "planet3"), SKSpriteNode(imageNamed: "planet4"), SKSpriteNode(imageNamed: "planet5")]
         let planetPicker = planets.randomElement()!
 
-            let planet = planetPicker
-            let randomSize = 500.0
-            planet.size = CGSize(width: randomSize, height: randomSize)
-            let halfW = planet.size.width / 2
+        let planet = planetPicker
+        let randomSize = 500.0
+        planet.size = CGSize(width: randomSize, height: randomSize)
+        let halfW = planet.size.width / 2
         
         let newX = getPlanetXPos(scene: scene, planet: planet, index: index)
-            let newY = y
+        let newY = y
 
             // ➤ Cek jarak dengan planet yang sudah ada
 //            if let gs = scene as? GameScene {
@@ -114,35 +114,8 @@ struct ObstacleSpawner {
             scene.addChild(planet)
         }
 
-        planet.position = CGPoint(x: newX, y: newY)
-        planet.zPosition = 5
-
-        let collisionRadius = halfW / 1.5
-        let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
-        collisionCircle.position    = .zero
-        collisionCircle.strokeColor = .yellow
-        collisionCircle.lineWidth   = 2
-        collisionCircle.fillColor   = .clear
-        collisionCircle.zPosition   = -1
-
-        let body = SKPhysicsBody(circleOfRadius: collisionRadius)
-        body.isDynamic = false
-        body.categoryBitMask = PhysicsCategory.Planet
-        body.contactTestBitMask = PhysicsCategory.Rocket
-        body.collisionBitMask = PhysicsCategory.None
-        collisionCircle.physicsBody = body
-
-        planet.addChild(collisionCircle)
-
-        if let gs = scene as? GameScene {
-            gs.planets.append(planet)
-        }
-
-        scene.addChild(planet)
-    }
-
     static func spawnStar(in scene: SKScene, atY y: CGFloat) {
-        let starColors = ["redStar", "greenStar", "blueStar"]
+        let starColors = ["starRed", "starBlue", "starGreen"]
         let starPicker = starColors.randomElement()!
         let star = SKSpriteNode(imageNamed: starPicker)
         star.size = CGSize(width: 50, height: 50)
@@ -151,10 +124,10 @@ struct ObstacleSpawner {
         star.zPosition = 5
         star.blendMode = .alpha
         star.physicsBody = SKPhysicsBody(circleOfRadius: halfW)
-        if starPicker == "redStar"
+        if starPicker == "starRed"
         {
             star.physicsBody?.categoryBitMask = PhysicsCategory.redStar
-        } else if starPicker == "greenStar"
+        } else if starPicker == "starBlue"
         {
             star.physicsBody?.categoryBitMask = PhysicsCategory.greenStar
         } else
@@ -185,37 +158,74 @@ struct ObstacleSpawner {
         scene.addChild(star)
     }
     static func spawnFuel(in scene: SKScene, atY y: CGFloat) {
-        let pickup = SKSpriteNode(imageNamed: "fuel")
-        pickup.size = CGSize(width: 50, height: 50)
-        let halfW = pickup.size.width/2
-        pickup.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
+        let fuelColors = ["fuel10", "fuel20", "fuel30", "fuel40"]
+        let fuelPicker = fuelColors.randomElement()!
+        let pickup = SKSpriteNode(imageNamed: fuelPicker)
+        pickup.size = CGSize(width: 200, height: 200)
+
+        // Assign the fuel value based on the name of the image
+        let fuelValue: Int
+        switch fuelPicker {
+        case "fuel10":
+            fuelValue = 10
+        case "fuel20":
+            fuelValue = 20
+        case "fuel30":
+            fuelValue = 30
+        case "fuel40":
+            fuelValue = 40
+        default:
+            fuelValue = 0
+        }
+
+        // Store the fuel value in the user data
+        pickup.userData = ["fuelValue": fuelValue]
+
+        let halfW = pickup.size.width / 2
+        pickup.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width - halfW)), y: y)
         pickup.zPosition = 5
         pickup.blendMode = .alpha
-        pickup.physicsBody = SKPhysicsBody(circleOfRadius: halfW)
+
+        // Setup physics body
+        pickup.physicsBody = SKPhysicsBody(circleOfRadius: halfW/3.5)
         pickup.physicsBody?.categoryBitMask = PhysicsCategory.Fuel
         pickup.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
         pickup.physicsBody?.collisionBitMask = PhysicsCategory.None
         pickup.physicsBody?.affectedByGravity = false
+
+        // Collision circle (for debugging or visual purposes)
+        let collisionCircle = SKShapeNode(circleOfRadius: halfW/3.5 )
+        collisionCircle.position = .zero
+        collisionCircle.strokeColor = .yellow
+        collisionCircle.lineWidth = 2
+        collisionCircle.fillColor = .clear
+        collisionCircle.zPosition = -1
+        pickup.addChild(collisionCircle)
+
+        // Check for collisions with planets
         if let gs = scene as? GameScene {
             let planetPadding: CGFloat = 30
             for planet in gs.planets {
-                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
-                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
-                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
-                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
-                
-                if(pickup.position.x > lowBoundX && pickup.position.x < highBoundX){
+                let lowBoundX = planet.position.x - planet.size.width / 2 - planetPadding
+                let highBoundX = planet.position.x + planet.size.width / 2 + planetPadding
+                let lowBoundY = planet.position.y - planet.size.height / 2 - planetPadding
+                let highBoundY = planet.position.y + planet.size.height / 2 + planetPadding
+
+                if pickup.position.x > lowBoundX && pickup.position.x < highBoundX {
                     pickup.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
                 }
-                
-                if(pickup.position.y > lowBoundY && pickup.position.y < highBoundY){
+
+                if pickup.position.y > lowBoundY && pickup.position.y < highBoundY {
                     pickup.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
                 }
             }
             gs.fuels.append(pickup)
         }
+
         scene.addChild(pickup)
     }
+
+
     static func spawnGate(in scene: SKScene, atY y: CGFloat) {
         let gate = SKSpriteNode(imageNamed: "whiteGate")
         let colors: [SKColor] = [.red, .green, .blue]
@@ -299,7 +309,6 @@ struct ObstacleSpawner {
             if g.position.y < offscreenY {
                 scene.gate.removeAll()
                 spawnGate(in: scene, atY: topY + CGFloat.random(in: 0...200))
-//                g.position.x = CGFloat.random(in: g.size.width/2...(scene.size.width-g.size.width/2))
             }
         }
     }
