@@ -63,29 +63,10 @@ struct CollisionHandler {
                 
                 scene.isGameOver = true
                 scene.isPaused = true
-                
-                let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
-                gameOver.text = "Game Over"
-                gameOver.fontSize = 48
-                gameOver.position = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
-                gameOver.zPosition = 1000
-                scene.addChild(gameOver)
+            
             }
             return
-            //                        scene.isGameOver = true
-            //                        scene.isPaused = true
-            //
-            //                        NotificationCenter.default.post(
-            //                            name: Notification.Name("GameOver"),
-            //                            object: hud.score
-            //                        )
-            //
-            //                        let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
-            //                        gameOver.text = "Game Over"
-            //                        gameOver.fontSize = 48
-            //                        gameOver.position = CGPoint(x: scene.size.width/2, y: scene.size.height/2)
-            //                        scene.addChild(gameOver)
-            
+      
         case PhysicsCategory.redStar:
             guard var starNode = other.node, starNode.parent != nil else { return }
             starScoring(scene.rocket.color, .red)
@@ -113,7 +94,7 @@ struct CollisionHandler {
             let fuelNewY = scene.size.height * 1 + 200
             ObstacleSpawner.spawnFuel(in: scene, atY: fuelNewY)
         case PhysicsCategory.redGate:
-            scene.rocket.texture = SKTexture(imageNamed: "rocketPink")
+            scene.rocket.texture = SKTexture(imageNamed: "rocketRed")
             scene.rocket.color = .red
             scene.rocket.colorBlendFactor = 0
             //            print("lewat pink")

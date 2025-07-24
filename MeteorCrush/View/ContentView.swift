@@ -28,7 +28,6 @@ struct ContentView: View {
             if backToMenu {
                 MainMenuView()
             } else {
-                
                 SpriteView(scene: scene)
                     .id(sceneID)
                     .ignoresSafeArea()
