@@ -16,7 +16,7 @@ struct ContentView: View {
     @State private var backToMenu = false
 
     @StateObject private var leaderboardModel = LeaderboardModel() // ✅
-    @EnvironmentObject var userData: UserData                      // ✅
+                
 
     private var scene: SKScene {
         let scene = GameScene(size: UIScreen.main.bounds.size)
@@ -47,7 +47,6 @@ struct ContentView: View {
 
                 if isGameOver {
                     GameOverView(
-                        leaderboardModel: leaderboardModel, // 🔁 moved to the top
                         currentScore: currentScore,
                         bestScore: bestScore,
                         onPlayAgain: {
@@ -58,7 +57,7 @@ struct ContentView: View {
                             backToMenu = true
                         }
                     )
-                    .environmentObject(userData)
+                   
                 }
             }
         }

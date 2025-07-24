@@ -9,12 +9,10 @@ import SwiftUI
 
 @main
 struct MeteorCrushApp: App {
-    @StateObject private var userData = UserData()
 
     var body: some Scene {
         WindowGroup {
-            UsernameEntryView()
-                .environmentObject(userData)
+           MainMenuView()
         }
     }
 }
