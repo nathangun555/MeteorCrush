@@ -5,13 +5,6 @@
 //  Created by Nathan Gunawan on 23/07/25.
 //
 
-//
-//  UserEntryView.swift
-//  MeteorCrush
-//
-//  Created by Nathan Gunawan on 23/07/25.
-//
-
 import SwiftUI
 
 struct UsernameEntryView: View {
@@ -81,5 +74,6 @@ struct UsernameEntryView: View {
 
 
 #Preview {
-    UsernameEntryView()
+    @Previewable @StateObject var userData = UserData()
+    UsernameEntryView().environmentObject(userData)
 }

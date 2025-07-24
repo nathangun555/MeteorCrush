@@ -41,9 +41,11 @@
 				Class/Haptic.swift,
 				Class/HUD.swift,
 				Class/Joystick.swift,
+				Class/LeaderboardModel.swift,
 				Class/PhysicsCategory.swift,
 				Class/RocketFire.swift,
 				Class/SFX.swift,
+				Class/UserDataModel.swift,
 				"Font/Baloo2-ExtraBold.ttf",
 				MeteorCrushApp.swift,
 				Obstacles/FallingMeteorSpawner.swift,
@@ -62,6 +64,7 @@
 				View/GameViewController.swift,
 				View/MainMenuView.swift,
 				View/SettingsView.swift,
+				View/UsernameEntryView.swift,
 			);
 			target = 7C74B96C2E1FA43000659A5B /* MeteorCrush */;
 		};
@@ -76,9 +79,11 @@
 				Class/Haptic.swift,
 				Class/HUD.swift,
 				Class/Joystick.swift,
+				Class/LeaderboardModel.swift,
 				Class/PhysicsCategory.swift,
 				Class/RocketFire.swift,
 				Class/SFX.swift,
+				Class/UserDataModel.swift,
 				"Font/Baloo2-ExtraBold.ttf",
 				Info.plist,
 				MeteorCrushApp.swift,
@@ -98,6 +103,7 @@
 				View/GameViewController.swift,
 				View/MainMenuView.swift,
 				View/SettingsView.swift,
+				View/UsernameEntryView.swift,
 			);
 			target = 7C74B9832E1FA43100659A5B /* MeteorCrushUITests */;
 		};
