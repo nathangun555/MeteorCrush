@@ -43,6 +43,7 @@
 				Class/Joystick.swift,
 				Class/LeaderboardModel.swift,
 				Class/PhysicsCategory.swift,
+				Class/Player.swift,
 				Class/RocketFire.swift,
 				Class/SFX.swift,
 				"Font/Baloo2-ExtraBold.ttf",
@@ -64,7 +65,7 @@
 				View/LeaderboardView.swift,
 				View/MainMenuView.swift,
 				View/SettingsView.swift,
-				View/UsernameEntryView.swift,
+				View/UserEntryView.swift,
 			);
 			target = 7C74B96C2E1FA43000659A5B /* MeteorCrush */;
 		};
@@ -81,6 +82,7 @@
 				Class/Joystick.swift,
 				Class/LeaderboardModel.swift,
 				Class/PhysicsCategory.swift,
+				Class/Player.swift,
 				Class/RocketFire.swift,
 				Class/SFX.swift,
 				"Font/Baloo2-ExtraBold.ttf",
@@ -103,7 +105,7 @@
 				View/LeaderboardView.swift,
 				View/MainMenuView.swift,
 				View/SettingsView.swift,
-				View/UsernameEntryView.swift,
+				View/UserEntryView.swift,
 			);
 			target = 7C74B9832E1FA43100659A5B /* MeteorCrushUITests */;
 		};
