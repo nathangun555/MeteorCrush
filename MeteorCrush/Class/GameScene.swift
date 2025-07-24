@@ -102,11 +102,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(tutorialBackground)
         
         // Tutorial label
-        tutorialLabel = SKLabelNode(text: "Swipe to move the rocket!")
-        
-        
+        tutorialLabel = SKLabelNode(fontNamed: "Baloo2-ExtraBold")
+        tutorialLabel.text = "Swipe to move the rocket!"
         tutorialLabel.fontColor = .white
-        tutorialLabel.fontSize = 40
+        tutorialLabel.fontSize = 30
         tutorialLabel.position = CGPoint(x: size.width/2, y: size.height/4)
         tutorialLabel.zPosition = 101
         addChild(tutorialLabel)

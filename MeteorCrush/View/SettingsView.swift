@@ -95,21 +95,21 @@ struct SettingsView: View {
                                 }
                             }
                         )
-                    Button(action: {
-                        SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
-                                    dismiss()
-                                }) {
-                                    Text("Back")
-                                        .font(.title2)
-                                        .fontWeight(.semibold)
-                                        .foregroundColor(.white)
-                                        .frame(width: 250, height: 50)
-                                        .background(Color.blue.opacity(0.8))
-                                        .cornerRadius(15)
-                                        .shadow(color: .white.opacity(0.3), radius: 5, x: 0, y: 3)
-                                        .padding(.top, 30)
-                                }
-                }
+                    ZStack{
+                        Image("buttonBack")
+                            .resizable()
+                            .frame(width: 300, height: 180)
+                            .scaledToFit()
+                        Button(action: {
+                            SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
+                            dismiss()
+                        }) {
+                            RoundedRectangle(cornerRadius: 100)
+                                .fill(Color.clear)
+                                .frame(width: 220, height: 50)
+                        }
+                    }.padding(.top, -30)
+                }.padding(.top, 50)
             }
         }
         .onAppear()

@@ -81,7 +81,7 @@ struct CollisionHandler {
                 name: Notification.Name("GameOver"),
                 object: hud.score
             )
-            
+            SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
             vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
                 
@@ -104,7 +104,7 @@ struct CollisionHandler {
                 name: Notification.Name("GameOver"),
                 object: hud.score
             )
-           // SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
+            SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
             vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
                 

@@ -38,10 +38,12 @@ struct ContentView: View {
                         if let score = notif.object as? Int {
                             currentScore = score
                             bestScore = max(currentScore, UserDefaults.standard.integer(forKey: "bestScore"))
-                            if currentScore >= bestScore{
+                            if currentScore >= bestScore && currentScore != 0 {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                    SoundManager.shared.playSFX(named: "newHighScore", withExtension: "wav")
+                                }
                                 UserDefaults.standard.set(currentScore, forKey: "bestScore")
                             }
-                            // bestScore = max(score, bestScore)
                         }
                     }
 

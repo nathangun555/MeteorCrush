@@ -72,7 +72,7 @@ struct MainMenuView: View {
                                 .resizable()
                                 .scaledToFit()
 
-                            NavigationLink(destination: LeaderboardView(), isActive: $showLeaderboard) {
+                            NavigationLink(destination: LeaderboardView().navigationBarBackButtonHidden(true), isActive: $showLeaderboard) {
                                 RoundedRectangle(cornerRadius: 100)
                                     .fill(Color.red.opacity(0))
                                     .frame(width: 250, height: 50)
@@ -91,7 +91,7 @@ struct MainMenuView: View {
                                 .resizable()
                                 .scaledToFit()
 
-                            NavigationLink(destination: SettingsView(), isActive: $showSettings) {
+                            NavigationLink(destination: SettingsView().navigationBarBackButtonHidden(true), isActive: $showSettings) {
                                 RoundedRectangle(cornerRadius: 100)
                                     .fill(Color.red.opacity(0))
                                     .frame(width: 250, height: 50)

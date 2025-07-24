@@ -30,7 +30,10 @@ struct GameOverView: View {
             Text("\(currentScore)")
                 .font(.system(size: 40, weight: .bold))
 
-            Button(action: onPlayAgain) {
+            Button(action: {
+                SoundManager.shared.stopAllSounds()
+                SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
+                onPlayAgain()} ) {
                 Text("Play Again")
                     .fontWeight(.bold)
                     .foregroundColor(.black)
@@ -40,7 +43,11 @@ struct GameOverView: View {
                     .cornerRadius(15)
             }
 
-            Button(action: onQuit) {
+            Button(action: {
+                SoundManager.shared.stopAllSounds()
+                SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
+                onQuit()
+            }) {
                 Text("Quit")
                     .fontWeight(.bold)
                     .foregroundColor(.black)
