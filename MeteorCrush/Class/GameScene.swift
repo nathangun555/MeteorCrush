@@ -84,7 +84,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     object: hud.score
                 )
                 self.removeAction(forKey: "fuelTimer")
-                
+                meteorSpawner.stopSpawning()
                 isGameOver = true
             }
         }

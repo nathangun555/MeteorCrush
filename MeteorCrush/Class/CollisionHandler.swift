@@ -58,10 +58,10 @@ struct CollisionHandler {
                     name: Notification.Name("GameOver"),
                     object: hud.score
                 )
+                scene.meteorSpawner.stopSpawning()
                 scene.isGameOver = true
                 scene.isPaused = true
-                scene.meteorSpawner.stopSpawning()
-                
+
                 let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
                 gameOver.text = "Game Over"
                 gameOver.fontSize = 48
