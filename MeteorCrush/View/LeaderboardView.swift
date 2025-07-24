@@ -101,7 +101,7 @@ struct LeaderboardView: View {
                     }) {
                         RoundedRectangle(cornerRadius: 100)
                             .fill(Color.clear)
-                            .frame(width: 180, height: 50)
+                            .frame(width: 180, height: 40)
                     }
                 }.padding(.top, -100)
             }.padding(.top, 20)

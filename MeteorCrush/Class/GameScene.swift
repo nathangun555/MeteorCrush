@@ -148,7 +148,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rocket.zPosition = 10
         
         // Set warna roket
-        if rocketPicker == "rocketPink" {
+        if rocketPicker == "rocketRed" {
             rocket.color = .red
         } else if rocketPicker == "rocketGreen" {
             rocket.color = .green

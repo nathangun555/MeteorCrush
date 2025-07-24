@@ -8,6 +8,19 @@
 
 import SwiftUI
 
+extension Color {
+    init(hex: String) {
+        let scanner = Scanner(string: hex)
+        _ = scanner.scanString("#") // remove the hash
+        var rgb: UInt64 = 0
+        scanner.scanHexInt64(&rgb)
+        let r = Double((rgb >> 16) & 0xFF) / 255.0
+        let g = Double((rgb >> 8) & 0xFF) / 255.0
+        let b = Double(rgb & 0xFF) / 255.0
+        self.init(red: r, green: g, blue: b)
+    }
+}
+
 struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @State private var username: String = ""
@@ -22,18 +35,22 @@ struct SettingsView: View {
     var body: some View {
         NavigationView{
             ZStack {
-                // Background gradasi ungu
-                LinearGradient(gradient: Gradient(colors: [Color.purple, Color.black]),
-                               startPoint: .top,
-                               endPoint: .bottom)
-                .ignoresSafeArea()
+                Image("bgHomeScreen")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .clipped()
+                    .ignoresSafeArea()
+                
                 VStack{
                     RoundedRectangle(cornerRadius: 10)
-                        .fill(.white)
+                        .fill(Color(hex: "#8f85ff").opacity(0.7))
+
                         .frame(width: 300, height: 400)
                         .overlay(
                             VStack{
                                 Text("Settings")
+                                    .foregroundStyle(.white)
                                     .bold()
                                     .font(fontTitle())
                                 VStack{
@@ -45,7 +62,7 @@ struct SettingsView: View {
                                     
                                     SettingsToggleRow(
                                         title: "Haptic",
-                                        icon: "iphone.radisowaves.left.and.right",
+                                        icon: "iphone.gen1.radiowaves.left.and.right",
                                         isOn: $hapticFeedback
                                     )
                                     
@@ -63,22 +80,25 @@ struct SettingsView: View {
                                 } .padding(.top, -30)
                                 
                                 .onChange(of: musicEnabled){
+                                    vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
                                     let currentValue = UserDefaults.standard.bool(forKey: "musicManager")
                                     let newValue = !currentValue
                                     UserDefaults.standard.set(newValue, forKey: "musicManager")
                                 }
                                 .onChange(of: hapticFeedback){
+                                    vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
                                     let currentValue = UserDefaults.standard.bool(forKey: "hapticManager")
                                     let newValue = !currentValue
                                     UserDefaults.standard.set(newValue, forKey: "hapticManager")
                                 }
                                 .onChange(of: joystickVisibility){
+                                    vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
                                     let currentValue = UserDefaults.standard.bool(forKey: "joystickVisibility")
                                     let newValue = !currentValue
                                     UserDefaults.standard.set(newValue, forKey: "joystickVisibility")
                                 }
                                 .onChange(of: joystickValue) { newValue in
-                                    print(joystickValue)
+                                    vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
                                     if joystickValue == 0.0
                                     {
                                         UserDefaults.standard.set(0.0, forKey: "joystickSensitivity")
@@ -106,7 +126,7 @@ struct SettingsView: View {
                         }) {
                             RoundedRectangle(cornerRadius: 100)
                                 .fill(Color.clear)
-                                .frame(width: 220, height: 50)
+                                .frame(width: 160, height: 50)
                         }
                     }.padding(.top, -30)
                 }.padding(.top, 50)
@@ -200,12 +220,12 @@ struct SettingsToggleRow: View {
                 isOn.toggle()
             }) {
                 Image(systemName: isOn ? "checkmark.square.fill" : "square")
-                    .foregroundColor(isOn ? .blue : .gray)
+                    .foregroundColor(isOn ?  Color(hex: "#8f85ff") : .gray)
                     .font(.title2)
             }
         }
         .padding()
-        .background(Color.gray.opacity(0.2))
+        .background(Color.white)
         .frame(width: 250)
         .cornerRadius(10)
     }
@@ -238,7 +258,7 @@ struct SettingsSliderRow: View {
                 GeometryReader { geometry in
                     ZStack {
                         Slider(value: $sliderValue, in: sliderRange, step: (sliderRange.upperBound - sliderRange.lowerBound) / 4)
-                            .accentColor(.blue)
+                            .accentColor(Color(hex: "#8f85ff"))
                     }
                 }
                 .frame(height: 30)
@@ -256,7 +276,7 @@ struct SettingsSliderRow: View {
             .padding(.horizontal, 30)
         }
         .padding()
-        .background(Color.gray.opacity(0.2))
+        .background(Color.white)
         .frame(width: 250)
         .cornerRadius(10)
     }
