@@ -227,31 +227,57 @@ struct ObstacleSpawner {
 
 
     static func spawnGate(in scene: SKScene, atY y: CGFloat) {
-        let gate = SKSpriteNode(imageNamed: "whiteGate")
         let colors: [SKColor] = [.red, .green, .blue]
+        let gateColors = [SKSpriteNode(imageNamed: "gateRed"), SKSpriteNode(imageNamed: "gateGreen"), SKSpriteNode(imageNamed: "gateBlue")]
         let randomIndex = Int.random(in: 0...2)
+        let gate = gateColors[randomIndex]
         gate.color = colors[randomIndex]
-        gate.colorBlendFactor = 1.0
+//        gate.colorBlendFactor = 1.0
         
         print("Spawn a new gate")
         print(gate.color)
-        gate.size = CGSize(width: scene.size.width * 0.4, height: scene.size.height * 0.3)
+        gate.size = CGSize(width: scene.size.width, height: scene.size.height * 0.3)
         let halfW = gate.size.width / 2
         gate.position = CGPoint(
             x: halfW,
             y: y
         )
         gate.zPosition = 5
+        
         let rectSize = CGSize(width: gate.size.width, height: gate.size.height * 0.001)
         let collisionRect = SKShapeNode(rectOf: rectSize, cornerRadius: 0)
         collisionRect.position    = .zero
-        collisionRect.strokeColor = .yellow    // untuk debug, tandanya
+        collisionRect.strokeColor = .clear    // untuk debug, tandanya
         collisionRect.lineWidth   = 2
         collisionRect.fillColor   = .clear
-        collisionRect.zPosition   = -1         // di belakang gate
+        collisionRect.zPosition   = -1       // di belakang gate
+        
+        let kiriSize = CGSize(width: gate.size.width/5.5, height: gate.size.height * 0.1)
+        let kiri = SKShapeNode(rectOf: kiriSize, cornerRadius: 0)
+        let kiriPositionX = -gate.size.width / 2 + kiriSize.width / 2
+        kiri.position = CGPoint(x: kiriPositionX, y: 0)
+        kiri.strokeColor = .clear    // untuk debug, tandanya
+        kiri.lineWidth   = 5
+        kiri.fillColor   = .clear
+        kiri.zPosition   = -1       // di belakang gate
+        
+        let kananSize = CGSize(width: gate.size.width/5.5, height: gate.size.height * 0.1)
+        let kanan = SKShapeNode(rectOf: kananSize, cornerRadius: 0)
+        let kananPositionX = gate.size.width / 2 + -kananSize.width / 2
+        kanan.position = CGPoint(x: kananPositionX, y: 0)
+        kanan.strokeColor = .clear    // untuk debug, tandanya
+        kanan.lineWidth   = 5
+        kanan.fillColor   = .clear
+        kanan.zPosition   = -1       // di belakang gate
         
         let body = SKPhysicsBody(rectangleOf: rectSize)
         body.isDynamic            = false
+        
+        let bodyKiri = SKPhysicsBody(rectangleOf: kiriSize)
+        bodyKiri.isDynamic            = false
+        
+        let bodyKanan = SKPhysicsBody(rectangleOf: kananSize)
+        bodyKanan.isDynamic            = false
         
         switch gate.color {
         case .red:
@@ -262,11 +288,23 @@ struct ObstacleSpawner {
             body.categoryBitMask = PhysicsCategory.blueGate
         }
         
+        bodyKiri.categoryBitMask = PhysicsCategory.gateEdge
+        bodyKanan.categoryBitMask = PhysicsCategory.gateEdge
+        
         body.contactTestBitMask   = PhysicsCategory.Rocket
         body.collisionBitMask     = PhysicsCategory.None
+        bodyKiri.contactTestBitMask   = PhysicsCategory.Rocket
+        bodyKiri.collisionBitMask     = PhysicsCategory.None
+        bodyKanan.contactTestBitMask   = PhysicsCategory.Rocket
+        bodyKanan.collisionBitMask     = PhysicsCategory.None
+
         collisionRect.physicsBody = body
+        kiri.physicsBody = bodyKiri
+        kanan.physicsBody = bodyKanan
         
         gate.addChild(collisionRect)
+        gate.addChild(kiri)
+        gate.addChild(kanan)
         if let gs = scene as? GameScene {
             gs.gate.append(gate)
         }

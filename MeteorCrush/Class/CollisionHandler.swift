@@ -31,7 +31,7 @@ struct CollisionHandler {
             (first.categoryBitMask == PhysicsCategory.Meteor && second.categoryBitMask == PhysicsCategory.Rocket) {
             
             print("[Collision] 🚨 Rocket hit meteor!")
-            
+            vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
                 NotificationCenter.default.post(
                     name: Notification.Name("GameOver"),
@@ -39,6 +39,7 @@ struct CollisionHandler {
                 )
                 scene.isGameOver = true
                 scene.isPaused = true
+                scene.meteorSpawner.stopSpawning()
                 
                 let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
                 gameOver.text = "Game Over"
@@ -59,10 +60,36 @@ struct CollisionHandler {
                 name: Notification.Name("GameOver"),
                 object: hud.score
             )
+            
+            vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
                 
                 scene.isGameOver = true
                 scene.isPaused = true
+               scene.meteorSpawner.stopSpawning()
+
+                let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
+                gameOver.text = "Game Over"
+                gameOver.fontSize = 48
+                gameOver.position = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
+                gameOver.zPosition = 1000
+                scene.addChild(gameOver)
+            }
+            return
+            
+        case PhysicsCategory.gateEdge:
+            
+            NotificationCenter.default.post(
+                name: Notification.Name("GameOver"),
+                object: hud.score
+            )
+           // SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
+            vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
+            ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
+                
+                scene.isGameOver = true
+                scene.isPaused = true
+                scene.meteorSpawner.stopSpawning()
                 
                 let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
                 gameOver.text = "Game Over"
@@ -72,19 +99,6 @@ struct CollisionHandler {
                 scene.addChild(gameOver)
             }
             return
-            //                        scene.isGameOver = true
-            //                        scene.isPaused = true
-            //
-            //                        NotificationCenter.default.post(
-            //                            name: Notification.Name("GameOver"),
-            //                            object: hud.score
-            //                        )
-            //
-            //                        let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
-            //                        gameOver.text = "Game Over"
-            //                        gameOver.fontSize = 48
-            //                        gameOver.position = CGPoint(x: scene.size.width/2, y: scene.size.height/2)
-            //                        scene.addChild(gameOver)
             
         case PhysicsCategory.redStar:
             guard var starNode = other.node, starNode.parent != nil else { return }
@@ -138,6 +152,7 @@ struct CollisionHandler {
             //            print(rocketColor, starColor)
             if (rocketColor == .red && starColor == .red) || (rocketColor == .green && starColor == .green) || (rocketColor == .blue && starColor == .blue)
             {
+                SoundManager.shared.playSFX(named: "collectStar", withExtension: "wav")
                 hud.score += 5
             } else
             {

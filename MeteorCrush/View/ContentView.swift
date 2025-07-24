@@ -36,14 +36,17 @@ struct ContentView: View {
                         isGameOver = true
                         if let score = notif.object as? Int {
                             currentScore = score
-                            bestScore = max(score, bestScore)
+                            bestScore = max(currentScore, UserDefaults.standard.integer(forKey: "bestScore"))
+                            if currentScore >= bestScore{
+                                UserDefaults.standard.set(currentScore, forKey: "bestScore")
+                            }
                         }
                     }
 
                 if isGameOver {
                     GameOverView(
                         currentScore: currentScore,
-                        bestScore: bestScore,
+                        bestScore: UserDefaults.standard.integer(forKey: "bestScore"),
                         onPlayAgain: {
                                                    isGameOver = false
                                                    sceneID = UUID() 

@@ -12,8 +12,8 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @State private var username: String = ""
     @State private var musicEnabled: Bool = true
-    @State private var hapticEnabled: Bool = true
-    @State private var joystickVisibility: Bool = true
+    @State private var hapticFeedback: Bool = false
+    @State private var joystickVisibility: Bool = UserDefaults.standard.bool(forKey: "joystickVisibility")
     @State private var joystickSensitivity: Double = UserDefaults.standard.double(forKey: "joystickSensitivity")
     @State private var showingUsernameAlert: Bool = false
     @State private var back: Bool = false
@@ -35,31 +35,50 @@ struct SettingsView: View {
                             VStack{
                                 Text("Settings")
                                     .bold()
-                                    .font(.title)
-                                SettingsToggleRow(
-                                    title: "Music",
-                                    icon: "music.note",
-                                    isOn: $musicEnabled
-                                )
+                                    .font(fontTitle())
+                                VStack{
+                                    SettingsToggleRow(
+                                        title: "Music",
+                                        icon: "music.note",
+                                        isOn: $musicEnabled
+                                    )
+                                    
+                                    SettingsToggleRow(
+                                        title: "Haptic",
+                                        icon: "iphone.radisowaves.left.and.right",
+                                        isOn: $hapticFeedback
+                                    )
+                                    
+                                    SettingsToggleRow(
+                                        title: "Joystick Visibility",
+                                        icon: "gamecontroller",
+                                        isOn: $joystickVisibility
+                                    )
+                                    SettingsSliderRow(
+                                        title: "Joystick Sensitivity",
+                                        icon: "slider.horizontal.3",
+                                        sliderValue: $joystickValue,
+                                        sliderRange: 0...1
+                                    )
+                                } .padding(.top, -30)
                                 
-                                SettingsToggleRow(
-                                    title: "Haptic",
-                                    icon: "iphone.radisowaves.left.and.right",
-                                    isOn: $hapticEnabled
-                                )
-                                
-                                SettingsToggleRow(
-                                    title: "Joystick Visibility",
-                                    icon: "gamecontroller",
-                                    isOn: $joystickVisibility
-                                )
-                                SettingsSliderRow(
-                                    title: "Joystick Sensitivity",
-                                    icon: "slider.horizontal.3",
-                                    sliderValue: $joystickValue,
-                                    sliderRange: 0...1
-                                )
+                                .onChange(of: musicEnabled){
+                                    let currentValue = UserDefaults.standard.bool(forKey: "musicManager")
+                                    let newValue = !currentValue
+                                    UserDefaults.standard.set(newValue, forKey: "musicManager")
+                                }
+                                .onChange(of: hapticFeedback){
+                                    let currentValue = UserDefaults.standard.bool(forKey: "hapticManager")
+                                    let newValue = !currentValue
+                                    UserDefaults.standard.set(newValue, forKey: "hapticManager")
+                                }
+                                .onChange(of: joystickVisibility){
+                                    let currentValue = UserDefaults.standard.bool(forKey: "joystickVisibility")
+                                    let newValue = !currentValue
+                                    UserDefaults.standard.set(newValue, forKey: "joystickVisibility")
+                                }
                                 .onChange(of: joystickValue) { newValue in
+                                    print(joystickValue)
                                     if joystickValue == 0.0
                                     {
                                         UserDefaults.standard.set(0.0, forKey: "joystickSensitivity")
@@ -74,12 +93,10 @@ struct SettingsView: View {
                                         UserDefaults.standard.set(2, forKey: "joystickSensitivity")
                                     }
                                 }
-                                .onChange(of: joystickValue) {
-                                    // joystick
-                                }
                             }
                         )
                     Button(action: {
+                        SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
                                     dismiss()
                                 }) {
                                     Text("Back")
@@ -98,9 +115,41 @@ struct SettingsView: View {
         .onAppear()
         {
             valueSlider()
+            valueHaptic()
+            valueJoystickVisibility()
+            valueMusic()
         }
     }
-    
+    func valueMusic()
+    {
+        let checker = UserDefaults.standard.bool(forKey: "musicManager")
+        if checker {
+            musicEnabled = true
+        } else
+        {
+            musicEnabled = false
+        }
+    }
+    func valueJoystickVisibility()
+    {
+        let checker = UserDefaults.standard.bool(forKey: "joystickVisibility")
+        if checker {
+            joystickVisibility = true
+        } else
+        {
+            joystickVisibility = false
+        }
+    }
+    func valueHaptic()
+    {
+        let checker = UserDefaults.standard.bool(forKey: "hapticManager")
+        if checker {
+            hapticFeedback = true
+        } else
+        {
+            hapticFeedback = false
+        }
+    }
     func valueSlider(){
         let checker = UserDefaults.standard.double(forKey: "joystickSensitivity")
         if checker == 0.0
@@ -141,7 +190,7 @@ struct SettingsToggleRow: View {
                 .frame(width: 30)
             
             Text(title)
-                .font(.headline)
+                .font(fontSubTitle())
                 .foregroundColor(.primary)
             
             Spacer()
@@ -178,7 +227,7 @@ struct SettingsSliderRow: View {
                     .frame(width: 30)
                 
                 Text(title)
-                    .font(.headline)
+                    .font(fontSubTitle())
                     .foregroundColor(.primary)
                 
                 Spacer()
@@ -198,7 +247,7 @@ struct SettingsSliderRow: View {
                 HStack {
                     ForEach(0..<sensitivity.count) { index in
                         Text("\(sensitivity[index])%")
-                            .font(.caption2)
+                            .font(.custom("Baloo2-ExtraBold", size: 10))
                             .foregroundColor(.secondary)
                             .frame(maxWidth: .infinity)
                     }

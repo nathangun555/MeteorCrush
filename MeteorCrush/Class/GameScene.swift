@@ -46,6 +46,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.contactDelegate = self
         meteorSpawner = FallingMeteorSpawner(scene: self)
         
+        SoundManager.shared.playGameMusic()
+        SoundManager.shared.playSFX(named: "rocketTakeOff", withExtension: "wav")
         setupRocket()
         setupJoystick()
         setupHUD()

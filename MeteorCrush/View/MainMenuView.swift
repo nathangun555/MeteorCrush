@@ -9,10 +9,6 @@
 import SwiftUI
 
 struct MainMenuView: View {
-    @State private var joystickSensitivity: Double = {
-        let value = UserDefaults.standard.double(forKey: "joystickSensitivity")
-        return value == 0 ? 1.0 : value  // nilai default 1.0 kalau belum pernah diset
-    }()
     @State private var showGame = false
     @State private var showLeaderboard = false
     @State private var showSettings = false
@@ -59,6 +55,7 @@ struct MainMenuView: View {
                             .resizable()
                             .scaledToFit()
                         Button(action: {
+                            SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
                             showGame = true
                         }) {
                             RoundedRectangle(cornerRadius: 100)
@@ -73,6 +70,7 @@ struct MainMenuView: View {
                             .resizable()
                             .scaledToFit()
                         Button(action: {
+                            SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
                             showLeaderboard = true
                         }) {
                             RoundedRectangle(cornerRadius: 100)
@@ -80,16 +78,22 @@ struct MainMenuView: View {
                                 .frame(width: 250, height: 50)
                         }
                     }
+
                     ZStack {
                         Image("buttonSettings")
                             .resizable()
                             .scaledToFit()
                         Button(action: {
-                            showSettings = true
+                            SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
+                             showSettings = true
                         }) {
                             RoundedRectangle(cornerRadius: 100)
                                 .fill(Color.red.opacity(0))
                                 .frame(width: 250, height: 50)
+                        }
+
+                        NavigationLink(destination: SettingsView(), isActive: $showSettings) {
+                            EmptyView()
                         }
                     }
                     
@@ -111,6 +115,14 @@ struct MainMenuView: View {
                 Text("Settings View (coming soon)")
                     .font(.title)
                     .padding()
+            }
+            .onAppear()
+            {
+                SoundManager.shared.playLobbyMusic()
+                    UserDefaults.standard.set(1.0, forKey: "joystickSensitivity")
+                    UserDefaults.standard.set(false, forKey: "joystickVisibility")
+                    UserDefaults.standard.set(true, forKey: "hapticManager")
+                    UserDefaults.standard.set(true, forKey: "musicManager")
             }
         }
     }
