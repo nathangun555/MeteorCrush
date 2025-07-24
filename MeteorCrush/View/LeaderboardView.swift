@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct LeaderboardView: View {
-    @StateObject private var viewModel = LeaderboardModel()
+    @EnvironmentObject var leaderboardModel: LeaderboardModel
 
     var body: some View {
         ZStack {
@@ -41,9 +41,9 @@ struct LeaderboardView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 380)
 
-                    ScrollView() {
+                    ScrollView {
                         VStack(spacing: 8) {
-                            ForEach(viewModel.players.filter { $0.rank > 3 }, id: \.rank) { player in
+                            ForEach(leaderboardModel.players.filter { $0.rank > 3 }, id: \.rank) { player in
                                 ZStack {
                                     Image("leaderboardRankOthers2")
                                         .resizable()
@@ -93,7 +93,7 @@ struct LeaderboardView: View {
 
                 // For testing: Button to add new player
                 Button(action: {
-                    viewModel.addPlayer(name: "You", score: Int.random(in: 10...50))
+                    leaderboardModel.addPlayer(name: "You", score: Int.random(in: 10...50))
                 }) {
                     Text("Simulate Player Score")
                         .foregroundColor(.white)
@@ -109,11 +109,11 @@ struct LeaderboardView: View {
 
     // Helpers
     private func getName(for rank: Int) -> String {
-        viewModel.players.first(where: { $0.rank == rank })?.name ?? "Player"
+        leaderboardModel.players.first(where: { $0.rank == rank })?.name ?? "Player"
     }
 
     private func getScore(for rank: Int) -> String {
-        if let score = viewModel.players.first(where: { $0.rank == rank })?.score {
+        if let score = leaderboardModel.players.first(where: { $0.rank == rank })?.score {
             return "\(score) pts"
         }
         return "-"
@@ -140,57 +140,6 @@ struct LeaderboardView: View {
 
 
 
-struct NonBouncingScrollView<Content: View>: UIViewRepresentable {
-    let content: Content
-
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-
-    func makeUIView(context: Context) -> UIScrollView {
-        let scrollView = UIScrollView()
-        scrollView.bounces = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.backgroundColor = .clear
-
-        let hostingController = UIHostingController(rootView: content)
-        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        hostingController.view.backgroundColor = .clear
-
-        scrollView.addSubview(hostingController.view)
-
-        NSLayoutConstraint.activate([
-            hostingController.view.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            hostingController.view.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            hostingController.view.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            hostingController.view.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            hostingController.view.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
-        ])
-
-        context.coordinator.hostingController = hostingController
-
-        return scrollView
-    }
-
-    func updateUIView(_ scrollView: UIScrollView, context: Context) {
-        if let hostingController = context.coordinator.hostingController {
-            hostingController.rootView = content
-            hostingController.view.setNeedsLayout()
-            hostingController.view.layoutIfNeeded()
-        }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
-    }
-
-    class Coordinator {
-        var hostingController: UIHostingController<Content>?
-    }
-}
-
-struct LeaderboardView_Previews: PreviewProvider {
-    static var previews: some View {
-        LeaderboardView()
-    }
+#Preview {
+    LeaderboardView()
 }
