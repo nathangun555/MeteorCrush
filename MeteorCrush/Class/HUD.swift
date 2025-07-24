@@ -8,7 +8,6 @@ class HUD: SKNode {
     
     var score: Int = 0
     var fuel: CGFloat = 100
-    var starCount: Int = 0
     
     init(size: CGSize) {
         super.init()
