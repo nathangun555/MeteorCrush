@@ -1,15 +1,30 @@
 import SpriteKit
 
 class HUD: SKNode {
+    let powerupSize: CGFloat = 60.0
+    
     private let scoreLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
     private let fuelLabel  = SKLabelNode(fontNamed: "AvenirNext-Bold")
     private let fuelBarBackground = SKSpriteNode(color: .gray, size: CGSize(width: 55, height: 225)) // Background bar (vertikal)
     private let fuelBarFill = SKSpriteNode() // Correcting fuelBarFill to SKSpriteNode
     
+    
+    private let shieldLabel = SKSpriteNode(imageNamed: "casingShield")
+    private let shieldTimerLabel = SKShapeNode()
+    private let multiplierLabel = SKSpriteNode(imageNamed: "casing2x")
+    private let multiplierTimerLabel = SKShapeNode()
+    
+
     var score: Int = 0
     var fuel: CGFloat = 100
     
+    var shieldPos: CGPoint
+    var multiplierPos: CGPoint
+    
     init(size: CGSize) {
+        self.shieldPos = CGPoint(x: size.width - 80, y: size.height - 100)
+        self.multiplierPos = CGPoint(x: self.shieldPos.x, y: self.shieldPos.y - powerupSize - 50)
+
         super.init()
         
         // Score Label
@@ -43,6 +58,34 @@ class HUD: SKNode {
         fuelBarFill.zPosition = 11
         fuelBarFill.anchorPoint = CGPoint(x: 0.5, y: 0)
         addChild(fuelBarFill)
+        
+        shieldLabel.size = CGSize(width: powerupSize, height: powerupSize)
+        shieldLabel.position = shieldPos
+        shieldLabel.zPosition = 20
+        shieldLabel.isHidden = true
+        addChild(shieldLabel)
+        
+        shieldTimerLabel.strokeColor = .white
+        shieldTimerLabel.zPosition = 21
+        shieldTimerLabel.lineWidth = 8
+        shieldTimerLabel.lineCap = .round
+        shieldTimerLabel.isHidden = true
+        shieldTimerLabel.alpha = 0.5
+        addChild(shieldTimerLabel)
+        
+        multiplierLabel.size = CGSize(width: powerupSize, height: powerupSize)
+        multiplierLabel.position = self.multiplierPos
+        multiplierLabel.zPosition = 20
+        multiplierLabel.isHidden = true
+        addChild(multiplierLabel)
+        
+        multiplierTimerLabel.strokeColor = .white
+        multiplierTimerLabel.zPosition = 21
+        multiplierTimerLabel.lineWidth = 8
+        multiplierTimerLabel.lineCap = .round
+        multiplierTimerLabel.isHidden = true
+        multiplierTimerLabel.alpha = 0.5
+        addChild(multiplierTimerLabel)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -63,4 +106,25 @@ class HUD: SKNode {
         // Update ukuran fuelBarFill sesuai dengan tinggi bahan bakar
         fuelBarFill.size = CGSize(width: 24, height: fuelBarHeight) // Sesuaikan ukuran sprite fuelBarFill
     }
+    
+    func updatePowerupState(in scene: GameScene){
+        shieldLabel.isHidden = !scene.isShield
+        shieldTimerLabel.isHidden = !scene.isShield
+        if(!shieldTimerLabel.isHidden){
+            let path = CGMutablePath()
+            let currentAngle: CGFloat = (scene.shieldTimer / 10) * (.pi * 2)
+            path.addArc(center: self.shieldPos, radius: 30, startAngle: .pi / 2, endAngle: currentAngle + .pi / 2, clockwise: false)
+            shieldTimerLabel.path = path
+        }
+        
+        multiplierLabel.isHidden = !scene.isDoublePoint
+        multiplierTimerLabel.isHidden = !scene.isDoublePoint
+        if(!multiplierTimerLabel.isHidden){
+            let path = CGMutablePath()
+            let currentAngle: CGFloat = (scene.multiplierTimer / 10) * (.pi * 2)
+            path.addArc(center: self.multiplierPos, radius: 30, startAngle: .pi / 2, endAngle: currentAngle + .pi / 2, clockwise: false)
+            multiplierTimerLabel.path = path
+        }
+    }
+    
 }

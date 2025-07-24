@@ -26,7 +26,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var blueStar     = [SKSpriteNode]()
     var fuels     = [SKSpriteNode]()
     var gate      = [SKSpriteNode]()
+    var powerups  = [SKSpriteNode]()
+    var fireNode: SKSpriteNode!
     var distance: Int = 0
+    
+    var isPowerupSpawned: Bool = false
+    var isShield: Bool = false
+    var multiplier: Int = 1
+    var isDoublePoint: Bool = false
+    var multiplierTimer: CGFloat = 0
+    var shieldTimer: CGFloat = 0
+
     
     private var planetCount = 100
     private var starCount   = 100
@@ -93,6 +103,20 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let sequence = SKAction.sequence([wait, consume])
         let repeatForever = SKAction.repeatForever(sequence)
         run(repeatForever, withKey: "fuelTimer")
+        
+        let powerupAction = SKAction.run { [weak self] in
+            guard let self = self, !self.isGameOver else { return }
+            
+            if(self.isShield) { self.shieldTimer -= 0.1; print("Shield time : \(self.shieldTimer)") }
+            if(self.isDoublePoint) { self.multiplierTimer -= 0.1; print("Multiplier time : \(self.multiplierTimer)") }
+            
+            if(self.shieldTimer <= 0) { self.isShield = false }
+            if(self.multiplierTimer <= 0) { self.isDoublePoint = false; self.multiplier = 1 }
+        }
+        
+        let powerupWait = SKAction.wait(forDuration: 0.1)
+        let powerupSequence = SKAction.sequence([powerupWait, powerupAction])
+        run(SKAction.repeatForever(powerupSequence), withKey: "powerupTimer")
     }
     
     private func TutorialOverlay() {
@@ -147,9 +171,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rocketY = size.height / 4
         rocket.position = CGPoint(x: size.width/2, y: rocketY)
         rocket.zPosition = 10
-        
-        // Set warna roket
-        if rocketPicker == "rocketPink" {
+        if rocketPicker == "rocketRed" {
             rocket.color = .red
         } else if rocketPicker == "rocketGreen" {
             rocket.color = .green
@@ -266,6 +288,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         blueStar.forEach   { $0.position.y -= scrollSpeed }
         fuels.forEach   { $0.position.y -= scrollSpeed }
         gate.forEach   { $0.position.y -= scrollSpeed }
+        powerups.forEach { $0.position.y -= scrollSpeed }
         
         guard !isGameOver else {
             removeAction(forKey: "fuelTimer")
@@ -275,7 +298,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rocketFire.update(fuel: hud.fuel)
         
         hud.updateLabels()
+        hud.updatePowerupState(in: self)
         ObstacleSpawner.recycleOffscreen(in: self, speed: scrollSpeed)
+        PowerUpSpawner.recyclePowerup(in: self, speed: scrollSpeed)
+        
     }
     
     func didBegin(_ contact: SKPhysicsContact) {

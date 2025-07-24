@@ -51,6 +51,8 @@ struct CollisionHandler {
         if (first.categoryBitMask == PhysicsCategory.Rocket && second.categoryBitMask == PhysicsCategory.Meteor) ||
             (first.categoryBitMask == PhysicsCategory.Meteor && second.categoryBitMask == PhysicsCategory.Rocket) {
             
+            if(scene.isShield) { return }
+            
             print("[Collision] 🚨 Rocket hit meteor!")
             vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
@@ -76,7 +78,8 @@ struct CollisionHandler {
         switch other.categoryBitMask {
             
         case PhysicsCategory.Planet:
-            
+            if scene.isShield { return }
+
             NotificationCenter.default.post(
                 name: Notification.Name("GameOver"),
                 object: hud.score
@@ -99,7 +102,7 @@ struct CollisionHandler {
             return
             
         case PhysicsCategory.gateEdge:
-            
+            if scene.isShield { return }
             NotificationCenter.default.post(
                 name: Notification.Name("GameOver"),
                 object: hud.score
@@ -152,17 +155,36 @@ struct CollisionHandler {
             scene.rocket.texture = SKTexture(imageNamed: "rocketRed")
             scene.rocket.color = .red
             scene.rocket.colorBlendFactor = 0
-            //            print("lewat pink")
         case PhysicsCategory.greenGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketGreen")
             scene.rocket.color = .green
             scene.rocket.colorBlendFactor = 0
-            //            print("lewat hijau")
         case PhysicsCategory.blueGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketBlue")
             scene.rocket.color = .blue
             scene.rocket.colorBlendFactor = 0
-            //            print("lewat biru")
+//            print("lewat biru")
+        case PhysicsCategory.powerUp:
+             guard let nodeData = other.node?.userData else { return }
+             switch nodeData["type"] as? String {
+             case "shield":
+                 print("Shield active!")
+                 scene.isShield = true
+                 scene.shieldTimer = 10
+                
+             case "doubleScore":
+                 print("Double score active!")
+                 scene.multiplier = 2
+                 scene.isDoublePoint = true
+                 scene.multiplierTimer = 10
+                
+             default:
+                 print("Unknown! Data : \(nodeData)")
+                 break
+             }
+            other.node?.removeFromParent()
+            
+            print("Powerup activated!")
         default: break
         }
         
@@ -171,7 +193,7 @@ struct CollisionHandler {
             if (rocketColor == .red && starColor == .red) || (rocketColor == .green && starColor == .green) || (rocketColor == .blue && starColor == .blue)
             {
                 SoundManager.shared.playSFX(named: "collectStar", withExtension: "wav")
-                hud.score += 5
+                hud.score += 5 * scene.multiplier
             } else
             {
                 if hud.score > 0{

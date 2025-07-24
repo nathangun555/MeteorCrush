@@ -528,5 +528,10 @@ struct ObstacleSpawner {
                 g.position.x = CGFloat.random(in: g.size.width/2...(scene.size.width-g.size.width/2))
             }
         }
+        
+//        if(scene.isPowerupSpawned){
+//            spawnPowerup(in: scene, y: scene.position.y)
+//            scene.isPowerupSpawned = false
+//        }
     }
 }
