@@ -118,7 +118,7 @@ struct ObstacleSpawner {
         let starColors = ["starRed", "starBlue", "starGreen"]
         let starPicker = starColors.randomElement()!
         let star = SKSpriteNode(imageNamed: starPicker)
-        star.size = CGSize(width: 50, height: 50)
+        star.size = CGSize(width: 180, height: 180)
         let halfW = star.size.width/2
         star.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
         star.zPosition = 5
@@ -160,8 +160,8 @@ struct ObstacleSpawner {
     static func spawnGreenStar(in scene: GameScene, atY y: CGFloat) {
         guard let gs = scene as? GameScene else { return }
 
-        let star = SKSpriteNode(imageNamed: "greenStar")
-        star.size = CGSize(width: 50, height: 50)
+        let star = SKSpriteNode(imageNamed: "starGreen")
+        star.size = CGSize(width: 180, height: 180)
         let halfW = star.size.width/2
         star.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
         star.zPosition = 5
@@ -194,8 +194,8 @@ struct ObstacleSpawner {
     static func spawnBlueStar(in scene: GameScene, atY y: CGFloat) {
         guard let gs = scene as? GameScene else { return }
 
-        let star = SKSpriteNode(imageNamed: "blueStar")
-        star.size = CGSize(width: 50, height: 50)
+        let star = SKSpriteNode(imageNamed: "starBlue")
+        star.size = CGSize(width: 180, height: 180)
         let halfW = star.size.width/2
         star.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
         star.zPosition = 5
