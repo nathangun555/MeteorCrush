@@ -13,3 +13,11 @@ func fontTitle() -> Font {
 func fontSubTitle() -> Font {
     Font.custom("Baloo2-ExtraBold", size: 17)
 }
+
+func fontSubTitle2() -> Font {
+    Font.custom("Baloo2-ExtraBold", size: 13)
+}
+
+func fontSubTitle3() -> Font {
+    Font.custom("Baloo2-ExtraBold", size: 12)
+}
