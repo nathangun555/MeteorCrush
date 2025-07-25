@@ -225,7 +225,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     public func spawnInitialObstacles() {
-        var planetUnitRandom = Int.random(in:3...5)
+        var planetUnitRandom = 4
         var starUnit = planetUnitRandom * 2 - 1
         var counter = 0
         

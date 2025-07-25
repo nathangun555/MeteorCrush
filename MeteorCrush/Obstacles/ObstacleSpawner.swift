@@ -41,7 +41,10 @@ struct ObstacleSpawner {
 //        }
 //        scene.addChild(planet)
 //    }
+    var lastPlanetPos = 0
+    
     static func getPlanetXPos(scene: GameScene, planet: SKSpriteNode, index: Int) -> CGFloat {
+        print("Calling getPlanetXPos(index: \(index))")
         var upperBoundX: CGFloat = 0.0, lowerBoundX: CGFloat = 0.0
         let planetPosType = index % 2
         if planetPosType == 0 {
@@ -417,21 +420,15 @@ struct ObstacleSpawner {
     static func recycleOffscreen(in scene: GameScene, speed: CGFloat) {
         let offscreenY: CGFloat = -100, topY: CGFloat = scene.size.height + 10
         
-        var planetUnitRandom = Int.random(in:3...5)
-        var starUnit = planetUnitRandom * 2 - 1
+        let planetUnitRandom = Int.random(in:3...5)
         var counter = 0
         
         scene.planets.shuffle()
         
-        for planet in scene.planets {
+        for (planetIdx, planet) in scene.planets.enumerated() {
             if planet.position.y / 2 < -planet.size.height / 2 {
-                planet.position.y = topY + CGFloat.random(in: 0...200)
-                planet.position.x = getPlanetXPos(scene: scene, planet: planet, index: 0)
-                counter += 1
-                if counter == planetUnitRandom {
-                    counter = 0
-                    break
-                }
+                planet.position.y = topY + 500
+                planet.position.x = getPlanetXPos(scene: scene, planet: planet, index: planetIdx)
             }
         }
         

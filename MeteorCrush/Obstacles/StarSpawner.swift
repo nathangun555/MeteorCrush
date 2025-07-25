@@ -10,7 +10,7 @@ import SpriteKit
 
 class StarSpawner {
     static func handleSpawn(color: UIColor, in scene: GameScene, atY: CGFloat) -> Void {
-        var colorStr = String(describing: color)
+        let colorStr = String(describing: color)
         switch color {
         case .red:
             ObstacleSpawner.spawnStar(in: scene, atY: atY)
@@ -48,7 +48,7 @@ class StarSpawner {
 //        if(scene.starLimit >= scene.redStar.count + scene.greenStar.count + scene.blueStar.count){
             let preferredColor = scene.gateColor
             let possColor: [UIColor] = [.red, .green, .blue]
-            if(CGFloat.random(in: 0...1) < 0.6) {
+            if(CGFloat.random(in: 0...1) < 0.8) {
                 handleSpawn(color: preferredColor, in: scene, atY: CGFloat.random(in: scene.upcomingGate...scene.futureGate))
                 print("Summoned prefered. Color : \(colorFromCode(preferredColor))")
             }else{
