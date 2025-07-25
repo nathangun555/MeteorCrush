@@ -8,8 +8,12 @@
 import SwiftUI
 
 struct LeaderboardView: View {
+    @EnvironmentObject var leaderboardModel: LeaderboardModel
     @Environment(\.dismiss) var dismiss
-    @StateObject private var viewModel = LeaderboardModel()
+
+    // Animation states
+    @State private var fadeIn = false
+    @State private var animateStars = false
 
     var body: some View {
         ZStack {
@@ -23,17 +27,29 @@ struct LeaderboardView: View {
                     .foregroundColor(.white)
                     .padding(.top, 100)
                     .padding(.bottom, 20)
+                    .opacity(fadeIn ? 1 : 0)
+                    .offset(y: fadeIn ? 0 : -20)
+                    .animation(.easeOut(duration: 0.6), value: fadeIn)
 
                 // Top 3
                 HStack(alignment: .bottom, spacing: 30) {
                     leaderboardTop(rankImage: "leaderboardRank2", name: getName(for: 2), score: getScore(for: 2))
                         .padding(.bottom, 20)
+                        .scaleEffect(animateStars ? 1.03 : 0.95)
+                        .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: animateStars)
 
                     leaderboardTop(rankImage: "leaderboardRank1", name: getName(for: 1), score: getScore(for: 1))
+                        .scaleEffect(animateStars ? 1.07 : 0.97)
+                        .animation(.easeInOut(duration: 1.4).repeatForever(autoreverses: true), value: animateStars)
 
                     leaderboardTop(rankImage: "leaderboardRank3", name: getName(for: 3), score: getScore(for: 3))
                         .padding(.bottom, 20)
+                        .scaleEffect(animateStars ? 1.03 : 0.97)
+                        .animation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true), value: animateStars)
                 }
+                .opacity(fadeIn ? 1 : 0)
+                .offset(y: fadeIn ? 0 : -10)
+                .animation(.easeOut(duration: 0.6).delay(0.1), value: fadeIn)
 
                 // Ranks 4+
                 ZStack(alignment: .top) {
@@ -42,9 +58,9 @@ struct LeaderboardView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 380)
 
-                    ScrollView() {
+                    ScrollView {
                         VStack(spacing: 8) {
-                            ForEach(viewModel.players.filter { $0.rank > 3 }, id: \.rank) { player in
+                            ForEach(leaderboardModel.players.filter { $0.rank > 3 }, id: \.rank) { player in
                                 ZStack {
                                     Image("leaderboardRankOthers2")
                                         .resizable()
@@ -89,6 +105,9 @@ struct LeaderboardView: View {
                     .frame(height: 330) // Limit scroll height
                 }
                 .padding(.top, 20)
+                .opacity(fadeIn ? 1 : 0)
+                .offset(y: fadeIn ? 0 : 10)
+                .animation(.easeOut(duration: 0.6).delay(0.2), value: fadeIn)
 
                 ZStack{
                     Image("buttonBack")
@@ -106,15 +125,21 @@ struct LeaderboardView: View {
                 }.padding(.top, -100)
             }.padding(.top, 20)
         }
+        .onAppear {
+            withAnimation {
+                fadeIn = true
+            }
+            animateStars = true
+        }
     }
 
     // Helpers
     private func getName(for rank: Int) -> String {
-        viewModel.players.first(where: { $0.rank == rank })?.name ?? "Player"
+        leaderboardModel.players.first(where: { $0.rank == rank })?.name ?? "Player"
     }
 
     private func getScore(for rank: Int) -> String {
-        if let score = viewModel.players.first(where: { $0.rank == rank })?.score {
+        if let score = leaderboardModel.players.first(where: { $0.rank == rank })?.score {
             return "\(score) pts"
         }
         return "-"
@@ -140,59 +165,6 @@ struct LeaderboardView: View {
     }
 }
 
-
-
-struct NonBouncingScrollView<Content: View>: UIViewRepresentable {
-    let content: Content
-
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-
-    func makeUIView(context: Context) -> UIScrollView {
-        let scrollView = UIScrollView()
-        scrollView.bounces = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.backgroundColor = .clear
-
-        let hostingController = UIHostingController(rootView: content)
-        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
-        hostingController.view.backgroundColor = .clear
-
-        scrollView.addSubview(hostingController.view)
-
-        NSLayoutConstraint.activate([
-            hostingController.view.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            hostingController.view.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            hostingController.view.topAnchor.constraint(equalTo: scrollView.topAnchor),
-            hostingController.view.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            hostingController.view.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
-        ])
-
-        context.coordinator.hostingController = hostingController
-
-        return scrollView
-    }
-
-    func updateUIView(_ scrollView: UIScrollView, context: Context) {
-        if let hostingController = context.coordinator.hostingController {
-            hostingController.rootView = content
-            hostingController.view.setNeedsLayout()
-            hostingController.view.layoutIfNeeded()
-        }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
-    }
-
-    class Coordinator {
-        var hostingController: UIHostingController<Content>?
-    }
-}
-
-struct LeaderboardView_Previews: PreviewProvider {
-    static var previews: some View {
-        LeaderboardView()
-    }
+#Preview {
+    LeaderboardView().environmentObject(LeaderboardModel())
 }

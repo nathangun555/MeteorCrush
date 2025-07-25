@@ -545,7 +545,7 @@ struct ObstacleSpawner {
             if g.position.y < offscreenY {
                 scene.gate.removeAll()
                 spawnGate(in: scene, atY: scene.futureGate)
-                g.position.x = CGFloat.random(in: g.size.width/2...(scene.size.width-g.size.width/2))
+//                g.position.x = CGFloat.random(in: g.size.width/2...(scene.size.width-g.size.width/2))
             }
         }
         
