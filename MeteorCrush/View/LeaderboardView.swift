@@ -10,6 +10,10 @@ import SwiftUI
 struct LeaderboardView: View {
     @EnvironmentObject var leaderboardModel: LeaderboardModel
 
+    // Animation states
+    @State private var fadeIn = false
+    @State private var animateStars = false
+
     var body: some View {
         ZStack {
             Image("bg1")
@@ -22,17 +26,29 @@ struct LeaderboardView: View {
                     .foregroundColor(.white)
                     .padding(.top, 40)
                     .padding(.bottom, 20)
+                    .opacity(fadeIn ? 1 : 0)
+                    .offset(y: fadeIn ? 0 : -20)
+                    .animation(.easeOut(duration: 0.6), value: fadeIn)
 
                 // Top 3
                 HStack(alignment: .bottom, spacing: 30) {
                     leaderboardTop(rankImage: "leaderboardRank2", name: getName(for: 2), score: getScore(for: 2))
                         .padding(.bottom, 20)
+                        .scaleEffect(animateStars ? 1.03 : 0.95)
+                        .animation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true), value: animateStars)
 
                     leaderboardTop(rankImage: "leaderboardRank1", name: getName(for: 1), score: getScore(for: 1))
+                        .scaleEffect(animateStars ? 1.07 : 0.97)
+                        .animation(.easeInOut(duration: 1.4).repeatForever(autoreverses: true), value: animateStars)
 
                     leaderboardTop(rankImage: "leaderboardRank3", name: getName(for: 3), score: getScore(for: 3))
                         .padding(.bottom, 20)
+                        .scaleEffect(animateStars ? 1.03 : 0.97)
+                        .animation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true), value: animateStars)
                 }
+                .opacity(fadeIn ? 1 : 0)
+                .offset(y: fadeIn ? 0 : -10)
+                .animation(.easeOut(duration: 0.6).delay(0.1), value: fadeIn)
 
                 // Ranks 4+
                 ZStack(alignment: .top) {
@@ -88,6 +104,9 @@ struct LeaderboardView: View {
                     .frame(height: 330) // Limit scroll height
                 }
                 .padding(.top, 20)
+                .opacity(fadeIn ? 1 : 0)
+                .offset(y: fadeIn ? 0 : 10)
+                .animation(.easeOut(duration: 0.6).delay(0.2), value: fadeIn)
 
                 Spacer()
 
@@ -103,7 +122,16 @@ struct LeaderboardView: View {
                         .cornerRadius(8)
                 }
                 .padding(.bottom, 40)
+                .opacity(fadeIn ? 1 : 0)
+                .offset(y: fadeIn ? 0 : 10)
+                .animation(.easeOut(duration: 0.6).delay(0.3), value: fadeIn)
             }
+        }
+        .onAppear {
+            withAnimation {
+                fadeIn = true
+            }
+            animateStars = true
         }
     }
 
@@ -138,8 +166,6 @@ struct LeaderboardView: View {
     }
 }
 
-
-
 #Preview {
-    LeaderboardView()
+    LeaderboardView().environmentObject(LeaderboardModel())
 }

@@ -77,6 +77,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    @Previewable var userData: UserData = UserData()
-    ContentView().environmentObject(userData)
+//    @Previewable var userData: UserData = UserData()
+//    ContentView().environmentObject(userData)
 }

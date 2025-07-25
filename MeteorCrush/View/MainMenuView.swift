@@ -54,6 +54,7 @@ struct MainMenuView: View {
                                 .offset(x: -radius * cos(CGFloat(rotateRocket) * .pi / 180),
                                         y: radius * sin(CGFloat(rotateRocket) * .pi / 180))
                                 .rotationEffect(.degrees(rotateRocket))
+                                .padding(.top, 220)
                         }
                        
 
