@@ -126,14 +126,55 @@ struct ObstacleSpawner {
         star.physicsBody = SKPhysicsBody(circleOfRadius: halfW)
         if starPicker == "starRed"
         {
+            let collisionRadius = halfW / 3.5
+            star.physicsBody = SKPhysicsBody(circleOfRadius: collisionRadius)
             star.physicsBody?.categoryBitMask = PhysicsCategory.redStar
+            star.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
+            star.physicsBody?.collisionBitMask = PhysicsCategory.None
+            star.physicsBody?.affectedByGravity = false
+
+            // Tambahkan indikator visual (tanpa physicsBody lagi)
+            let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
+            collisionCircle.position = .zero
+            collisionCircle.strokeColor = .clear
+            collisionCircle.lineWidth = 2
+            collisionCircle.fillColor = .clear
+            collisionCircle.zPosition = 1
+            star.addChild(collisionCircle)
         } else if starPicker == "starBlue"
         {
+            let collisionRadius = halfW / 3.5
+            star.physicsBody = SKPhysicsBody(circleOfRadius: collisionRadius)
             star.physicsBody?.categoryBitMask = PhysicsCategory.greenStar
-        } else
+            star.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
+            star.physicsBody?.collisionBitMask = PhysicsCategory.None
+            star.physicsBody?.affectedByGravity = false
+
+            // Tambahkan indikator visual (tanpa physicsBody lagi)
+            let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
+            collisionCircle.position = .zero
+            collisionCircle.strokeColor = .clear
+            collisionCircle.lineWidth = 2
+            collisionCircle.fillColor = .clear
+            collisionCircle.zPosition = 1
+            star.addChild(collisionCircle)        } else
         {
-            star.physicsBody?.categoryBitMask = PhysicsCategory.blueStar
-        }
+                let collisionRadius = halfW / 3.5
+                star.physicsBody = SKPhysicsBody(circleOfRadius: collisionRadius)
+                star.physicsBody?.categoryBitMask = PhysicsCategory.blueStar
+                star.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
+                star.physicsBody?.collisionBitMask = PhysicsCategory.None
+                star.physicsBody?.affectedByGravity = false
+                
+                // Tambahkan indikator visual (tanpa physicsBody lagi)
+                let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
+                collisionCircle.position = .zero
+                collisionCircle.strokeColor = .clear
+                collisionCircle.lineWidth = 2
+                collisionCircle.fillColor = .clear
+                collisionCircle.zPosition = 1
+                star.addChild(collisionCircle)
+            }
         star.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
         star.physicsBody?.collisionBitMask = PhysicsCategory.None
         star.physicsBody?.affectedByGravity = false
@@ -166,11 +207,22 @@ struct ObstacleSpawner {
         star.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
         star.zPosition = 5
         star.blendMode = .alpha
-        star.physicsBody = SKPhysicsBody(circleOfRadius: halfW)
+        let collisionRadius = halfW / 3.5
+        
+        star.physicsBody = SKPhysicsBody(circleOfRadius: collisionRadius)
         star.physicsBody?.categoryBitMask = PhysicsCategory.greenStar
         star.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
         star.physicsBody?.collisionBitMask = PhysicsCategory.None
         star.physicsBody?.affectedByGravity = false
+
+        // Tambahkan indikator visual (tanpa physicsBody lagi)
+        let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
+        collisionCircle.position = .zero
+        collisionCircle.strokeColor = .clear
+        collisionCircle.lineWidth = 2
+        collisionCircle.fillColor = .clear
+        collisionCircle.zPosition = -1
+        star.addChild(collisionCircle)
 
         let planetPadding: CGFloat = 30
             for planet in gs.planets {
@@ -200,11 +252,22 @@ struct ObstacleSpawner {
         star.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
         star.zPosition = 5
         star.blendMode = .alpha
-        star.physicsBody = SKPhysicsBody(circleOfRadius: halfW)
+
+        let collisionRadius = halfW / 3.5
+        star.physicsBody = SKPhysicsBody(circleOfRadius: collisionRadius)
         star.physicsBody?.categoryBitMask = PhysicsCategory.blueStar
         star.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
         star.physicsBody?.collisionBitMask = PhysicsCategory.None
         star.physicsBody?.affectedByGravity = false
+
+        // Tambahkan indikator visual (tanpa physicsBody lagi)
+        let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
+        collisionCircle.position = .zero
+        collisionCircle.strokeColor = .clear
+        collisionCircle.lineWidth = 2
+        collisionCircle.fillColor = .clear
+        collisionCircle.zPosition = -1
+        star.addChild(collisionCircle)
 
         let planetPadding: CGFloat = 30
             for planet in gs.planets {
