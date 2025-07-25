@@ -29,7 +29,10 @@ class FallingMeteorSpawner {
             guard let self = self, let gameScene = self.scene as? GameScene else { return }
             if gameScene.isGameOver { return } // ⛔ stop spawn
             SoundManager.shared.playSFX(named: "incomingMeteor", withExtension: "wav")
-            self.spawnMeteor()
+                // kasih delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.spawnMeteor()
+            }
         }
     }
     private func spawnMeteor() {
@@ -37,7 +40,7 @@ class FallingMeteorSpawner {
         
         let meteor = SKSpriteNode(texture: textures[0])
         meteor.size = CGSize(width: 40, height: 250)
-        meteor.zPosition = 1
+        meteor.zPosition = 5
 
         meteor.color = .red
         meteor.colorBlendFactor = 0.0
@@ -62,14 +65,18 @@ class FallingMeteorSpawner {
         debugCircle.zPosition = -1
         meteor.addChild(debugCircle)
 
+        let meteorWidth: CGFloat = meteor.size.width
+        let margin = meteorWidth / 2
+        let startX = CGFloat.random(in: margin...(scene.size.width - margin))
+        let targetX = CGFloat.random(in: margin...(scene.size.width - margin))
 
         // 1. Start (top of screen)
-        let startX = CGFloat.random(in: 0...scene.size.width)
+//        let startX = CGFloat.random(in: 0...scene.size.width)
         let startY = scene.size.height + meteor.size.height
         meteor.position = CGPoint(x: startX, y: startY)
 
         // 2. Target (bottom of screen)
-        let targetX = CGFloat.random(in: 0...scene.size.width)
+//        let targetX = CGFloat.random(in: 0...scene.size.width)
         let targetY: CGFloat = -meteor.size.height
 
         // 3. Face toward target

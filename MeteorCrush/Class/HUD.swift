@@ -3,8 +3,8 @@ import SpriteKit
 class HUD: SKNode {
     let powerupSize: CGFloat = 60.0
     
-    private let scoreLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-    private let fuelLabel  = SKLabelNode(fontNamed: "AvenirNext-Bold")
+    private let scoreLabel = SKLabelNode()
+    private let fuelLabel  = SKLabelNode()
     private let fuelBarBackground = SKSpriteNode(color: .gray, size: CGSize(width: 55, height: 225)) // Background bar (vertikal)
     private let fuelBarFill = SKSpriteNode() // Correcting fuelBarFill to SKSpriteNode
     
@@ -28,7 +28,8 @@ class HUD: SKNode {
         super.init()
         
         // Score Label
-        scoreLabel.fontSize = 24
+        scoreLabel.fontName = "Baloo2-ExtraBold"
+        scoreLabel.fontSize = 30
         scoreLabel.fontColor = .white
         scoreLabel.position = CGPoint(x: size.width - 80, y: size.height - 70)
         scoreLabel.zPosition = 20
@@ -36,6 +37,7 @@ class HUD: SKNode {
         addChild(scoreLabel)
         
         // Fuel Label
+        fuelLabel.fontName = "Baloo2-ExtraBold"
         fuelLabel.fontSize = 24
         fuelLabel.fontColor = .yellow
         fuelLabel.position = CGPoint(x: 40, y: size.height - 250)

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LeaderboardView: View {
+    @Environment(\.dismiss) var dismiss
     @StateObject private var viewModel = LeaderboardModel()
 
     var body: some View {
@@ -18,9 +19,9 @@ struct LeaderboardView: View {
 
             VStack(spacing: 20) {
                 Text("LEADERBOARD")
-                    .font(.system(size: 28, weight: .bold))
+                    .font(fontTitle())
                     .foregroundColor(.white)
-                    .padding(.top, 40)
+                    .padding(.top, 100)
                     .padding(.bottom, 20)
 
                 // Top 3
@@ -56,13 +57,13 @@ struct LeaderboardView: View {
                                                 .fill(Color.clear)
                                                 .frame(width: 36, height: 36)
                                             Text("#\(player.rank)")
-                                                .font(.system(size: 12, weight: .bold))
+                                                .font(fontSubTitle2())
                                                 .foregroundColor(.white)
                                         }
 
                                         HStack {
                                             Text(player.name)
-                                                .font(.system(size: 12))
+                                                .font(fontSubTitle2())
                                                 .foregroundColor(.white)
                                                 .lineLimit(1)
                                                 .truncationMode(.tail)
@@ -72,7 +73,7 @@ struct LeaderboardView: View {
                                             Spacer()
 
                                             Text("\(player.score) pts")
-                                                .font(.system(size: 9))
+                                                .font(fontSubTitle3())
                                                 .foregroundColor(.yellow)
                                                 .padding(.trailing, 11)
                                                 .fontWeight(.bold)
@@ -89,21 +90,21 @@ struct LeaderboardView: View {
                 }
                 .padding(.top, 20)
 
-                Spacer()
-
-                // For testing: Button to add new player
-                Button(action: {
-                    viewModel.addPlayer(name: "You", score: Int.random(in: 10...50))
-                }) {
-                    Text("Simulate Player Score")
-                        .foregroundColor(.white)
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 10)
-                        .background(Color.blue)
-                        .cornerRadius(8)
-                }
-                .padding(.bottom, 40)
-            }
+                ZStack{
+                    Image("buttonBack")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 320, height: 300)
+                    Button(action: {
+                        SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
+                        dismiss()
+                    }) {
+                        RoundedRectangle(cornerRadius: 100)
+                            .fill(Color.clear)
+                            .frame(width: 180, height: 40)
+                    }
+                }.padding(.top, -100)
+            }.padding(.top, 20)
         }
     }
 
@@ -126,13 +127,14 @@ struct LeaderboardView: View {
                 .frame(width: 80, height: 80)
             VStack(spacing: -1) {
                 Text(name)
-                    .font(.system(size: 13))
+                    .font(fontSubTitle())
                     .foregroundColor(.white)
                     .fontWeight(.bold)
                 Text(score)
                     .foregroundColor(.yellow)
                     .fontWeight(.bold)
-                    .font(.system(size: 11))
+                    .font(fontSubTitle2())
+                    .padding(.top, -5)
             }
         }
     }

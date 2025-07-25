@@ -60,11 +60,16 @@ struct CollisionHandler {
                     name: Notification.Name("GameOver"),
                     object: hud.score
                 )
+                scene.meteorSpawner.stopSpawning()
                 scene.isGameOver = true
                 scene.isPaused = true
-                scene.meteorSpawner.stopSpawning()
-                print("tabrak meteor")
-                
+
+                let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
+                gameOver.text = "Game Over"
+                gameOver.fontSize = 48
+                gameOver.position = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
+                gameOver.zPosition = 1000
+                scene.addChild(gameOver)
             }
             return
         }
@@ -79,7 +84,7 @@ struct CollisionHandler {
                 name: Notification.Name("GameOver"),
                 object: hud.score
             )
-            
+            SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
             vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
                 
@@ -96,7 +101,7 @@ struct CollisionHandler {
                 name: Notification.Name("GameOver"),
                 object: hud.score
             )
-           // SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
+            SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
             vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
                 
@@ -180,6 +185,7 @@ struct CollisionHandler {
             } else
             {
                 if hud.score > 0{
+                    SoundManager.shared.playSFX(named: "wrongStar", withExtension: "wav")
                     hud.score -= 1
                 }
             }

@@ -103,6 +103,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     object: hud.score
                 )
                 self.removeAction(forKey: "fuelTimer")
+                meteorSpawner.stopSpawning()
                 isGameOver = true
                 isPaused = true
             }
@@ -178,6 +179,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rocketY = size.height / 4
         rocket.position = CGPoint(x: size.width/2, y: rocketY)
         rocket.zPosition = 10
+        
+        // Set warna roket
         if rocketPicker == "rocketRed" {
             rocket.color = .red
         } else if rocketPicker == "rocketGreen" {
