@@ -8,6 +8,8 @@
 import SpriteKit
 import GameplayKit
 
+
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var rocket: SKSpriteNode!
     var rocketFire: RocketFire!
@@ -96,40 +98,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func TutorialOverlay() {
-        tutorialBackground = SKSpriteNode(color: .gray, size: CGSize(width: size.width * 2, height: size.height))
+        tutorialBackground = SKSpriteNode(color: .gray, size: CGSize(width: size.width * 2, height: size.height/1.5))
         tutorialBackground.alpha = 0.5
         tutorialBackground.zPosition = 100
         addChild(tutorialBackground)
         
-        // Tutorial label
         tutorialLabel = SKLabelNode(text: "Swipe to move the rocket!")
-        
-        
         tutorialLabel.fontColor = .white
-        tutorialLabel.fontSize = 40
-        tutorialLabel.position = CGPoint(x: size.width/2, y: size.height/4)
+        tutorialLabel.fontSize = 30
+        tutorialLabel.fontName = "Arial-Bold"
+        tutorialLabel.position = CGPoint(x: (scene?.size.width)! / 2, y: (scene?.size.height)! / 4)
         tutorialLabel.zPosition = 101
         addChild(tutorialLabel)
-        
-        // Menggunakan SF Symbol hand.draw.fill
-        let handImage = UIImage(systemName: "hand.draw.fill")!
-      //  handImage = handImage.withTintColor(.white)
-        let handTexture = SKTexture(image: handImage)
-        
-        // Membuat sprite dengan texture dari SF Symbol
-        hand = SKSpriteNode(texture: handTexture)
-        hand.position = CGPoint(x: size.width / 3, y: size.height / 8) // Di bawah teks
-        hand.zPosition = 102
-        addChild(hand)
-        
-        hand.setScale(5.0)
-            
-        // Animasi geser tangan
-        let moveRight = SKAction.moveBy(x: 200, y: 0, duration: 0.7)
-        let moveLeft = SKAction.moveBy(x: -200, y: 0, duration: 0.7)
-        let moveSequence = SKAction.sequence([moveRight, moveLeft])
-        let repeatAction = SKAction.repeatForever(moveSequence)
-        hand.run(repeatAction)
+       
+       
+        if let handImage = UIImage(named: "hand.png") {
+            let handTexture = SKTexture(image: handImage)
+            hand = SKSpriteNode(texture: handTexture)
+            hand.position = CGPoint(x: size.width / 3, y: size.height / 8) // Di bawah teks
+            hand.zPosition = 102
+            addChild(hand)
+            hand.setScale(0.07)
+
+            // Animasi geser tangan
+            let moveRight = SKAction.moveBy(x: 200, y: 0, duration: 0.7)
+            let moveLeft = SKAction.moveBy(x: -200, y: 0, duration: 0.7)
+            let moveSequence = SKAction.sequence([moveRight, moveLeft])
+            let repeatAction = SKAction.repeatForever(moveSequence)
+            hand.run(repeatAction)
+        } else {
+            print("Gambar tangan tidak ditemukan!")
+        }
     }
     
     private func removeTutorialOverlay() {
@@ -276,6 +275,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         hud.updateLabels()
         ObstacleSpawner.recycleOffscreen(in: self, speed: scrollSpeed)
+        
+        
     }
     
     func didBegin(_ contact: SKPhysicsContact) {

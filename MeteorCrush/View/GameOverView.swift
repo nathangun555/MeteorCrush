@@ -12,132 +12,58 @@ struct GameOverView: View {
     var bestScore: Int
     var onPlayAgain: () -> Void
     var onQuit: () -> Void
-
+    
     var body: some View {
-        VStack(spacing: 20) {
-            Text("GAME OVER")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundColor(.red)
-
-            Text("Best Score : \(bestScore)")
-                .font(.headline)
-                .foregroundColor(.black)
-
-            Text("You Just Scored")
-                .font(.subheadline)
-
-            Text("\(currentScore)")
-                .font(.system(size: 40, weight: .bold))
-
-            Button(action: onPlayAgain) {
-                Text("Play Again")
-                    .fontWeight(.bold)
+        
+        ZStack {
+            
+            Image("gameOver")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 400, height: 400)
+            GeometryReader { geometry in
+                Text("\(bestScore)")
+                    .font(.headline)
                     .foregroundColor(.black)
-                    .padding()
-                    .frame(width: 200)
-                    .background(Color.green.opacity(0.7))
-                    .cornerRadius(15)
+                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2.15)
+                
+                Text("\(currentScore)")
+                    .font(.system(size: 40, weight: .bold))
+                    .position(x: geometry.size.width / 2, y: geometry.size.height / 1.69)
+                    
+                
+                Button(action: onPlayAgain) {
+                    Text("Play Again")
+                        .fontWeight(.bold)
+                        .foregroundColor(.black)
+                        .padding()
+                        .frame(width: 110, height: 70)
+                        .background(Color.green.opacity(0.7))
+                        .cornerRadius(30)
+//                        .position(x: 70, y: 600)
+                        .position(x: geometry.size.width / 2.8, y: geometry.size.height / 1.4)
+                        .opacity(0)
+                }
+                
+                Button(action: onQuit) {
+                    Text("Quit")
+                        .fontWeight(.bold)
+                        .foregroundColor(.black)
+                        .padding()
+                        .frame(width: 110, height: 70)
+                        .background(Color.red.opacity(0.7))
+                        .cornerRadius(30)
+//                        .position(x: 140, y: 600)
+                        .position(x: geometry.size.width / 1.55, y: geometry.size.height / 1.4)
+                        .opacity(0)
+                }
+                
             }
 
-            Button(action: onQuit) {
-                Text("Quit")
-                    .fontWeight(.bold)
-                    .foregroundColor(.black)
-                    .padding()
-                    .frame(width: 200)
-                    .background(Color.red.opacity(0.7))
-                    .cornerRadius(15)
-            }
+            
+          
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(20)
-        .shadow(radius: 10)
     }
 }
 
 
-
-//import SwiftUI
-
-//
-//  LeaderboardModel.swift
-//  MeteorCrush
-//
-//  Created by Nathan Gunawan on 23/07/25.
-//
-
-//import Foundation
-//
-//
-//struct GameOverView: View {
-//        // ✅ Access current username
-//    @ObservedObject var leaderboardModel: LeaderboardModel
-//    
-//    var currentScore: Int
-//    var bestScore: Int
-//    var onPlayAgain: () -> Void
-//    var onQuit: () -> Void
-//    
-//    var body: some View {
-//        VStack(spacing: 20) {
-//            Text("GAME OVER")
-//                .font(.largeTitle)
-//                .fontWeight(.bold)
-//                .foregroundColor(.red)
-//            
-//            Text("Best Score : \(bestScore)")
-//                .font(.headline)
-//                .foregroundColor(.black)
-//            
-//            Text("You Just Scored")
-//                .font(.subheadline)
-//            
-//            Text("\(currentScore)")
-//                .font(.system(size: 40, weight: .bold))
-//            
-//            Button(action: onPlayAgain) {
-//                Text("Play Again")
-//                    .fontWeight(.bold)
-//                    .foregroundColor(.black)
-//                    .padding()
-//                    .frame(width: 200)
-//                    .background(Color.green.opacity(0.7))
-//                    .cornerRadius(15)
-//            }
-//            
-//            Button(action: onQuit) {
-//                Text("Quit")
-//                    .fontWeight(.bold)
-//                    .foregroundColor(.black)
-//                    .padding()
-//                    .frame(width: 200)
-//                    .background(Color.red.opacity(0.7))
-//                    .cornerRadius(15)
-//            }
-//        }
-//        .padding()
-//        .background(Color.white)
-//        .cornerRadius(20)
-//        .shadow(radius: 10)
-//        .onAppear {
-//            SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
-//            
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-//                SoundManager.shared.stopAllSounds()
-//                let username = userData.username.trimmingCharacters(in: .whitespacesAndNewlines)
-//                guard !username.isEmpty else { return }
-//                
-//                // Check if player exists
-//                if let existingPlayer = leaderboardModel.players.first(where: { $0.name == username }) {
-//                    if currentScore > existingPlayer.score {
-//                        leaderboardModel.updatePlayer(name: username, newScore: currentScore)
-//                    }
-//                } else {
-//                    leaderboardModel.addPlayer(name: username, score: currentScore)
-//                }
-//            }
-//        }
-//    }
-//}

@@ -34,7 +34,10 @@ struct ContentView: View {
                     .id(sceneID)
                     .ignoresSafeArea()
                     .onReceive(NotificationCenter.default.publisher(for: Notification.Name("GameOver"))) { notif in
+                        
+                        print("GAME OVER TRIGGERED")
                         isGameOver = true
+                        scene.isPaused = true
                         if let score = notif.object as? Int {
                             currentScore = score
                             bestScore = max(currentScore, UserDefaults.standard.integer(forKey: "bestScore"))
@@ -57,6 +60,7 @@ struct ContentView: View {
                             backToMenu = true
                         }
                     )
+                    
                    
                 }
             }
