@@ -21,6 +21,7 @@ struct GameOverView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 400, height: 400)
+            
             GeometryReader { geometry in
                 Text("\(bestScore)")
                     .font(.headline)
@@ -30,40 +31,31 @@ struct GameOverView: View {
                 Text("\(currentScore)")
                     .font(.system(size: 40, weight: .bold))
                     .position(x: geometry.size.width / 2, y: geometry.size.height / 1.69)
-                    
                 
-                Button(action: onPlayAgain) {
-                    Text("Play Again")
-                        .fontWeight(.bold)
-                        .foregroundColor(.black)
-                        .padding()
-                        .frame(width: 110, height: 70)
-                        .background(Color.green.opacity(0.7))
-                        .cornerRadius(30)
-//                        .position(x: 70, y: 600)
-                        .position(x: geometry.size.width / 2.8, y: geometry.size.height / 1.4)
-                        .opacity(0)
-                }
-                
-                Button(action: onQuit) {
-                    Text("Quit")
-                        .fontWeight(.bold)
-                        .foregroundColor(.black)
-                        .padding()
-                        .frame(width: 110, height: 70)
-                        .background(Color.red.opacity(0.7))
-                        .cornerRadius(30)
-//                        .position(x: 140, y: 600)
-                        .position(x: geometry.size.width / 1.55, y: geometry.size.height / 1.4)
-                        .opacity(0)
-                }
-                
-            }
+                // ZStack untuk Play Again dan Quit dengan lapisan yang sama
+                ZStack {
+                    // Tombol Play Again
+                    Button(action: onPlayAgain) {
+                        RoundedRectangle(cornerRadius: 50)
+                            .fill(Color.red)
+                            .frame(width: 120, height: 80)
+                            .opacity(0)
+                            
+                    }
+                    .position(x: geometry.size.width / 2.8, y: geometry.size.height / 1.4)
 
-            
-          
+                    // Tombol Quit
+                    Button(action: onQuit) {
+                        RoundedRectangle(cornerRadius: 50)
+                            .fill(Color.red)
+                            .frame(width: 120, height: 80)
+                            .opacity(0)
+                            
+                    }
+                    .position(x: geometry.size.width / 1.55, y: geometry.size.height / 1.4)
+                }
+            }
         }
     }
 }
-
 
