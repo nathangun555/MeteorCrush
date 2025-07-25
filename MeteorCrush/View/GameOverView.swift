@@ -12,132 +12,50 @@ struct GameOverView: View {
     var bestScore: Int
     var onPlayAgain: () -> Void
     var onQuit: () -> Void
-
+    
     var body: some View {
-        VStack(spacing: 20) {
-            Text("GAME OVER")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundColor(.red)
+        
+        ZStack {
+            
+            Image("gameOver")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 400, height: 400)
+            
+            GeometryReader { geometry in
+                Text("\(bestScore)")
+                    .font(.custom("Baloo2-ExtraBold", size: 25))
+                    .foregroundColor(.white)
+                    .position(x: geometry.size.width / 2, y: geometry.size.height / 2.13)
+                
+                Text("\(currentScore)")
+                    .font(.custom("Baloo2-ExtraBold", size: 30))
+                    .foregroundStyle(Color(red: 89/255, green: 81/255, blue: 180/255))
+                    .position(x: geometry.size.width / 2, y: geometry.size.height / 1.68)
+                // ZStack untuk Play Again dan Quit dengan lapisan yang sama
+                ZStack {
+                    // Tombol Play Again
+                    Button(action: onPlayAgain) {
+                        RoundedRectangle(cornerRadius: 50)
+                            .fill(Color.red)
+                            .frame(width: 120, height: 80)
+                            .opacity(0)
+                            
+                    }
+                    .position(x: geometry.size.width / 2.8, y: geometry.size.height / 1.4)
 
-            Text("Best Score : \(bestScore)")
-                .font(.headline)
-                .foregroundColor(.black)
-
-            Text("You Just Scored")
-                .font(.subheadline)
-
-            Text("\(currentScore)")
-                .font(.system(size: 40, weight: .bold))
-
-            Button(action: onPlayAgain) {
-                Text("Play Again")
-                    .fontWeight(.bold)
-                    .foregroundColor(.black)
-                    .padding()
-                    .frame(width: 200)
-                    .background(Color.green.opacity(0.7))
-                    .cornerRadius(15)
-            }
-
-            Button(action: onQuit) {
-                Text("Quit")
-                    .fontWeight(.bold)
-                    .foregroundColor(.black)
-                    .padding()
-                    .frame(width: 200)
-                    .background(Color.red.opacity(0.7))
-                    .cornerRadius(15)
+                    // Tombol Quit
+                    Button(action: onQuit) {
+                        RoundedRectangle(cornerRadius: 50)
+                            .fill(Color.red)
+                            .frame(width: 120, height: 80)
+                            .opacity(0)
+                            
+                    }
+                    .position(x: geometry.size.width / 1.55, y: geometry.size.height / 1.4)
+                }
             }
         }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(20)
-        .shadow(radius: 10)
     }
 }
 
-
-
-//import SwiftUI
-
-//
-//  LeaderboardModel.swift
-//  MeteorCrush
-//
-//  Created by Nathan Gunawan on 23/07/25.
-//
-
-//import Foundation
-//
-//
-//struct GameOverView: View {
-//        // ✅ Access current username
-//    @ObservedObject var leaderboardModel: LeaderboardModel
-//    
-//    var currentScore: Int
-//    var bestScore: Int
-//    var onPlayAgain: () -> Void
-//    var onQuit: () -> Void
-//    
-//    var body: some View {
-//        VStack(spacing: 20) {
-//            Text("GAME OVER")
-//                .font(.largeTitle)
-//                .fontWeight(.bold)
-//                .foregroundColor(.red)
-//            
-//            Text("Best Score : \(bestScore)")
-//                .font(.headline)
-//                .foregroundColor(.black)
-//            
-//            Text("You Just Scored")
-//                .font(.subheadline)
-//            
-//            Text("\(currentScore)")
-//                .font(.system(size: 40, weight: .bold))
-//            
-//            Button(action: onPlayAgain) {
-//                Text("Play Again")
-//                    .fontWeight(.bold)
-//                    .foregroundColor(.black)
-//                    .padding()
-//                    .frame(width: 200)
-//                    .background(Color.green.opacity(0.7))
-//                    .cornerRadius(15)
-//            }
-//            
-//            Button(action: onQuit) {
-//                Text("Quit")
-//                    .fontWeight(.bold)
-//                    .foregroundColor(.black)
-//                    .padding()
-//                    .frame(width: 200)
-//                    .background(Color.red.opacity(0.7))
-//                    .cornerRadius(15)
-//            }
-//        }
-//        .padding()
-//        .background(Color.white)
-//        .cornerRadius(20)
-//        .shadow(radius: 10)
-//        .onAppear {
-//            SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
-//            
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-//                SoundManager.shared.stopAllSounds()
-//                let username = userData.username.trimmingCharacters(in: .whitespacesAndNewlines)
-//                guard !username.isEmpty else { return }
-//                
-//                // Check if player exists
-//                if let existingPlayer = leaderboardModel.players.first(where: { $0.name == username }) {
-//                    if currentScore > existingPlayer.score {
-//                        leaderboardModel.updatePlayer(name: username, newScore: currentScore)
-//                    }
-//                } else {
-//                    leaderboardModel.addPlayer(name: username, score: currentScore)
-//                }
-//            }
-//        }
-//    }
-//}

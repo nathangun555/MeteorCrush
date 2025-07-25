@@ -63,13 +63,8 @@ struct CollisionHandler {
                 scene.isGameOver = true
                 scene.isPaused = true
                 scene.meteorSpawner.stopSpawning()
+                print("tabrak meteor")
                 
-                let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
-                gameOver.text = "Game Over"
-                gameOver.fontSize = 48
-                gameOver.position = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
-                gameOver.zPosition = 1000
-                scene.addChild(gameOver)
             }
             return
         }
@@ -92,12 +87,6 @@ struct CollisionHandler {
                 scene.isPaused = true
                scene.meteorSpawner.stopSpawning()
 
-                let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
-                gameOver.text = "Game Over"
-                gameOver.fontSize = 48
-                gameOver.position = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
-                gameOver.zPosition = 1000
-                scene.addChild(gameOver)
             }
             return
             
@@ -114,13 +103,7 @@ struct CollisionHandler {
                 scene.isGameOver = true
                 scene.isPaused = true
                 scene.meteorSpawner.stopSpawning()
-                
-                let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
-                gameOver.text = "Game Over"
-                gameOver.fontSize = 48
-                gameOver.position = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
-                gameOver.zPosition = 1000
-                scene.addChild(gameOver)
+            
             }
             return
             
