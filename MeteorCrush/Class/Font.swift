@@ -7,7 +7,7 @@
 import SwiftUI
 
 func fontTitle() -> Font {
-    Font.custom("Baloo2-ExtraBold", size: 30)
+    Font.custom("Baloo2-ExtraBold", size: 35)
 }
 
 func fontSubTitle() -> Font {

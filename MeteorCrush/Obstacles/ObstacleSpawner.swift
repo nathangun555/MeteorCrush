@@ -60,7 +60,7 @@ struct ObstacleSpawner {
     }
     
     static func spawnPlanet(in scene: GameScene, atY y: CGFloat, index: Int) {
-        let planets = [SKSpriteNode(imageNamed: "planet1"), SKSpriteNode(imageNamed: "planet2"), SKSpriteNode(imageNamed: "planet3"), SKSpriteNode(imageNamed: "planet4"), SKSpriteNode(imageNamed: "planet5")]
+        let planets = [SKSpriteNode(imageNamed: "planet1"), SKSpriteNode(imageNamed: "planet2"), SKSpriteNode(imageNamed: "planet3"), SKSpriteNode(imageNamed: "planet4"), SKSpriteNode(imageNamed: "planet5"), SKSpriteNode(imageNamed: "planet6")]
         let planetPicker = planets.randomElement()!
 
         let planet = planetPicker

@@ -43,13 +43,12 @@ struct SettingsView: View {
                     .ignoresSafeArea()
                 
                 VStack{
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color(hex: "#8f85ff").opacity(0.7))
-
-                        .frame(width: 300, height: 400)
+                    Image("bgSettings")
+                        .resizable()
+                        .frame(width: 330, height: 450)
                         .overlay(
                             VStack{
-                                Text("Settings")
+                                Text("SETTINGS")
                                     .foregroundStyle(.white)
                                     .bold()
                                     .font(fontTitle())
