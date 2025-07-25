@@ -108,38 +108,29 @@ struct ObstacleSpawner {
             planet.addChild(collisionCircle)
 
             if let gs = scene as? GameScene {
-                gs.planets.append(planet)
+//                gs.planets.append(planet)
             }
 
-            scene.addChild(planet)
+//            scene.addChild(planet)
         }
 
     static func spawnStar(in scene: GameScene, atY y: CGFloat) {
-        let starColors = ["starRed", "starBlue", "starGreen"]
-        let starPicker = starColors.randomElement()!
-        let star = SKSpriteNode(imageNamed: starPicker)
+        guard let gs = scene as? GameScene else { return }
+
+        let star = SKSpriteNode(imageNamed: "redStar")
         star.size = CGSize(width: 50, height: 50)
         let halfW = star.size.width/2
         star.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
         star.zPosition = 5
         star.blendMode = .alpha
         star.physicsBody = SKPhysicsBody(circleOfRadius: halfW)
-        if starPicker == "starRed"
-        {
-            star.physicsBody?.categoryBitMask = PhysicsCategory.redStar
-        } else if starPicker == "starBlue"
-        {
-            star.physicsBody?.categoryBitMask = PhysicsCategory.greenStar
-        } else
-        {
-            star.physicsBody?.categoryBitMask = PhysicsCategory.blueStar
-        }
+        star.physicsBody?.categoryBitMask = PhysicsCategory.redStar
         star.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
         star.physicsBody?.collisionBitMask = PhysicsCategory.None
         star.physicsBody?.affectedByGravity = false
 
         let planetPadding: CGFloat = 30
-            for planet in scene.planets {
+            for planet in gs.planets {
                 let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
                 let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
                 let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
@@ -153,7 +144,7 @@ struct ObstacleSpawner {
                     star.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
                 }
             }
-        scene.redStar.append(star)
+        gs.redStar.append(star)
         
         scene.addChild(star)
     }
@@ -375,10 +366,19 @@ struct ObstacleSpawner {
         gate.addChild(collisionRect)
         gate.addChild(kiri)
         gate.addChild(kanan)
-        if let gs = scene as? GameScene {
-            gs.gate.append(gate)
-        }
+        let gs = scene as GameScene
+        gs.gate.append(gate)
+        
         scene.addChild(gate)
+        scene.upcomingGate = y
+        scene.futureGate = y + 500
+        scene.gateColor = gate.color
+        
+        for _ in 0..<10 {
+            StarSpawner.spawnStar(in: scene)            
+        }
+        
+        print("Upcoming gate at \(y)")
     }
     static func spawnStarsBasedOnColor(in scene: GameScene) {
         let rocketColor = scene.rocket.color
@@ -446,85 +446,85 @@ struct ObstacleSpawner {
                 }
         
         // LOGIC SPAWN STAR BASED ON ROCKET COLOUR
-        var rocketColor = scene.rocket.color
-        var redStarUnit = 0
-        var greenStarUnit = 0
-        var blueStarUnit = 0
+//        var rocketColor = scene.rocket.color
+//        var redStarUnit = 0
+//        var greenStarUnit = 0
+//        var blueStarUnit = 0
 
-                if rocketColor == .red {
-                    redStarUnit = Int((Double(starUnit) * 0.75).rounded())
-                    let remaining = starUnit - redStarUnit
-                        if remaining > 0 {
-                            greenStarUnit = Int.random(in: 0...remaining)
-                            blueStarUnit = remaining - greenStarUnit
-                        }
-                } else if rocketColor == .green {
-                    greenStarUnit = Int((Double(starUnit) * 0.75).rounded())
-                       let remaining = starUnit - greenStarUnit
-                       
-                       if remaining > 0 {
-                           redStarUnit = Int.random(in: 0...remaining)
-                           blueStarUnit = remaining - redStarUnit
-                       }
-                } else {
-                    blueStarUnit = Int((Double(starUnit) * 0.75).rounded())
-                       let remaining = starUnit - blueStarUnit
-                       
-                       if remaining > 0 {
-                           redStarUnit = Int.random(in: 0...remaining)
-                           greenStarUnit = remaining - redStarUnit
-                       }
-                }
-
-        for star in scene.redStar {
-                    if star.size.width/2 >= (scene.size.width-star.size.width/2) {
-                        print("Issue in star! \(50 / 2) < \(scene.size.width-50/2)")
-                    }
-                    if star.position.y < offscreenY {
-                        star.position.x = CGFloat.random(in: star.size.width/2...(scene.size.width-star.size.width/2))
-                        star.position.y = topY + CGFloat.random(in: 0...200)
-                    }
-                    counter += 1
-                if counter == redStarUnit {
-                        counter = 0
-                        break
-                    }
-                }
-        for star in scene.greenStar {
-                    if star.size.width/2 >= (scene.size.width-star.size.width/2) {
-                        print("Issue in star! \(50 / 2) < \(scene.size.width-50/2)")
-                    }
-                    if star.position.y < offscreenY {
-                        star.position.x = CGFloat.random(in: star.size.width/2...(scene.size.width-star.size.width/2))
-                        star.position.y = topY + CGFloat.random(in: 0...200)
-                    }
-                    counter += 1
-            if counter == greenStarUnit {
-                        counter = 0
-                        break
-                    }
-                }
-        for star in scene.blueStar {
-                    if star.size.width/2 >= (scene.size.width-star.size.width/2) {
-                        print("Issue in star! \(50 / 2) < \(scene.size.width-50/2)")
-                    }
-                    if star.position.y < offscreenY {
-                        star.position.x = CGFloat.random(in: star.size.width/2...(scene.size.width-star.size.width/2))
-                        star.position.y = topY + CGFloat.random(in: 0...200)
-                    }
-                    counter += 1
-            if counter == blueStarUnit {
-                        counter = 0
-                        break
-                    }
-                }
-        print(blueStarUnit)
+//                if rocketColor == .red {
+//                    redStarUnit = Int((Double(starUnit) * 0.75).rounded())
+//                    let remaining = starUnit - redStarUnit
+//                        if remaining > 0 {
+//                            greenStarUnit = Int.random(in: 0...remaining)
+//                            blueStarUnit = remaining - greenStarUnit
+//                        }
+//                } else if rocketColor == .green {
+//                    greenStarUnit = Int((Double(starUnit) * 0.75).rounded())
+//                       let remaining = starUnit - greenStarUnit
+//                       
+//                       if remaining > 0 {
+//                           redStarUnit = Int.random(in: 0...remaining)
+//                           blueStarUnit = remaining - redStarUnit
+//                       }
+//                } else {
+//                    blueStarUnit = Int((Double(starUnit) * 0.75).rounded())
+//                       let remaining = starUnit - blueStarUnit
+//                       
+//                       if remaining > 0 {
+//                           redStarUnit = Int.random(in: 0...remaining)
+//                           greenStarUnit = remaining - redStarUnit
+//                       }
+//                }
+//
+//        for star in scene.redStar {
+//                    if star.size.width/2 >= (scene.size.width-star.size.width/2) {
+//                        print("Issue in star! \(50 / 2) < \(scene.size.width-50/2)")
+//                    }
+//                    if star.position.y < offscreenY {
+//                        star.position.x = CGFloat.random(in: star.size.width/2...(scene.size.width-star.size.width/2))
+//                        star.position.y = topY + CGFloat.random(in: 0...200)
+//                    }
+//                    counter += 1
+//                if counter == redStarUnit {
+//                        counter = 0
+//                        break
+//                    }
+//                }
+//        for star in scene.greenStar {
+//                    if star.size.width/2 >= (scene.size.width-star.size.width/2) {
+//                        print("Issue in star! \(50 / 2) < \(scene.size.width-50/2)")
+//                    }
+//                    if star.position.y < offscreenY {
+//                        star.position.x = CGFloat.random(in: star.size.width/2...(scene.size.width-star.size.width/2))
+//                        star.position.y = topY + CGFloat.random(in: 0...200)
+//                    }
+//                    counter += 1
+//            if counter == greenStarUnit {
+//                        counter = 0
+//                        break
+//                    }
+//                }
+//        for star in scene.blueStar {
+//                    if star.size.width/2 >= (scene.size.width-star.size.width/2) {
+//                        print("Issue in star! \(50 / 2) < \(scene.size.width-50/2)")
+//                    }
+//                    if star.position.y < offscreenY {
+//                        star.position.x = CGFloat.random(in: star.size.width/2...(scene.size.width-star.size.width/2))
+//                        star.position.y = topY + CGFloat.random(in: 0...200)
+//                    }
+//                    counter += 1
+//            if counter == blueStarUnit {
+//                        counter = 0
+//                        break
+//                    }
+//                }
+//        print(blueStarUnit)
 
 
         scene.gate.forEach { g in
             if g.position.y < offscreenY {
                 scene.gate.removeAll()
-                spawnGate(in: scene, atY: topY + CGFloat.random(in: 0...200))
+                spawnGate(in: scene, atY: scene.futureGate)
                 g.position.x = CGFloat.random(in: g.size.width/2...(scene.size.width-g.size.width/2))
             }
         }

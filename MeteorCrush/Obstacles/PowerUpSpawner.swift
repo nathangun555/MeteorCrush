@@ -36,7 +36,7 @@ struct PowerUpSpawner {
         scene.powerups.append(powerup)
         scene.addChild(powerup)
 
-        print("Powerup spawned. Type: \(powerUpType.rawValue)")
+//        print("Powerup spawned. Type: \(powerUpType.rawValue)")
     }
 
     
