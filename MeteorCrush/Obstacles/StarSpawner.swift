@@ -52,7 +52,7 @@ class StarSpawner {
                 handleSpawn(color: preferredColor, in: scene, atY: CGFloat.random(in: scene.upcomingGate...scene.futureGate))
                 print("Summoned prefered. Color : \(colorFromCode(preferredColor))")
             }else{
-                let summonedColor = possColor.randomElement()!
+                let summonedColor = possColor.filter { $0 != preferredColor }.randomElement()!
                 handleSpawn(color: summonedColor, in: scene, atY: CGFloat.random(in: scene.upcomingGate...scene.futureGate))
                 print("Summoned random. Color : \(colorFromCode(summonedColor))")
             }

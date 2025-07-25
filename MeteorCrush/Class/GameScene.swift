@@ -42,7 +42,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var futureGate: CGFloat = 0.0
     var gateColor: UIColor = .red
     
-    private var planetCount = 100
+    private var planetCount = 4
     private var starCount   = 100
     private var fuelCount   = 1
     private var gateCount   = 1

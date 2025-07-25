@@ -108,10 +108,10 @@ struct ObstacleSpawner {
             planet.addChild(collisionCircle)
 
             if let gs = scene as? GameScene {
-//                gs.planets.append(planet)
+                gs.planets.append(planet)
             }
 
-//            scene.addChild(planet)
+            scene.addChild(planet)
         }
 
     static func spawnStar(in scene: GameScene, atY y: CGFloat) {
@@ -131,18 +131,18 @@ struct ObstacleSpawner {
 
         let planetPadding: CGFloat = 30
             for planet in gs.planets {
-                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
-                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
-                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
-                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
+//                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
+//                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
+//                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
+//                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
                 
-                if(star.position.x > lowBoundX && star.position.x < highBoundX){
-                    star.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
-                }
-                
-                if(star.position.y > lowBoundY && star.position.y < highBoundY){
-                    star.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
-                }
+//                if(star.position.x > lowBoundX && star.position.x < highBoundX){
+//                    star.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
+//                }
+//                
+//                if(star.position.y > lowBoundY && star.position.y < highBoundY){
+//                    star.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
+//                }
             }
         gs.redStar.append(star)
         
@@ -165,18 +165,18 @@ struct ObstacleSpawner {
 
         let planetPadding: CGFloat = 30
             for planet in gs.planets {
-                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
-                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
-                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
-                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
-                
-                if(star.position.x > lowBoundX && star.position.x < highBoundX){
-                    star.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
-                }
-                
-                if(star.position.y > lowBoundY && star.position.y < highBoundY){
-                    star.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
-                }
+//                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
+//                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
+//                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
+//                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
+//                
+//                if(star.position.x > lowBoundX && star.position.x < highBoundX){
+//                    star.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
+//                }
+//                
+//                if(star.position.y > lowBoundY && star.position.y < highBoundY){
+//                    star.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
+//                }
             }
         gs.greenStar.append(star)
         
@@ -199,18 +199,18 @@ struct ObstacleSpawner {
 
         let planetPadding: CGFloat = 30
             for planet in gs.planets {
-                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
-                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
-                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
-                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
-                
-                if(star.position.x > lowBoundX && star.position.x < highBoundX){
-                    star.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
-                }
-                
-                if(star.position.y > lowBoundY && star.position.y < highBoundY){
-                    star.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
-                }
+//                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
+//                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
+//                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
+//                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
+//                
+//                if(star.position.x > lowBoundX && star.position.x < highBoundX){
+//                    star.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
+//                }
+//                
+//                if(star.position.y > lowBoundY && star.position.y < highBoundY){
+//                    star.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
+//                }
             }
         gs.blueStar.append(star)
         
@@ -290,7 +290,11 @@ struct ObstacleSpawner {
     static func spawnGate(in scene: GameScene, atY y: CGFloat) {
         let colors: [SKColor] = [.red, .green, .blue]
         let gateColors = [SKSpriteNode(imageNamed: "gateRed"), SKSpriteNode(imageNamed: "gateGreen"), SKSpriteNode(imageNamed: "gateBlue")]
-        let randomIndex = Int.random(in: 0...2)
+        var randomIndexPoss = [0, 1, 2]
+        if let currColorIndex = colors.firstIndex(of: scene.gateColor){
+            randomIndexPoss.remove(at: currColorIndex)
+        }
+        let randomIndex = randomIndexPoss.randomElement()!
         let gate = gateColors[randomIndex]
         gate.color = colors[randomIndex]
 //        gate.colorBlendFactor = 1.0
@@ -371,7 +375,7 @@ struct ObstacleSpawner {
         
         scene.addChild(gate)
         scene.upcomingGate = y
-        scene.futureGate = y + 500
+        scene.futureGate = y + scene.size.height +  500
         scene.gateColor = gate.color
         
         for _ in 0..<10 {
@@ -412,9 +416,6 @@ struct ObstacleSpawner {
 
     static func recycleOffscreen(in scene: GameScene, speed: CGFloat) {
         let offscreenY: CGFloat = -100, topY: CGFloat = scene.size.height + 10
-        
-        // PLANET DLL DIBKIN 100 JENIS, AMBIL BBRP AJA (RANDOM) :)
-        // FUELNYA DIRANDOM DISINI 0-1 (belom)
         
         var planetUnitRandom = Int.random(in:3...5)
         var starUnit = planetUnitRandom * 2 - 1
