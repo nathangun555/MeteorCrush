@@ -17,13 +17,20 @@ class Joystick: SKNode {
     
     override init() {
         super.init()
+        let checker = UserDefaults.standard.bool(forKey: "joystickVisibility")
+
         base.fillColor = .clear
-        base.alpha = 0.0
+        if checker {
+            base.alpha = 1.0
+            knob.alpha = 1.0
+        } else{
+            base.alpha = 0.0
+            knob.alpha = 0.0
+        }
         base.zPosition = 100
         base.isHidden = false  // ← jangan hidden, biar tetap interaktif
 
         knob.fillColor = .clear
-        knob.alpha = 0.0
         knob.zPosition = 101
         knob.isHidden = false
  

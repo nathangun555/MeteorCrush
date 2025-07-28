@@ -8,12 +8,25 @@
 
 import SwiftUI
 
+extension Color {
+    init(hex: String) {
+        let scanner = Scanner(string: hex)
+        _ = scanner.scanString("#") // remove the hash
+        var rgb: UInt64 = 0
+        scanner.scanHexInt64(&rgb)
+        let r = Double((rgb >> 16) & 0xFF) / 255.0
+        let g = Double((rgb >> 8) & 0xFF) / 255.0
+        let b = Double(rgb & 0xFF) / 255.0
+        self.init(red: r, green: g, blue: b)
+    }
+}
+
 struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     @State private var username: String = ""
     @State private var musicEnabled: Bool = true
-    @State private var hapticEnabled: Bool = true
-    @State private var joystickVisibility: Bool = true
+    @State private var hapticFeedback: Bool = false
+    @State private var joystickVisibility: Bool = UserDefaults.standard.bool(forKey: "joystickVisibility")
     @State private var joystickSensitivity: Double = UserDefaults.standard.double(forKey: "joystickSensitivity")
     @State private var showingUsernameAlert: Bool = false
     @State private var back: Bool = false
@@ -22,44 +35,69 @@ struct SettingsView: View {
     var body: some View {
         NavigationView{
             ZStack {
-                // Background gradasi ungu
-                LinearGradient(gradient: Gradient(colors: [Color.purple, Color.black]),
-                               startPoint: .top,
-                               endPoint: .bottom)
-                .ignoresSafeArea()
+                Image("bgHomeScreen")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .clipped()
+                    .ignoresSafeArea()
+                
                 VStack{
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(.white)
-                        .frame(width: 300, height: 400)
+                    Image("bgSettings")
+                        .resizable()
+                        .frame(width: 330, height: 450)
                         .overlay(
                             VStack{
-                                Text("Settings")
+                                Text("SETTINGS")
+                                    .foregroundStyle(.white)
                                     .bold()
-                                    .font(.title)
-                                SettingsToggleRow(
-                                    title: "Music",
-                                    icon: "music.note",
-                                    isOn: $musicEnabled
-                                )
+                                    .font(fontTitle())
+                                VStack{
+                                    SettingsToggleRow(
+                                        title: "Music",
+                                        icon: "music.note",
+                                        isOn: $musicEnabled
+                                    )
+                                    
+                                    SettingsToggleRow(
+                                        title: "Haptic",
+                                        icon: "iphone.gen1.radiowaves.left.and.right",
+                                        isOn: $hapticFeedback
+                                    )
+                                    
+                                    SettingsToggleRow(
+                                        title: "Joystick Visibility",
+                                        icon: "gamecontroller",
+                                        isOn: $joystickVisibility
+                                    )
+                                    SettingsSliderRow(
+                                        title: "Joystick Sensitivity",
+                                        icon: "slider.horizontal.3",
+                                        sliderValue: $joystickValue,
+                                        sliderRange: 0...1
+                                    )
+                                } .padding(.top, -30)
                                 
-                                SettingsToggleRow(
-                                    title: "Haptic",
-                                    icon: "iphone.radisowaves.left.and.right",
-                                    isOn: $hapticEnabled
-                                )
-                                
-                                SettingsToggleRow(
-                                    title: "Joystick Visibility",
-                                    icon: "gamecontroller",
-                                    isOn: $joystickVisibility
-                                )
-                                SettingsSliderRow(
-                                    title: "Joystick Sensitivity",
-                                    icon: "slider.horizontal.3",
-                                    sliderValue: $joystickValue,
-                                    sliderRange: 0...1
-                                )
+                                .onChange(of: musicEnabled){
+                                    vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
+                                    let currentValue = UserDefaults.standard.bool(forKey: "musicManager")
+                                    let newValue = !currentValue
+                                    UserDefaults.standard.set(newValue, forKey: "musicManager")
+                                }
+                                .onChange(of: hapticFeedback){
+                                    vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
+                                    let currentValue = UserDefaults.standard.bool(forKey: "hapticManager")
+                                    let newValue = !currentValue
+                                    UserDefaults.standard.set(newValue, forKey: "hapticManager")
+                                }
+                                .onChange(of: joystickVisibility){
+                                    vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
+                                    let currentValue = UserDefaults.standard.bool(forKey: "joystickVisibility")
+                                    let newValue = !currentValue
+                                    UserDefaults.standard.set(newValue, forKey: "joystickVisibility")
+                                }
                                 .onChange(of: joystickValue) { newValue in
+                                    vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
                                     if joystickValue == 0.0
                                     {
                                         UserDefaults.standard.set(0.0, forKey: "joystickSensitivity")
@@ -74,33 +112,63 @@ struct SettingsView: View {
                                         UserDefaults.standard.set(2, forKey: "joystickSensitivity")
                                     }
                                 }
-                                .onChange(of: joystickValue) {
-                                    // joystick
-                                }
                             }
                         )
-                    Button(action: {
-                                    dismiss()
-                                }) {
-                                    Text("Back")
-                                        .font(.title2)
-                                        .fontWeight(.semibold)
-                                        .foregroundColor(.white)
-                                        .frame(width: 250, height: 50)
-                                        .background(Color.blue.opacity(0.8))
-                                        .cornerRadius(15)
-                                        .shadow(color: .white.opacity(0.3), radius: 5, x: 0, y: 3)
-                                        .padding(.top, 30)
-                                }
-                }
+                    ZStack{
+                        Image("buttonBack")
+                            .resizable()
+                            .frame(width: 300, height: 180)
+                            .scaledToFit()
+                        Button(action: {
+                            SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
+                            dismiss()
+                        }) {
+                            RoundedRectangle(cornerRadius: 100)
+                                .fill(Color.clear)
+                                .frame(width: 160, height: 50)
+                        }
+                    }.padding(.top, -30)
+                }.padding(.top, 50)
             }
         }
         .onAppear()
         {
             valueSlider()
+            valueHaptic()
+            valueJoystickVisibility()
+            valueMusic()
         }
     }
-    
+    func valueMusic()
+    {
+        let checker = UserDefaults.standard.bool(forKey: "musicManager")
+        if checker {
+            musicEnabled = true
+        } else
+        {
+            musicEnabled = false
+        }
+    }
+    func valueJoystickVisibility()
+    {
+        let checker = UserDefaults.standard.bool(forKey: "joystickVisibility")
+        if checker {
+            joystickVisibility = true
+        } else
+        {
+            joystickVisibility = false
+        }
+    }
+    func valueHaptic()
+    {
+        let checker = UserDefaults.standard.bool(forKey: "hapticManager")
+        if checker {
+            hapticFeedback = true
+        } else
+        {
+            hapticFeedback = false
+        }
+    }
     func valueSlider(){
         let checker = UserDefaults.standard.double(forKey: "joystickSensitivity")
         if checker == 0.0
@@ -141,7 +209,7 @@ struct SettingsToggleRow: View {
                 .frame(width: 30)
             
             Text(title)
-                .font(.headline)
+                .font(fontSubTitle())
                 .foregroundColor(.primary)
             
             Spacer()
@@ -151,12 +219,12 @@ struct SettingsToggleRow: View {
                 isOn.toggle()
             }) {
                 Image(systemName: isOn ? "checkmark.square.fill" : "square")
-                    .foregroundColor(isOn ? .blue : .gray)
+                    .foregroundColor(isOn ?  Color(hex: "#8f85ff") : .gray)
                     .font(.title2)
             }
         }
         .padding()
-        .background(Color.gray.opacity(0.2))
+        .background(Color.white)
         .frame(width: 250)
         .cornerRadius(10)
     }
@@ -178,7 +246,7 @@ struct SettingsSliderRow: View {
                     .frame(width: 30)
                 
                 Text(title)
-                    .font(.headline)
+                    .font(fontSubTitle())
                     .foregroundColor(.primary)
                 
                 Spacer()
@@ -189,7 +257,7 @@ struct SettingsSliderRow: View {
                 GeometryReader { geometry in
                     ZStack {
                         Slider(value: $sliderValue, in: sliderRange, step: (sliderRange.upperBound - sliderRange.lowerBound) / 4)
-                            .accentColor(.blue)
+                            .accentColor(Color(hex: "#8f85ff"))
                     }
                 }
                 .frame(height: 30)
@@ -198,7 +266,7 @@ struct SettingsSliderRow: View {
                 HStack {
                     ForEach(0..<sensitivity.count) { index in
                         Text("\(sensitivity[index])%")
-                            .font(.caption2)
+                            .font(.custom("Baloo2-ExtraBold", size: 10))
                             .foregroundColor(.secondary)
                             .frame(maxWidth: .infinity)
                     }
@@ -207,7 +275,7 @@ struct SettingsSliderRow: View {
             .padding(.horizontal, 30)
         }
         .padding()
-        .background(Color.gray.opacity(0.2))
+        .background(Color.white)
         .frame(width: 250)
         .cornerRadius(10)
     }

@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct MeteorCrushApp: App {
+    @StateObject private var leaderboardModel = LeaderboardModel()
+
     var body: some Scene {
         WindowGroup {
-           MainMenuView()
+            UserEntryView()
+                .environmentObject(leaderboardModel) // ✅ share it everywhere
         }
     }
 }

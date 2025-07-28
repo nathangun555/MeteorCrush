@@ -28,7 +28,11 @@ class FallingMeteorSpawner {
         spawnTimer = Timer.scheduledTimer(withTimeInterval: Double.random(in: 3...5), repeats: true) { [weak self] _ in
             guard let self = self, let gameScene = self.scene as? GameScene else { return }
             if gameScene.isGameOver { return } // ⛔ stop spawn
-            self.spawnMeteor()
+            SoundManager.shared.playSFX(named: "incomingMeteor", withExtension: "wav")
+                // kasih delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.spawnMeteor()
+            }
         }
     }
     private func spawnMeteor() {
@@ -36,9 +40,8 @@ class FallingMeteorSpawner {
         
         let meteor = SKSpriteNode(texture: textures[0])
         meteor.size = CGSize(width: 40, height: 250)
-        meteor.zPosition = 999
+        meteor.zPosition = 5
 
-        // Visual debug
         meteor.color = .red
         meteor.colorBlendFactor = 0.0
         meteor.alpha = 1
@@ -47,7 +50,6 @@ class FallingMeteorSpawner {
         let ballRadius: CGFloat = 13
         let offsetY = -meteor.size.height / 2 + ballRadius + 5
 
-        // Physics body khusus bola depan
         meteor.physicsBody = SKPhysicsBody(circleOfRadius: ballRadius, center: CGPoint(x: 0, y: offsetY))
         meteor.physicsBody?.categoryBitMask = PhysicsCategory.Meteor
         meteor.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
@@ -60,17 +62,21 @@ class FallingMeteorSpawner {
         debugCircle.strokeColor = .green
         debugCircle.lineWidth = 2
         debugCircle.position = CGPoint(x: 0, y: offsetY)
-        debugCircle.zPosition = 1000
+        debugCircle.zPosition = -1
         meteor.addChild(debugCircle)
 
+        let meteorWidth: CGFloat = meteor.size.width
+        let margin = meteorWidth / 2
+        let startX = CGFloat.random(in: margin...(scene.size.width - margin))
+        let targetX = CGFloat.random(in: margin...(scene.size.width - margin))
 
         // 1. Start (top of screen)
-        let startX = CGFloat.random(in: 0...scene.size.width)
+//        let startX = CGFloat.random(in: 0...scene.size.width)
         let startY = scene.size.height + meteor.size.height
         meteor.position = CGPoint(x: startX, y: startY)
 
         // 2. Target (bottom of screen)
-        let targetX = CGFloat.random(in: 0...scene.size.width)
+//        let targetX = CGFloat.random(in: 0...scene.size.width)
         let targetY: CGFloat = -meteor.size.height
 
         // 3. Face toward target
@@ -95,8 +101,8 @@ class FallingMeteorSpawner {
 
 
     func stopSpawning() {
+        print("stop")
         spawnTimer?.invalidate()
         spawnTimer = nil
     }
 }
-
