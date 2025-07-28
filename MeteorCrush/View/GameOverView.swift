@@ -35,7 +35,10 @@ struct GameOverView: View {
                 // ZStack untuk Play Again dan Quit dengan lapisan yang sama
                 ZStack {
                     // Tombol Play Again
-                    Button(action: onPlayAgain) {
+                    Button(action: {
+                        SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
+                        onPlayAgain()
+                    }) {
                         RoundedRectangle(cornerRadius: 50)
                             .fill(Color.red)
                             .frame(width: 120, height: 80)
@@ -45,7 +48,10 @@ struct GameOverView: View {
                     .position(x: geometry.size.width / 2.8, y: geometry.size.height / 1.4)
 
                     // Tombol Quit
-                    Button(action: onQuit) {
+                    Button(action: {
+                        SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
+                        onQuit()
+                    }) {
                         RoundedRectangle(cornerRadius: 50)
                             .fill(Color.red)
                             .frame(width: 120, height: 80)

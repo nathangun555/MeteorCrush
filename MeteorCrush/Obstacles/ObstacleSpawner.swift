@@ -120,17 +120,27 @@ struct ObstacleSpawner {
     static func spawnStar(in scene: GameScene, atY y: CGFloat) {
         guard let gs = scene as? GameScene else { return }
 
-        let star = SKSpriteNode(imageNamed: "redStar")
-        star.size = CGSize(width: 50, height: 50)
+        let star = SKSpriteNode(imageNamed: "starRed")
+        star.size = CGSize(width: 180, height: 180)
         let halfW = star.size.width/2
         star.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
         star.zPosition = 5
         star.blendMode = .alpha
-        star.physicsBody = SKPhysicsBody(circleOfRadius: halfW)
+        let collisionRadius = halfW / 3.5
+        
+        star.physicsBody = SKPhysicsBody(circleOfRadius: collisionRadius)
         star.physicsBody?.categoryBitMask = PhysicsCategory.redStar
         star.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
         star.physicsBody?.collisionBitMask = PhysicsCategory.None
         star.physicsBody?.affectedByGravity = false
+        
+        let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
+        collisionCircle.position = .zero
+        collisionCircle.strokeColor = .clear
+        collisionCircle.lineWidth = 2
+        collisionCircle.fillColor = .clear
+        collisionCircle.zPosition = -1
+        star.addChild(collisionCircle)
 
         let planetPadding: CGFloat = 30
             for planet in gs.planets {

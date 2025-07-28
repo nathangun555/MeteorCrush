@@ -153,6 +153,8 @@ struct CollisionHandler {
             scene.rocket.colorBlendFactor = 0
 //            print("lewat biru")
         case PhysicsCategory.powerUp:
+            SoundManager.shared.playSFX(named: "collectPowerUp", withExtension: "wav")
+            vibrateWithDelay(.medium, count: 2, delayInterval: 0.1)
              guard let nodeData = other.node?.userData else { return }
              switch nodeData["type"] as? String {
              case "shield":

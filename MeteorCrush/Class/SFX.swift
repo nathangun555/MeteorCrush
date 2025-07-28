@@ -14,6 +14,8 @@ class SoundManager {
     private var sfxPlayer: AVAudioPlayer?
     private var collectStar: AVAudioPlayer?
     private var wrongStar: AVAudioPlayer?
+    private var collectPowerUp: AVAudioPlayer?
+
 
     
     var playSound = true
@@ -36,6 +38,14 @@ class SoundManager {
                     musicPlayer?.volume = 0.4
                     wrongStar?.prepareToPlay()
                     wrongStar?.play()
+                }
+                else if fileName == "collectPowerUp"
+                {
+                    print("masuk sini")
+                    collectPowerUp = try AVAudioPlayer(contentsOf: url)
+                    musicPlayer?.volume = 0.4
+                    collectPowerUp?.prepareToPlay()
+                    collectPowerUp?.play()
                 }
                 else {
                     if fileName == "buttonTap"

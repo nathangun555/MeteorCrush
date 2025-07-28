@@ -46,7 +46,7 @@ struct UserEntryView: View {
                         // Username entry and error message
                         VStack(spacing: 5) {
                             Text("Enter Your Username")
-                                .font(.system(size: 28, weight: .bold))
+                                .font(fontTitle())
                                 .foregroundColor(.white)
                                 .opacity(fadeIn ? 1 : 0)
                                 .offset(y: fadeIn ? 0 : 20)
@@ -72,7 +72,7 @@ struct UserEntryView: View {
                                     .placeholder(when: username.isEmpty) {
                                         Text("Max 8 Characters")
                                             .foregroundColor(.black.opacity(0.6))
-                                            .font(.system(size: 18, weight: .bold))
+                                            .font(.custom("Baloo2-ExtraBold", size: 20))
                                     }
                             }
                             .opacity(fadeIn ? 1 : 0)
@@ -82,7 +82,7 @@ struct UserEntryView: View {
                             if let error = errorMessage {
                                 Text(error)
                                     .foregroundColor(.red)
-                                    .font(.system(size: 14))
+                                    .font(fontSubTitle())
                                     .opacity(fadeIn ? 1 : 0)
                                     .animation(.easeIn(duration: 0.4), value: fadeIn)
                             }
@@ -95,6 +95,7 @@ struct UserEntryView: View {
                             withAnimation(.easeIn(duration: 0.15)) {
                                 animate = true
                             }
+                            SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                 animate = false
                                 handleSubmit()
@@ -118,6 +119,7 @@ struct UserEntryView: View {
                 }
                 .ignoresSafeArea(.all)
                 .onAppear {
+                    SoundManager.shared.playLobbyMusic()
                     fadeIn = true
                     bounce = true
                 }

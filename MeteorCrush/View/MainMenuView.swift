@@ -72,7 +72,7 @@ struct MainMenuView: View {
                                 showLeaderboard = true
                             }
                             .background(
-                                NavigationLink(destination: LeaderboardView(), isActive: $showLeaderboard) {
+                                NavigationLink(destination: LeaderboardView().navigationBarBackButtonHidden(true), isActive: $showLeaderboard) {
                                     EmptyView()
                                 }.hidden()
                             )
@@ -82,7 +82,7 @@ struct MainMenuView: View {
                                 showSettings = true
                             }
                             .background(
-                                NavigationLink(destination: SettingsView(), isActive: $showSettings) {
+                                NavigationLink(destination: SettingsView().navigationBarBackButtonHidden(true), isActive: $showSettings) {
                                     EmptyView()
                                 }.hidden()
                             )
