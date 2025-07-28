@@ -24,12 +24,13 @@ struct GameOverView: View {
             
             GeometryReader { geometry in
                 Text("\(bestScore)")
-                    .font(.headline)
-                    .foregroundColor(.black)
+                    .font(.custom("Baloo2-ExtraBold", size: 25))
+                    .foregroundColor(.white)
                     .position(x: geometry.size.width / 2, y: geometry.size.height / 2.15)
                 
                 Text("\(currentScore)")
-                    .font(.system(size: 40, weight: .bold))
+                    .font(.custom("Baloo2-ExtraBold", size: 30))
+                    .foregroundColor(.white)
                     .position(x: geometry.size.width / 2, y: geometry.size.height / 1.69)
                 
                 // ZStack untuk Play Again dan Quit dengan lapisan yang sama
