@@ -70,6 +70,8 @@ struct ContentView: View {
                         bestScore: bestScore,
                         onPlayAgain: {
                             isGameOver = false
+                            // Create a new scene instance to properly reset the game
+                            gameViewModel = GameViewModel()
                             sceneID = UUID() // reload scene
                         },
                         onQuit: {
