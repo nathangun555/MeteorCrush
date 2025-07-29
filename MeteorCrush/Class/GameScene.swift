@@ -40,6 +40,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var isDoublePoint: Bool = false
     var multiplierTimer: CGFloat = 0
     var shieldTimer: CGFloat = 0
+    var shieldEffect: SKSpriteNode?
 
     var upcomingGate: CGFloat = 0.0
     var futureGate: CGFloat = 0.0
@@ -120,7 +121,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if(self.isShield) { self.shieldTimer -= 0.1 }
             if(self.isDoublePoint) { self.multiplierTimer -= 0.1 }
             
-            if(self.shieldTimer <= 0) { self.isShield = false }
+            if(self.shieldTimer <= 0) { self.isShield = false
+                self.shieldEffect?.removeFromParent()
+                self.shieldEffect = nil}
             if(self.multiplierTimer <= 0) { self.isDoublePoint = false; self.multiplier = 1 }
         }
         
@@ -130,12 +133,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func TutorialOverlay() {
-//        tutorialBackground = SKSpriteNode(color: .gray, size: CGSize(width: size.width * 2, height: size.height/1.5))
-//        tutorialBackground.alpha = 0.5
-//        tutorialBackground.zPosition = 100
-//        addChild(tutorialBackground)
-//        
-//       
+        tutorialLabel = SKLabelNode(fontNamed: "Baloo2-ExtraBold")
+        tutorialLabel.text = "Match stars with your rocket’s color!"
+        tutorialLabel.fontSize = 22
+        tutorialLabel.fontColor = .white
+        tutorialLabel.position = CGPoint(x: size.width / 2, y: size.height * 0.65) // Sesuaikan posisi
+        tutorialLabel.zPosition = 103
+        addChild(tutorialLabel)
        
        // let tutorialImage = SKSpriteNode(imageNamed: "arrowTutorial")
         arrow = SKSpriteNode(imageNamed: "arrowTutorial")
@@ -168,6 +172,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
    //    tutorialBackground.removeFromParent()
         arrow.removeFromParent()
         hand.removeFromParent()
+        tutorialLabel.removeFromParent()
         
     }
     

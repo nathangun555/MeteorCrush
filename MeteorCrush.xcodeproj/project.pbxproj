@@ -38,12 +38,12 @@
 				Class/ExplosionEffects.swift,
 				Class/Font.swift,
 				Class/GameScene.swift,
+				Class/GameViewModel.swift,
 				Class/Haptic.swift,
 				Class/HUD.swift,
 				Class/Joystick.swift,
 				Class/LeaderboardModel.swift,
 				Class/PhysicsCategory.swift,
-				Class/Player.swift,
 				Class/RocketFire.swift,
 				Class/SFX.swift,
 				"Font/Baloo2-ExtraBold.ttf",
@@ -57,10 +57,8 @@
 				SFX/gameOver.wav,
 				SFX/incomingMeteor.wav,
 				SFX/lobbyMusic.wav,
-				SFX/newHighScore.wav,
 				SFX/rocketTakeOff.wav,
 				SFX/starGame.wav,
-				SFX/wrongStar.wav,
 				View/BackgroundNode.swift,
 				View/ContentView.swift,
 				View/galaxyGameView.swift,
@@ -81,12 +79,12 @@
 				Class/ExplosionEffects.swift,
 				Class/Font.swift,
 				Class/GameScene.swift,
+				Class/GameViewModel.swift,
 				Class/Haptic.swift,
 				Class/HUD.swift,
 				Class/Joystick.swift,
 				Class/LeaderboardModel.swift,
 				Class/PhysicsCategory.swift,
-				Class/Player.swift,
 				Class/RocketFire.swift,
 				Class/SFX.swift,
 				"Font/Baloo2-ExtraBold.ttf",
@@ -101,10 +99,8 @@
 				SFX/gameOver.wav,
 				SFX/incomingMeteor.wav,
 				SFX/lobbyMusic.wav,
-				SFX/newHighScore.wav,
 				SFX/rocketTakeOff.wav,
 				SFX/starGame.wav,
-				SFX/wrongStar.wav,
 				View/BackgroundNode.swift,
 				View/ContentView.swift,
 				View/galaxyGameView.swift,
@@ -489,7 +485,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZBZPAZFH4S;
+				DEVELOPMENT_TEAM = HRLF6YB843;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MeteorCrush/Info.plist;
@@ -519,7 +515,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZBZPAZFH4S;
+				DEVELOPMENT_TEAM = HRLF6YB843;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MeteorCrush/Info.plist;
