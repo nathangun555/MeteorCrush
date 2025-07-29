@@ -64,12 +64,12 @@ struct CollisionHandler {
                 scene.isGameOver = true
                 scene.isPaused = true
 
-                let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
-                gameOver.text = "Game Over"
-                gameOver.fontSize = 48
-                gameOver.position = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
-                gameOver.zPosition = 1000
-                scene.addChild(gameOver)
+//                let gameOver = SKLabelNode(fontNamed: "AvenirNext-Bold")
+//                gameOver.text = "Game Over"
+//                gameOver.fontSize = 48
+//                gameOver.position = CGPoint(x: scene.size.width / 2, y: scene.size.height / 2)
+//                gameOver.zPosition = 1000
+//                scene.addChild(gameOver)
             }
             return
         }
@@ -87,7 +87,11 @@ struct CollisionHandler {
             SoundManager.shared.playSFX(named: "gameOver", withExtension: "wav")
             vibrateWithDelay(.heavy, count: 3, delayInterval: 0.1)
             ExplosionEffects.playExplosion(at: scene.rocket.position, in: scene) {
-                
+                NotificationCenter.default.post(
+                    name: Notification.Name("GameOver"),
+                    object: hud.score
+                )
+
                 scene.isGameOver = true
                 scene.isPaused = true
                scene.meteorSpawner.stopSpawning()
@@ -153,12 +157,35 @@ struct CollisionHandler {
             scene.rocket.colorBlendFactor = 0
 //            print("lewat biru")
         case PhysicsCategory.powerUp:
+            SoundManager.shared.playSFX(named: "collectPowerUp", withExtension: "wav")
+            vibrateWithDelay(.medium, count: 2, delayInterval: 0.1)
              guard let nodeData = other.node?.userData else { return }
              switch nodeData["type"] as? String {
              case "shield":
                  print("Shield active!")
-                 scene.isShield = true
-                 scene.shieldTimer = 10
+                 if scene.isShield {
+                     // Jika sudah ada shield, perpanjang waktu shield yang sudah ada
+                     scene.shieldTimer += 10 // Tambahkan waktu 10 detik (atau sesuaikan dengan yang Anda inginkan)
+                     print("Shield time extended!")
+                 } else {
+                     // Jika shield belum ada, aktifkan shield baru
+                     scene.isShield = true
+                     scene.shieldTimer = 10 // Waktu awal shield
+                     
+                     // Membuat dan menambahkan efek shield ke roket
+                     let effectShield = SKSpriteNode(imageNamed: "effectShield")
+                     effectShield.zPosition = 9  // Pastikan berada di atas roket
+                     effectShield.setScale(0.5)
+                     
+                     // Posisi shield di atas roket dengan jarak tertentu
+                     scene.rocket.addChild(effectShield)
+
+                     effectShield.position = CGPoint(x: 0, y: 0)
+                     
+                     // Menyimpan shield effect ke dalam scene
+                     scene.shieldEffect = effectShield
+                     print("New shield activated!")
+                 }
                 
              case "doubleScore":
                  print("Double score active!")

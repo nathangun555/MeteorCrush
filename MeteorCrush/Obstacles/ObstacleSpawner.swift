@@ -7,41 +7,448 @@
 
 import SpriteKit
 
-struct ObstacleSpawner {
-//    static func spawnPlanet(in scene: SKScene, atY y: CGFloat) {
-//        let planet = SKSpriteNode(imageNamed: "planet")
-//        let randomSize = CGFloat.random(in: 150...300)
-//        planet.size = CGSize(width: randomSize, height: randomSize)
-//        let halfW = planet.size.width / 2
-//        planet.position = CGPoint(
-//            x: CGFloat.random(in: halfW...(scene.size.width - halfW)),
-//            y: y
-//        )
-//        planet.zPosition = 5
-//        
-//        let collisionRadius = halfW / 1.5
-//        let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
-//        collisionCircle.position    = .zero
-//        collisionCircle.strokeColor = .yellow
-//        collisionCircle.lineWidth   = 2
-//        collisionCircle.fillColor   = .clear
-//        collisionCircle.zPosition   = -1   // agar di belakang planet
-//        
-//        let body = SKPhysicsBody(circleOfRadius: collisionRadius)
-//        body.isDynamic            = false  // statis, ikut planet
-//        body.categoryBitMask      = PhysicsCategory.Planet
-//        body.contactTestBitMask   = PhysicsCategory.Rocket
-//        body.collisionBitMask     = PhysicsCategory.None
-//        collisionCircle.physicsBody = body
-//        
-//        planet.addChild(collisionCircle)
-//        
-//        if let gs = scene as? GameScene {
-//            gs.planets.append(planet)
-//        }
-//        scene.addChild(planet)
-//    }
+struct ObstacleSpawner { 
     var lastPlanetPos = 0
+    
+    static func circlesCollide(center1: CGPoint, radius1: CGFloat,
+                               center2: CGPoint, radius2: CGFloat) -> Bool {
+               let dx = center2.x - center1.x
+               let dy = center2.y - center1.y
+               let distanceSquared = dx * dx + dy * dy
+               let radiusSum = radius1 + radius2
+               
+               return distanceSquared <= radiusSum * radiusSum
+           }
+    
+    // Helper function to check if a new object collides with existing collectibles
+    static func checkCollisionWithCollectibles(in scene: GameScene, position: CGPoint, radius: CGFloat) -> Bool {
+        // Check collision with red stars
+        for star in scene.redStar {
+            let starRadius = star.size.width / 3.5
+            if circlesCollide(center1: position, radius1: radius, 
+                            center2: star.position, radius2: starRadius) {
+                return true
+            }
+        }
+        
+        // Check collision with green stars
+        for star in scene.greenStar {
+            let starRadius = star.size.width / 3.5
+            if circlesCollide(center1: position, radius1: radius, 
+                            center2: star.position, radius2: starRadius) {
+                return true
+            }
+        }
+        
+        // Check collision with blue stars
+        for star in scene.blueStar {
+            let starRadius = star.size.width / 3.5
+            if circlesCollide(center1: position, radius1: radius, 
+                            center2: star.position, radius2: starRadius) {
+                return true
+            }
+        }
+        
+        // Check collision with fuels
+        for fuel in scene.fuels {
+            let fuelRadius = fuel.size.width / 3.5
+            if circlesCollide(center1: position, radius1: radius, 
+                            center2: fuel.position, radius2: fuelRadius) {
+                return true
+            }
+        }
+        
+        // Check collision with powerups
+        for powerup in scene.powerups {
+            let powerupRadius = powerup.size.width / 6
+            if circlesCollide(center1: position, radius1: radius, 
+                            center2: powerup.position, radius2: powerupRadius) {
+                return true
+            }
+        }
+        
+        // Check collision with planets
+        for planet in scene.planets {
+            let planetRadius = planet.size.width / 3 // Using collision radius from planet spawn
+            if circlesCollide(center1: position, radius1: radius, 
+                            center2: planet.position, radius2: planetRadius) {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    // Helper function to find a valid position for collectibles
+    static func findValidPosition(in scene: GameScene, y: CGFloat, radius: CGFloat, maxAttempts: Int = 50) -> CGPoint? {
+        let halfW = radius
+        let minX = halfW
+        let maxX = scene.size.width - halfW
+        
+        for _ in 0..<maxAttempts {
+            let randomX = CGFloat.random(in: minX...maxX)
+            let position = CGPoint(x: randomX, y: y)
+            
+            if !checkCollisionWithCollectibles(in: scene, position: position, radius: radius) {
+                return position
+            }
+        }
+        
+        return nil
+    }
+    
+    // Function to remove colliding objects from the scene
+    static func removeCollidingObjects(in scene: GameScene) {
+        // Check for collisions between red stars and other collectibles
+        scene.redStar = scene.redStar.filter { star in
+            let starRadius = star.size.width / 3.5
+            let starPosition = star.position
+            
+            // Check collision with other red stars
+            for otherStar in scene.redStar {
+                if otherStar !== star {
+                    let otherRadius = otherStar.size.width / 3.5
+                    if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                    center2: otherStar.position, radius2: otherRadius) {
+                        star.removeFromParent()
+                        return false
+                    }
+                }
+            }
+            
+            // Check collision with green stars
+            for greenStar in scene.greenStar {
+                let greenRadius = greenStar.size.width / 3.5
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: greenStar.position, radius2: greenRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with blue stars
+            for blueStar in scene.blueStar {
+                let blueRadius = blueStar.size.width / 3.5
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: blueStar.position, radius2: blueRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with fuels
+            for fuel in scene.fuels {
+                let fuelRadius = fuel.size.width / 3.5
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: fuel.position, radius2: fuelRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with powerups
+            for powerup in scene.powerups {
+                let powerupRadius = powerup.size.width / 6
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: powerup.position, radius2: powerupRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with planets
+            for planet in scene.planets {
+                let planetRadius = planet.size.width / 3
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: planet.position, radius2: planetRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            return true
+        }
+        
+        // Check for collisions between green stars and other collectibles
+        scene.greenStar = scene.greenStar.filter { star in
+            let starRadius = star.size.width / 3.5
+            let starPosition = star.position
+            
+            // Check collision with red stars
+            for redStar in scene.redStar {
+                let redRadius = redStar.size.width / 3.5
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: redStar.position, radius2: redRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with other green stars
+            for otherStar in scene.greenStar {
+                if otherStar !== star {
+                    let otherRadius = otherStar.size.width / 3.5
+                    if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                    center2: otherStar.position, radius2: otherRadius) {
+                        star.removeFromParent()
+                        return false
+                    }
+                }
+            }
+            
+            // Check collision with blue stars
+            for blueStar in scene.blueStar {
+                let blueRadius = blueStar.size.width / 3.5
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: blueStar.position, radius2: blueRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with fuels
+            for fuel in scene.fuels {
+                let fuelRadius = fuel.size.width / 3.5
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: fuel.position, radius2: fuelRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with powerups
+            for powerup in scene.powerups {
+                let powerupRadius = powerup.size.width / 6
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: powerup.position, radius2: powerupRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with planets
+            for planet in scene.planets {
+                let planetRadius = planet.size.width / 3
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: planet.position, radius2: planetRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            return true
+        }
+        
+        // Check for collisions between blue stars and other collectibles
+        scene.blueStar = scene.blueStar.filter { star in
+            let starRadius = star.size.width / 3.5
+            let starPosition = star.position
+            
+            // Check collision with red stars
+            for redStar in scene.redStar {
+                let redRadius = redStar.size.width / 3.5
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: redStar.position, radius2: redRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with green stars
+            for greenStar in scene.greenStar {
+                let greenRadius = greenStar.size.width / 3.5
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: greenStar.position, radius2: greenRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with other blue stars
+            for otherStar in scene.blueStar {
+                if otherStar !== star {
+                    let otherRadius = otherStar.size.width / 3.5
+                    if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                    center2: otherStar.position, radius2: otherRadius) {
+                        star.removeFromParent()
+                        return false
+                    }
+                }
+            }
+            
+            // Check collision with fuels
+            for fuel in scene.fuels {
+                let fuelRadius = fuel.size.width / 3.5
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: fuel.position, radius2: fuelRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with powerups
+            for powerup in scene.powerups {
+                let powerupRadius = powerup.size.width / 6
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: powerup.position, radius2: powerupRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with planets
+            for planet in scene.planets {
+                let planetRadius = planet.size.width / 3
+                if circlesCollide(center1: starPosition, radius1: starRadius, 
+                                center2: planet.position, radius2: planetRadius) {
+                    star.removeFromParent()
+                    return false
+                }
+            }
+            
+            return true
+        }
+        
+        // Check for collisions between fuels and other collectibles
+        scene.fuels = scene.fuels.filter { fuel in
+            let fuelRadius = fuel.size.width / 3.5
+            let fuelPosition = fuel.position
+            
+            // Check collision with red stars
+            for redStar in scene.redStar {
+                let redRadius = redStar.size.width / 3.5
+                if circlesCollide(center1: fuelPosition, radius1: fuelRadius, 
+                                center2: redStar.position, radius2: redRadius) {
+                    fuel.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with green stars
+            for greenStar in scene.greenStar {
+                let greenRadius = greenStar.size.width / 3.5
+                if circlesCollide(center1: fuelPosition, radius1: fuelRadius, 
+                                center2: greenStar.position, radius2: greenRadius) {
+                    fuel.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with blue stars
+            for blueStar in scene.blueStar {
+                let blueRadius = blueStar.size.width / 3.5
+                if circlesCollide(center1: fuelPosition, radius1: fuelRadius, 
+                                center2: blueStar.position, radius2: blueRadius) {
+                    fuel.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with other fuels
+            for otherFuel in scene.fuels {
+                if otherFuel !== fuel {
+                    let otherRadius = otherFuel.size.width / 3.5
+                    if circlesCollide(center1: fuelPosition, radius1: fuelRadius, 
+                                    center2: otherFuel.position, radius2: otherRadius) {
+                        fuel.removeFromParent()
+                        return false
+                    }
+                }
+            }
+            
+            // Check collision with powerups
+            for powerup in scene.powerups {
+                let powerupRadius = powerup.size.width / 6
+                if circlesCollide(center1: fuelPosition, radius1: fuelRadius, 
+                                center2: powerup.position, radius2: powerupRadius) {
+                    fuel.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with planets
+            for planet in scene.planets {
+                let planetRadius = planet.size.width / 3
+                if circlesCollide(center1: fuelPosition, radius1: fuelRadius, 
+                                center2: planet.position, radius2: planetRadius) {
+                    fuel.removeFromParent()
+                    return false
+                }
+            }
+            
+            return true
+        }
+        
+        // Check for collisions between powerups and other collectibles
+        scene.powerups = scene.powerups.filter { powerup in
+            let powerupRadius = powerup.size.width / 6
+            let powerupPosition = powerup.position
+            
+            // Check collision with red stars
+            for redStar in scene.redStar {
+                let redRadius = redStar.size.width / 3.5
+                if circlesCollide(center1: powerupPosition, radius1: powerupRadius, 
+                                center2: redStar.position, radius2: redRadius) {
+                    powerup.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with green stars
+            for greenStar in scene.greenStar {
+                let greenRadius = greenStar.size.width / 3.5
+                if circlesCollide(center1: powerupPosition, radius1: powerupRadius, 
+                                center2: greenStar.position, radius2: greenRadius) {
+                    powerup.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with blue stars
+            for blueStar in scene.blueStar {
+                let blueRadius = blueStar.size.width / 3.5
+                if circlesCollide(center1: powerupPosition, radius1: powerupRadius, 
+                                center2: blueStar.position, radius2: blueRadius) {
+                    powerup.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with fuels
+            for fuel in scene.fuels {
+                let fuelRadius = fuel.size.width / 3.5
+                if circlesCollide(center1: powerupPosition, radius1: powerupRadius, 
+                                center2: fuel.position, radius2: fuelRadius) {
+                    powerup.removeFromParent()
+                    return false
+                }
+            }
+            
+            // Check collision with other powerups
+            for otherPowerup in scene.powerups {
+                if otherPowerup !== powerup {
+                    let otherRadius = otherPowerup.size.width / 6
+                    if circlesCollide(center1: powerupPosition, radius1: powerupRadius, 
+                                    center2: otherPowerup.position, radius2: otherRadius) {
+                        powerup.removeFromParent()
+                        return false
+                    }
+                }
+            }
+            
+            // Check collision with planets
+            for planet in scene.planets {
+                let planetRadius = planet.size.width / 3
+                if circlesCollide(center1: powerupPosition, radius1: powerupRadius, 
+                                center2: planet.position, radius2: planetRadius) {
+                    powerup.removeFromParent()
+                    return false
+                }
+            }
+            
+            return true
+        }
+    }
     
     static func getPlanetXPos(scene: GameScene, planet: SKSpriteNode, index: Int) -> CGFloat {
         print("Calling getPlanetXPos(index: \(index))")
@@ -59,6 +466,26 @@ struct ObstacleSpawner {
             print("Kiri")
         }
         
+        return CGFloat.random(in: lowerBoundX...upperBoundX)
+    }
+    
+    static func getNextPlanetXPos(scene: GameScene, planet: SKSpriteNode) -> CGFloat {
+        let planetPosType = scene.planetIndex % 2
+        var upperBoundX: CGFloat = 0.0, lowerBoundX: CGFloat = 0.0
+        
+        if planetPosType == 0 {
+            // 0 = kanan
+            upperBoundX = scene.size.width + planet.size.width / 2 - 100
+            lowerBoundX = scene.size.width
+            print("Recycled Kanan")
+        } else {
+            // 1 = kiri
+            lowerBoundX = -planet.size.width / 2 + 100
+            upperBoundX = 0.0
+            print("Recycled Kiri")
+        }
+        
+        scene.planetIndex += 1
         return CGFloat.random(in: lowerBoundX...upperBoundX)
     }
     
@@ -120,35 +547,35 @@ struct ObstacleSpawner {
     static func spawnStar(in scene: GameScene, atY y: CGFloat) {
         guard let gs = scene as? GameScene else { return }
 
-        let star = SKSpriteNode(imageNamed: "redStar")
-        star.size = CGSize(width: 50, height: 50)
+        let star = SKSpriteNode(imageNamed: "starRed")
+        star.size = CGSize(width: 180, height: 180)
         let halfW = star.size.width/2
-        star.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
+        let collisionRadius = halfW / 3.5
+        
+        // Find a valid position that doesn't collide with other collectibles
+        guard let validPosition = findValidPosition(in: scene, y: y, radius: collisionRadius) else {
+            return // Skip spawning if no valid position found
+        }
+        
+        star.position = validPosition
         star.zPosition = 5
         star.blendMode = .alpha
-        star.physicsBody = SKPhysicsBody(circleOfRadius: halfW)
+        
+        star.physicsBody = SKPhysicsBody(circleOfRadius: collisionRadius)
         star.physicsBody?.categoryBitMask = PhysicsCategory.redStar
         star.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
         star.physicsBody?.collisionBitMask = PhysicsCategory.None
         star.physicsBody?.affectedByGravity = false
-
-        let planetPadding: CGFloat = 30
-            for planet in gs.planets {
-//                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
-//                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
-//                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
-//                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
-                
-//                if(star.position.x > lowBoundX && star.position.x < highBoundX){
-//                    star.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
-//                }
-//                
-//                if(star.position.y > lowBoundY && star.position.y < highBoundY){
-//                    star.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
-//                }
-            }
-        gs.redStar.append(star)
         
+        let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
+        collisionCircle.position = .zero
+        collisionCircle.strokeColor = .clear
+        collisionCircle.lineWidth = 2
+        collisionCircle.fillColor = .clear
+        collisionCircle.zPosition = -1
+        star.addChild(collisionCircle)
+
+        gs.redStar.append(star)
         scene.addChild(star)
     }
     static func spawnGreenStar(in scene: GameScene, atY y: CGFloat) {
@@ -157,10 +584,16 @@ struct ObstacleSpawner {
         let star = SKSpriteNode(imageNamed: "starGreen")
         star.size = CGSize(width: 180, height: 180)
         let halfW = star.size.width/2
-        star.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
+        let collisionRadius = halfW / 3.5
+        
+        // Find a valid position that doesn't collide with other collectibles
+        guard let validPosition = findValidPosition(in: scene, y: y, radius: collisionRadius) else {
+            return // Skip spawning if no valid position found
+        }
+        
+        star.position = validPosition
         star.zPosition = 5
         star.blendMode = .alpha
-        let collisionRadius = halfW / 3.5
         
         star.physicsBody = SKPhysicsBody(circleOfRadius: collisionRadius)
         star.physicsBody?.categoryBitMask = PhysicsCategory.greenStar
@@ -177,23 +610,7 @@ struct ObstacleSpawner {
         collisionCircle.zPosition = -1
         star.addChild(collisionCircle)
 
-        let planetPadding: CGFloat = 30
-            for planet in gs.planets {
-//                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
-//                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
-//                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
-//                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
-//                
-//                if(star.position.x > lowBoundX && star.position.x < highBoundX){
-//                    star.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
-//                }
-//                
-//                if(star.position.y > lowBoundY && star.position.y < highBoundY){
-//                    star.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
-//                }
-            }
         gs.greenStar.append(star)
-        
         scene.addChild(star)
     }
     static func spawnBlueStar(in scene: GameScene, atY y: CGFloat) {
@@ -202,11 +619,17 @@ struct ObstacleSpawner {
         let star = SKSpriteNode(imageNamed: "starBlue")
         star.size = CGSize(width: 180, height: 180)
         let halfW = star.size.width/2
-        star.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width-halfW)), y: y)
+        let collisionRadius = halfW / 3.5
+        
+        // Find a valid position that doesn't collide with other collectibles
+        guard let validPosition = findValidPosition(in: scene, y: y, radius: collisionRadius) else {
+            return // Skip spawning if no valid position found
+        }
+        
+        star.position = validPosition
         star.zPosition = 5
         star.blendMode = .alpha
 
-        let collisionRadius = halfW / 3.5
         star.physicsBody = SKPhysicsBody(circleOfRadius: collisionRadius)
         star.physicsBody?.categoryBitMask = PhysicsCategory.blueStar
         star.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
@@ -222,23 +645,7 @@ struct ObstacleSpawner {
         collisionCircle.zPosition = -1
         star.addChild(collisionCircle)
 
-        let planetPadding: CGFloat = 30
-            for planet in gs.planets {
-//                let lowBoundX = planet.position.x - planet.size.width/2 - planetPadding
-//                let highBoundX = planet.position.x + planet.size.width/2 + planetPadding
-//                let lowBoundY = planet.position.y - planet.size.height/2 - planetPadding
-//                let highBoundY = planet.position.y + planet.size.height/2 + planetPadding
-//                
-//                if(star.position.x > lowBoundX && star.position.x < highBoundX){
-//                    star.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
-//                }
-//                
-//                if(star.position.y > lowBoundY && star.position.y < highBoundY){
-//                    star.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
-//                }
-            }
         gs.blueStar.append(star)
-        
         scene.addChild(star)
     }
 
@@ -268,19 +675,26 @@ struct ObstacleSpawner {
         pickup.userData = ["fuelValue": fuelValue]
 
         let halfW = pickup.size.width / 2
-        pickup.position = CGPoint(x: CGFloat.random(in: halfW...(scene.size.width - halfW)), y: y)
+        let collisionRadius = halfW / 3.5
+        
+        // Find a valid position that doesn't collide with other collectibles
+        guard let validPosition = findValidPosition(in: scene, y: y, radius: collisionRadius) else {
+            return // Skip spawning if no valid position found
+        }
+        
+        pickup.position = validPosition
         pickup.zPosition = 5
         pickup.blendMode = .alpha
 
         // Setup physics body
-        pickup.physicsBody = SKPhysicsBody(circleOfRadius: halfW/3.5)
+        pickup.physicsBody = SKPhysicsBody(circleOfRadius: collisionRadius)
         pickup.physicsBody?.categoryBitMask = PhysicsCategory.Fuel
         pickup.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
         pickup.physicsBody?.collisionBitMask = PhysicsCategory.None
         pickup.physicsBody?.affectedByGravity = false
 
         // Collision circle (for debugging or visual purposes)
-        let collisionCircle = SKShapeNode(circleOfRadius: halfW/3.5 )
+        let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
         collisionCircle.position = .zero
         collisionCircle.strokeColor = .yellow
         collisionCircle.lineWidth = 2
@@ -313,6 +727,7 @@ struct ObstacleSpawner {
 
 
     static func spawnGate(in scene: GameScene, atY y: CGFloat) {
+        var newY: CGFloat = y
         let colors: [SKColor] = [.red, .green, .blue]
         let gateColors = [SKSpriteNode(imageNamed: "gateRed"), SKSpriteNode(imageNamed: "gateGreen"), SKSpriteNode(imageNamed: "gateBlue")]
         var randomIndexPoss = [0, 1, 2]
@@ -324,12 +739,21 @@ struct ObstacleSpawner {
         gate.color = colors[randomIndex]
 //        gate.colorBlendFactor = 1.0
         
+        for planet in scene.planets {
+            let planetUpperBound: CGFloat = planet.position.y + planet.size.height / 2
+            let planetLowerBound: CGFloat = planet.position.y - planet.size.height / 2
+            
+            if(y >= planetUpperBound || y <= planetLowerBound){
+                newY = planetUpperBound + 50
+            }
+        }
+        
         print("Spawn a new gate")
         print(gate.color)
-        gate.size = CGSize(width: scene.size.width, height: scene.size.height * 0.3)
+        gate.size = CGSize(width: scene.size.width + 7, height: scene.size.height * 0.3)
         let halfW = gate.size.width / 2
         gate.position = CGPoint(
-            x: halfW,
+            x: halfW-4,
             y: y
         )
         gate.zPosition = 5
@@ -445,12 +869,13 @@ struct ObstacleSpawner {
         let planetUnitRandom = Int.random(in:3...5)
         var counter = 0
         
-        scene.planets.shuffle()
+        // Don't shuffle planets to maintain alternating pattern
+        // scene.planets.shuffle()
         
-        for (planetIdx, planet) in scene.planets.enumerated() {
+        for planet in scene.planets {
             if planet.position.y / 2 < -planet.size.height / 2 {
                 planet.position.y = topY + 500
-                planet.position.x = getPlanetXPos(scene: scene, planet: planet, index: planetIdx)
+                planet.position.x = getNextPlanetXPos(scene: scene, planet: planet)
             }
         }
         
@@ -460,85 +885,20 @@ struct ObstacleSpawner {
                     }
         //            print(f.size.width / 2, scene.size.width - f.size.width / 2)
                     if f.position.y < offscreenY {
-                        f.position.x = CGFloat.random(in: 25...(scene.size.width-25))
-                        f.position.y = topY + CGFloat.random(in: 0...200)
+                        let fuelRadius = f.size.width / 3.5
+                        let newY = topY + CGFloat.random(in: 0...200)
+                        
+                        // Find a valid position that doesn't collide with other collectibles
+                        if let validPosition = findValidPosition(in: scene, y: newY, radius: fuelRadius) {
+                            f.position = validPosition
+                        } else {
+                            // If no valid position found, use a random position but mark for removal
+                            f.position.x = CGFloat.random(in: 25...(scene.size.width-25))
+                            f.position.y = newY
+                        }
                     }
                 }
         
-        // LOGIC SPAWN STAR BASED ON ROCKET COLOUR
-//        var rocketColor = scene.rocket.color
-//        var redStarUnit = 0
-//        var greenStarUnit = 0
-//        var blueStarUnit = 0
-
-//                if rocketColor == .red {
-//                    redStarUnit = Int((Double(starUnit) * 0.75).rounded())
-//                    let remaining = starUnit - redStarUnit
-//                        if remaining > 0 {
-//                            greenStarUnit = Int.random(in: 0...remaining)
-//                            blueStarUnit = remaining - greenStarUnit
-//                        }
-//                } else if rocketColor == .green {
-//                    greenStarUnit = Int((Double(starUnit) * 0.75).rounded())
-//                       let remaining = starUnit - greenStarUnit
-//                       
-//                       if remaining > 0 {
-//                           redStarUnit = Int.random(in: 0...remaining)
-//                           blueStarUnit = remaining - redStarUnit
-//                       }
-//                } else {
-//                    blueStarUnit = Int((Double(starUnit) * 0.75).rounded())
-//                       let remaining = starUnit - blueStarUnit
-//                       
-//                       if remaining > 0 {
-//                           redStarUnit = Int.random(in: 0...remaining)
-//                           greenStarUnit = remaining - redStarUnit
-//                       }
-//                }
-//
-//        for star in scene.redStar {
-//                    if star.size.width/2 >= (scene.size.width-star.size.width/2) {
-//                        print("Issue in star! \(50 / 2) < \(scene.size.width-50/2)")
-//                    }
-//                    if star.position.y < offscreenY {
-//                        star.position.x = CGFloat.random(in: star.size.width/2...(scene.size.width-star.size.width/2))
-//                        star.position.y = topY + CGFloat.random(in: 0...200)
-//                    }
-//                    counter += 1
-//                if counter == redStarUnit {
-//                        counter = 0
-//                        break
-//                    }
-//                }
-//        for star in scene.greenStar {
-//                    if star.size.width/2 >= (scene.size.width-star.size.width/2) {
-//                        print("Issue in star! \(50 / 2) < \(scene.size.width-50/2)")
-//                    }
-//                    if star.position.y < offscreenY {
-//                        star.position.x = CGFloat.random(in: star.size.width/2...(scene.size.width-star.size.width/2))
-//                        star.position.y = topY + CGFloat.random(in: 0...200)
-//                    }
-//                    counter += 1
-//            if counter == greenStarUnit {
-//                        counter = 0
-//                        break
-//                    }
-//                }
-//        for star in scene.blueStar {
-//                    if star.size.width/2 >= (scene.size.width-star.size.width/2) {
-//                        print("Issue in star! \(50 / 2) < \(scene.size.width-50/2)")
-//                    }
-//                    if star.position.y < offscreenY {
-//                        star.position.x = CGFloat.random(in: star.size.width/2...(scene.size.width-star.size.width/2))
-//                        star.position.y = topY + CGFloat.random(in: 0...200)
-//                    }
-//                    counter += 1
-//            if counter == blueStarUnit {
-//                        counter = 0
-//                        break
-//                    }
-//                }
-//        print(blueStarUnit)
 
 
         scene.gate.forEach { g in
@@ -548,10 +908,5 @@ struct ObstacleSpawner {
 //                g.position.x = CGFloat.random(in: g.size.width/2...(scene.size.width-g.size.width/2))
             }
         }
-        
-//        if(scene.isPowerupSpawned){
-//            spawnPowerup(in: scene, y: scene.position.y)
-//            scene.isPowerupSpawned = false
-//        }
     }
 }

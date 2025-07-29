@@ -8,8 +8,6 @@
 import SpriteKit
 import GameplayKit
 
-
-
 class GameScene: SKScene, SKPhysicsContactDelegate {
     var rocket: SKSpriteNode!
     var rocketFire: RocketFire!
@@ -27,12 +25,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var redStar     = [SKSpriteNode]()
     var greenStar     = [SKSpriteNode]()
     var blueStar     = [SKSpriteNode]()
-    var starLimit = 5
     var fuels     = [SKSpriteNode]()
     var gate      = [SKSpriteNode]()
     var powerups  = [SKSpriteNode]()
     var fireNode: SKSpriteNode!
     var distance: Int = 0
+    
+    var upcomingGate: CGFloat = 0.0
+    var futureGate: CGFloat = 0.0
+    var gateColor: UIColor = .red
     
     var isPowerupSpawned: Bool = false
     var isShield: Bool = false
@@ -40,12 +41,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var isDoublePoint: Bool = false
     var multiplierTimer: CGFloat = 0
     var shieldTimer: CGFloat = 0
+    var shieldEffect: SKSpriteNode?
 
-    var upcomingGate: CGFloat = 0.0
-    var futureGate: CGFloat = 0.0
-    var gateColor: UIColor = .red
+    // Track planet positioning for alternating pattern
+    var planetIndex: Int = 0
     
-    private var planetCount = 4
+    private var planetCount = 100
     private var starCount   = 100
     private var fuelCount   = 1
     private var gateCount   = 1
@@ -56,12 +57,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var isGameOver = false
     
     override func didMove(to view: SKView) {
+        self.upcomingGate = self.size.height + CGFloat.random(in: 0...200)
+        self.futureGate = self.upcomingGate + self.size.height + CGFloat.random(in: 100...200)
+        
         let background = BackgroundNode(sceneSize: self.size) // misalnya ini adalah SKSpriteNode
         background.zPosition = -1 // pastikan ada di belakang semua elemen
         background.position = CGPoint(x: size.width / 2, y: size.height / 2)
         addChild(background)
-        
-        self.futureGate = self.size.height + 500
 
         //backgroundColor = .brown
         physicsWorld.gravity = .zero
@@ -103,7 +105,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     object: hud.score
                 )
                 self.removeAction(forKey: "fuelTimer")
-                meteorSpawner.stopSpawning()
                 isGameOver = true
                 isPaused = true
             }
@@ -117,10 +118,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let powerupAction = SKAction.run { [weak self] in
             guard let self = self, !self.isGameOver else { return }
             
-            if(self.isShield) { self.shieldTimer -= 0.1 }
-            if(self.isDoublePoint) { self.multiplierTimer -= 0.1 }
+            if(self.isShield) { self.shieldTimer -= 0.1; print("Shield time : \(self.shieldTimer)") }
+            if(self.isDoublePoint) { self.multiplierTimer -= 0.1; print("Multiplier time : \(self.multiplierTimer)") }
             
-            if(self.shieldTimer <= 0) { self.isShield = false }
+            if(self.shieldTimer <= 0) { self.isShield = false
+                self.shieldEffect?.removeFromParent()
+                self.shieldEffect = nil}
             if(self.multiplierTimer <= 0) { self.isDoublePoint = false; self.multiplier = 1 }
         }
         
@@ -130,12 +133,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func TutorialOverlay() {
-//        tutorialBackground = SKSpriteNode(color: .gray, size: CGSize(width: size.width * 2, height: size.height/1.5))
-//        tutorialBackground.alpha = 0.5
-//        tutorialBackground.zPosition = 100
-//        addChild(tutorialBackground)
-//        
-//       
+        tutorialLabel = SKLabelNode(fontNamed: "Baloo2-ExtraBold")
+        tutorialLabel.text = "Match stars with your rocket's color!"
+        tutorialLabel.fontSize = 22
+        tutorialLabel.fontColor = .white
+        tutorialLabel.position = CGPoint(x: size.width / 2, y: size.height * 0.65) // Sesuaikan posisi
+        tutorialLabel.zPosition = 103
+        addChild(tutorialLabel)
        
        // let tutorialImage = SKSpriteNode(imageNamed: "arrowTutorial")
         arrow = SKSpriteNode(imageNamed: "arrowTutorial")
@@ -168,6 +172,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
    //    tutorialBackground.removeFromParent()
         arrow.removeFromParent()
         hand.removeFromParent()
+        tutorialLabel.removeFromParent()
         
     }
     
@@ -179,8 +184,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rocketY = size.height / 4
         rocket.position = CGPoint(x: size.width/2, y: rocketY)
         rocket.zPosition = 10
-        
-        // Set warna roket
         if rocketPicker == "rocketRed" {
             rocket.color = .red
         } else if rocketPicker == "rocketGreen" {
@@ -240,43 +243,43 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         let starSpacing = size.height / CGFloat(starUnit)
         // LOGIC STAR ROCKET DISINI
-//        let rocketColor = rocket.color
-//        var redStarUnit = 0
-//        var greenStarUnit = 0
-//        var blueStarUnit = 0
-//
-//                if rocketColor == .red {
-//                    redStarUnit = Int((Double(starUnit) * 0.75).rounded())
-//                    let remaining = starUnit - redStarUnit
-//                        if remaining > 0 {
-//                            greenStarUnit = Int.random(in: 0...remaining)
-//                            blueStarUnit = remaining - greenStarUnit
-//                        }
-//                } else if rocketColor == .green {
-//                    greenStarUnit = Int((Double(starUnit) * 0.75).rounded())
-//                       let remaining = starUnit - greenStarUnit
-//                       
-//                       if remaining > 0 {
-//                           redStarUnit = Int.random(in: 0...remaining)
-//                           blueStarUnit = remaining - redStarUnit
-//                       }
-//                } else {
-//                    blueStarUnit = Int((Double(starUnit) * 0.75).rounded())
-//                       let remaining = starUnit - blueStarUnit
-//                       
-//                       if remaining > 0 {
-//                           redStarUnit = Int.random(in: 0...remaining)
-//                           greenStarUnit = remaining - redStarUnit
-//                       }
-//                }
-//        for i in 0..<redStarUnit     { ObstacleSpawner.spawnStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
-//        for i in 0..<greenStarUnit     { ObstacleSpawner.spawnGreenStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
-//        for i in 0..<blueStarUnit     { ObstacleSpawner.spawnBlueStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
+        let rocketColor = rocket.color
+        var redStarUnit = 0
+        var greenStarUnit = 0
+        var blueStarUnit = 0
+
+        if rocketColor == .red {
+            redStarUnit = Int((Double(starUnit) * 0.75).rounded())
+            let remaining = starUnit - redStarUnit
+            if remaining > 0 {
+                greenStarUnit = Int.random(in: 0...remaining)
+                blueStarUnit = remaining - greenStarUnit
+            }
+        } else if rocketColor == .green {
+            greenStarUnit = Int((Double(starUnit) * 0.75).rounded())
+            let remaining = starUnit - greenStarUnit
+           
+            if remaining > 0 {
+               redStarUnit = Int.random(in: 0...remaining)
+               blueStarUnit = remaining - redStarUnit
+            }
+        } else {
+            blueStarUnit = Int((Double(starUnit) * 0.75).rounded())
+               let remaining = starUnit - blueStarUnit
+               
+               if remaining > 0 {
+                   redStarUnit = Int.random(in: 0...remaining)
+                   greenStarUnit = remaining - redStarUnit
+               }
+        }
+        for i in 0..<redStarUnit     { ObstacleSpawner.spawnStar(in: self, atY: CGFloat.random(in: self.upcomingGate...self.futureGate)) }
+        for i in 0..<greenStarUnit     { ObstacleSpawner.spawnGreenStar(in: self, atY: CGFloat.random(in: self.upcomingGate...self.futureGate)) }
+        for i in 0..<blueStarUnit     { ObstacleSpawner.spawnBlueStar(in: self, atY: CGFloat.random(in: self.upcomingGate...self.futureGate)) }
 //        for i in 0..<starUnit     { ObstacleSpawner.spawnStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
         let fuelSpacing = size.height / CGFloat(fuelCount)
         for i in 0..<fuelCount { ObstacleSpawner.spawnFuel(in: self, atY: startY + CGFloat(i) * fuelSpacing + 200) }
         let gateSpacing = size.height / CGFloat(gateCount)
-        for i in 0..<gateCount { ObstacleSpawner.spawnGate(in: self, atY: startY + CGFloat(i) * gateSpacing + 200) }
+        for i in 0..<gateCount { ObstacleSpawner.spawnGate(in: self, atY: startY + self.upcomingGate) }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -311,8 +314,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hud.updatePowerupState(in: self)
         ObstacleSpawner.recycleOffscreen(in: self, speed: scrollSpeed)
         PowerUpSpawner.recyclePowerup(in: self, speed: scrollSpeed)
-//        StarSpawner.spawnStar(in: self)
-        StarSpawner.removeStar(in: self)
+        
+        // Remove any colliding objects
+        ObstacleSpawner.removeCollidingObjects(in: self)
         
     }
     

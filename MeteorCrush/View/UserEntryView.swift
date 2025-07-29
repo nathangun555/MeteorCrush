@@ -46,7 +46,7 @@ struct UserEntryView: View {
                         // Username entry and error message
                         VStack(spacing: 5) {
                             Text("Enter Your Username")
-                                .font(.system(size: 28, weight: .bold))
+                                .font(fontTitle())
                                 .foregroundColor(.white)
                                 .opacity(fadeIn ? 1 : 0)
                                 .offset(y: fadeIn ? 0 : 20)
@@ -72,7 +72,7 @@ struct UserEntryView: View {
                                     .placeholder(when: username.isEmpty) {
                                         Text("Max 8 Characters")
                                             .foregroundColor(.black.opacity(0.6))
-                                            .font(.system(size: 18, weight: .bold))
+                                            .font(.custom("Baloo2-ExtraBold", size: 20))
                                     }
                             }
                             .opacity(fadeIn ? 1 : 0)
@@ -82,42 +82,65 @@ struct UserEntryView: View {
                             if let error = errorMessage {
                                 Text(error)
                                     .foregroundColor(.red)
-                                    .font(.system(size: 14))
+                                    .font(fontSubTitle())
                                     .opacity(fadeIn ? 1 : 0)
                                     .animation(.easeIn(duration: 0.4), value: fadeIn)
                             }
                         }
-                       
-                        
 
-                        // Continue Button
-                        Button(action: {
-                            withAnimation(.easeIn(duration: 0.15)) {
-                                animate = true
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                animate = false
-                                handleSubmit()
-                            }
-                        }) {
+                        ZStack {
                             Image("buttonContinue")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 300)
-                                .scaleEffect(animate ? 0.95 : 1.0)
-                                .animation(.spring(response: 0.3, dampingFraction: 0.5), value: animate)
-                                
+
+                            Button(action: {
+                                withAnimation(.easeIn(duration: 0.15)) {
+                                    animate = true
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    animate = false
+                                    handleSubmit()
+                                }
+                            }) {
+                                Color.clear
+                                    .frame(width: 195, height: 35) // match image size
+                            }
+                            .scaleEffect(animate ? 0.95 : 1.0)
+                            .animation(.spring(response: 0.3, dampingFraction: 0.5), value: animate)
                         }
-                        .buttonStyle(PlainButtonStyle())
                         .opacity(fadeIn ? 1 : 0)
                         .offset(y: fadeIn ? -40 : -20)
                         .animation(.easeOut(duration: 0.6).delay(0.5), value: fadeIn)
+//                        // Continue Button
+//                        Button(action: {
+//                            withAnimation(.easeIn(duration: 0.15)) {
+//                                animate = true
+//                            }
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                                animate = false
+//                                handleSubmit()
+//                            }
+//                        }) {
+//                            Image("buttonContinue")
+//                                .resizable()
+//                                .scaledToFit()
+//                                .frame(width: 300)
+//                                .scaleEffect(animate ? 0.95 : 1.0)
+//                                .animation(.spring(response: 0.3, dampingFraction: 0.5), value: animate)
+//                                
+//                        }
+//                        .buttonStyle(PlainButtonStyle())
+//                        .opacity(fadeIn ? 1 : 0)
+//                        .offset(y: fadeIn ? -40 : -20)
+//                        .animation(.easeOut(duration: 0.6).delay(0.5), value: fadeIn)
                     
                     }
             
                 }
                 .ignoresSafeArea(.all)
                 .onAppear {
+                    SoundManager.shared.playLobbyMusic()
                     fadeIn = true
                     bounce = true
                 }

@@ -7,6 +7,8 @@ class HUD: SKNode {
     private let fuelLabel  = SKLabelNode()
     private let fuelBarBackground = SKSpriteNode(color: .gray, size: CGSize(width: 55, height: 225)) // Background bar (vertikal)
     private let fuelBarFill = SKSpriteNode() // Correcting fuelBarFill to SKSpriteNode
+    private let scoreBackground = SKSpriteNode()
+
     
     
     private let shieldLabel = SKSpriteNode(imageNamed: "casingShield")
@@ -22,18 +24,24 @@ class HUD: SKNode {
     var multiplierPos: CGPoint
     
     init(size: CGSize) {
-        self.shieldPos = CGPoint(x: size.width - 80, y: size.height - 100)
-        self.multiplierPos = CGPoint(x: self.shieldPos.x, y: self.shieldPos.y - powerupSize - 50)
+        self.shieldPos = CGPoint(x: size.width - 50, y: size.height - 140)
+        self.multiplierPos = CGPoint(x: self.shieldPos.x, y: self.shieldPos.y - powerupSize - 20)
 
         super.init()
+        // Score Background
+        scoreBackground.texture = SKTexture(imageNamed: "casingStar")
+        scoreBackground.size = CGSize(width: 130, height: 60)
+        scoreBackground.position = CGPoint(x: size.width - 80, y: size.height - 70)
+        scoreBackground.zPosition = 10
+        addChild(scoreBackground)
         
         // Score Label
         scoreLabel.fontName = "Baloo2-ExtraBold"
         scoreLabel.fontSize = 30
         scoreLabel.fontColor = .white
-        scoreLabel.position = CGPoint(x: size.width - 80, y: size.height - 70)
+        scoreLabel.position = CGPoint(x: size.width - 60, y: size.height - 80)
         scoreLabel.zPosition = 20
-        scoreLabel.text = "Score: 0"
+        scoreLabel.text = "0"
         addChild(scoreLabel)
         
         // Fuel Label
@@ -96,7 +104,7 @@ class HUD: SKNode {
     
     func updateLabels() {
         // Update text untuk score dan fuel
-        scoreLabel.text = "Score: \(score)"
+        scoreLabel.text = "\(score)"
         fuelLabel.text  = "\(Int(fuel))"
         
         // Tentukan tinggi maksimum untuk bar bahan bakar

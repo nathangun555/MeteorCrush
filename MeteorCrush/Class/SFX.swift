@@ -14,6 +14,8 @@ class SoundManager {
     private var sfxPlayer: AVAudioPlayer?
     private var collectStar: AVAudioPlayer?
     private var wrongStar: AVAudioPlayer?
+    private var collectPowerUp: AVAudioPlayer?
+
 
     
     var playSound = true
@@ -37,6 +39,14 @@ class SoundManager {
                     wrongStar?.prepareToPlay()
                     wrongStar?.play()
                 }
+                else if fileName == "collectPowerUp"
+                {
+                    print("masuk sini")
+                    collectPowerUp = try AVAudioPlayer(contentsOf: url)
+                    musicPlayer?.volume = 0.4
+                    collectPowerUp?.prepareToPlay()
+                    collectPowerUp?.play()
+                }
                 else {
                     if fileName == "buttonTap"
                     {
@@ -56,15 +66,17 @@ class SoundManager {
             print("❌ Sound file \("starGame").\("wav") not found.")
             return
         }
-        
-        do {
-            musicPlayer = try AVAudioPlayer(contentsOf: url)
-            musicPlayer?.volume = 0.3
-            musicPlayer?.numberOfLoops = -1 // 🔁 Loop tanpa batas
-            musicPlayer?.prepareToPlay()
-            musicPlayer?.play()
-        } catch {
-            print("❌ Error playing sound: \(error.localizedDescription)")
+        self.playSound = UserDefaults.standard.bool(forKey: "musicManager")
+        if playSound {
+            do {
+                musicPlayer = try AVAudioPlayer(contentsOf: url)
+                musicPlayer?.volume = 0.3
+                musicPlayer?.numberOfLoops = -1 // 🔁 Loop tanpa batas
+                musicPlayer?.prepareToPlay()
+                musicPlayer?.play()
+            } catch {
+                print("❌ Error playing sound: \(error.localizedDescription)")
+            }
         }
     }
     
@@ -73,15 +85,18 @@ class SoundManager {
             print("❌ Sound file lobbyMusic.wav not found.")
             return
         }
-        do {
-            musicPlayer = try AVAudioPlayer(contentsOf: url)
-            musicPlayer?.volume = 0.3
-            musicPlayer?.numberOfLoops = -1 // 🔁 Loop tanpa batas
-            musicPlayer?.prepareToPlay()
-            musicPlayer?.play()
-            print("🎵 Lobby music playing in loop.")
-        } catch {
-            print("❌ Error playing sound: \(error.localizedDescription)")
+        self.playSound = UserDefaults.standard.bool(forKey: "musicManager")
+        if playSound {
+            do {
+                musicPlayer = try AVAudioPlayer(contentsOf: url)
+                musicPlayer?.volume = 0.3
+                musicPlayer?.numberOfLoops = -1 // 🔁 Loop tanpa batas
+                musicPlayer?.prepareToPlay()
+                musicPlayer?.play()
+                print("🎵 Lobby music playing in loop.")
+            } catch {
+                print("❌ Error playing sound: \(error.localizedDescription)")
+            }
         }
     }
 

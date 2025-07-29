@@ -20,13 +20,21 @@ struct PowerUpSpawner {
         let powerUpType: PowerupType = Bool.random() ? .doubleScore : .shield
 
         let powerup = SKSpriteNode(imageNamed: powerUpType == .doubleScore ? "powerUp2x" : "powerUpShield")
-        let diameter = 200.0
+        let diameter = 300.0
         powerup.size = CGSize(width: diameter, height: diameter)
-        powerup.position = CGPoint(x: CGFloat.random(in: 0...(scene.size.width)), y: y)
+        
+        let collisionRadius = diameter / 6
+        
+        // Find a valid position that doesn't collide with other collectibles
+        guard let validPosition = ObstacleSpawner.findValidPosition(in: scene, y: y, radius: collisionRadius) else {
+            return // Skip spawning if no valid position found
+        }
+        
+        powerup.position = validPosition
         powerup.zPosition = 5
         powerup.userData = ["type": powerUpType.rawValue]
         
-        let body = SKPhysicsBody(circleOfRadius: diameter / 6)
+        let body = SKPhysicsBody(circleOfRadius: collisionRadius)
         body.isDynamic = false
         body.categoryBitMask = PhysicsCategory.powerUp
         body.contactTestBitMask = PhysicsCategory.Rocket
