@@ -336,10 +336,10 @@ struct ObstacleSpawner {
         
         print("Spawn a new gate")
         print(gate.color)
-        gate.size = CGSize(width: scene.size.width, height: scene.size.height * 0.3)
+        gate.size = CGSize(width: scene.size.width + 7, height: scene.size.height * 0.3)
         let halfW = gate.size.width / 2
         gate.position = CGPoint(
-            x: halfW,
+            x: halfW-4,
             y: y
         )
         gate.zPosition = 5
