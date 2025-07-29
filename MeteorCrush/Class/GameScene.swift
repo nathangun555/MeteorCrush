@@ -40,6 +40,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var isDoublePoint: Bool = false
     var multiplierTimer: CGFloat = 0
     var shieldTimer: CGFloat = 0
+    var shieldEffect: SKSpriteNode?
 
     // Track planet positioning for alternating pattern
     var planetIndex: Int = 0
@@ -119,7 +120,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if(self.isShield) { self.shieldTimer -= 0.1; print("Shield time : \(self.shieldTimer)") }
             if(self.isDoublePoint) { self.multiplierTimer -= 0.1; print("Multiplier time : \(self.multiplierTimer)") }
             
-            if(self.shieldTimer <= 0) { self.isShield = false }
+            if(self.shieldTimer <= 0) { self.isShield = false
+                self.shieldEffect?.removeFromParent()
+                self.shieldEffect = nil}
             if(self.multiplierTimer <= 0) { self.isDoublePoint = false; self.multiplier = 1 }
         }
         
@@ -169,6 +172,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         tutorialBackground.removeFromParent()
         tutorialLabel.removeFromParent()
         hand.removeFromParent()
+        tutorialLabel.removeFromParent()
         
     }
     

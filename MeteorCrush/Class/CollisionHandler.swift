@@ -161,8 +161,29 @@ struct CollisionHandler {
              switch nodeData["type"] as? String {
              case "shield":
                  print("Shield active!")
-                 scene.isShield = true
-                 scene.shieldTimer = 10
+                 if scene.isShield {
+                     // Jika sudah ada shield, perpanjang waktu shield yang sudah ada
+                     scene.shieldTimer += 10 // Tambahkan waktu 10 detik (atau sesuaikan dengan yang Anda inginkan)
+                     print("Shield time extended!")
+                 } else {
+                     // Jika shield belum ada, aktifkan shield baru
+                     scene.isShield = true
+                     scene.shieldTimer = 10 // Waktu awal shield
+                     
+                     // Membuat dan menambahkan efek shield ke roket
+                     let effectShield = SKSpriteNode(imageNamed: "effectShield")
+                     effectShield.zPosition = 9  // Pastikan berada di atas roket
+                     effectShield.setScale(0.8)
+                     
+                     // Posisi shield di atas roket dengan jarak tertentu
+                     scene.rocket.addChild(effectShield)
+
+                     effectShield.position = CGPoint(x: 0, y: 0)
+                     
+                     // Menyimpan shield effect ke dalam scene
+                     scene.shieldEffect = effectShield
+                     print("New shield activated!")
+                 }
                 
              case "doubleScore":
                  print("Double score active!")

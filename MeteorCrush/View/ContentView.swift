@@ -16,26 +16,27 @@ struct ContentView: View {
     @State private var backToMenu = false
 
     @EnvironmentObject var leaderboardModel: LeaderboardModel
+    @State private var gameViewModel = GameViewModel()
 
-    private var scene: SKScene {
-        let scene = GameScene(size: UIScreen.main.bounds.size)
-        scene.scaleMode = .resizeFill
-        return scene
-    }
+//    private var scene: SKScene {
+//        let scene = GameScene(size: UIScreen.main.bounds.size)
+//        scene.scaleMode = .resizeFill
+//        return scene
+//    }
 
     var body: some View {
         ZStack {
             if backToMenu {
                 MainMenuView()
             } else {
-                SpriteView(scene: scene)
+                SpriteView(scene: gameViewModel.scene)
                     .id(sceneID)
                     .ignoresSafeArea()
                     .onReceive(NotificationCenter.default.publisher(for: Notification.Name("GameOver"))) { notif in
                         
                         print("GAME OVER TRIGGERED")
                         isGameOver = true
-                        scene.isPaused = true
+                      //  gameViewModel.scene.isPaused = true
                         if let score = notif.object as? Int {
                             currentScore = score
 
