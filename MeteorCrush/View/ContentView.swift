@@ -82,6 +82,6 @@ struct ContentView: View {
 }
 
 #Preview {
-//    @Previewable var userData: UserData = UserData()
-    ContentView()
+    @Previewable var leaderboardModel = LeaderboardModel()
+    ContentView().environmentObject(leaderboardModel)
 }
