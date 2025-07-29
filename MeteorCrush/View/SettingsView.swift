@@ -82,7 +82,13 @@ struct SettingsView: View {
                                     vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
                                     let currentValue = UserDefaults.standard.bool(forKey: "musicManager")
                                     let newValue = !currentValue
-                                    UserDefaults.standard.set(newValue, forKey: "musicManager")
+                                    if newValue == false {
+                                        SoundManager.shared.stopAllSounds()
+                                        UserDefaults.standard.set(newValue, forKey: "musicManager")
+                                    } else if newValue == true {
+                                        UserDefaults.standard.set(newValue, forKey: "musicManager")
+                                        SoundManager.shared.playLobbyMusic()
+                                    }
                                 }
                                 .onChange(of: hapticFeedback){
                                     vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)

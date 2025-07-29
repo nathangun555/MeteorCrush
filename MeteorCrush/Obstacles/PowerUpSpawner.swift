@@ -20,7 +20,7 @@ struct PowerUpSpawner {
         let powerUpType: PowerupType = Bool.random() ? .doubleScore : .shield
 
         let powerup = SKSpriteNode(imageNamed: powerUpType == .doubleScore ? "powerUp2x" : "powerUpShield")
-        let diameter = 200.0
+        let diameter = 300.0
         powerup.size = CGSize(width: diameter, height: diameter)
         
         let collisionRadius = diameter / 6
