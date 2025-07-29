@@ -175,7 +175,7 @@ struct CollisionHandler {
                      // Membuat dan menambahkan efek shield ke roket
                      let effectShield = SKSpriteNode(imageNamed: "effectShield")
                      effectShield.zPosition = 9  // Pastikan berada di atas roket
-                     effectShield.setScale(0.8)
+                     effectShield.setScale(0.5)
                      
                      // Posisi shield di atas roket dengan jarak tertentu
                      scene.rocket.addChild(effectShield)

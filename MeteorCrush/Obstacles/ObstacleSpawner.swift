@@ -560,7 +560,6 @@ struct ObstacleSpawner {
         star.position = validPosition
         star.zPosition = 5
         star.blendMode = .alpha
-        let collisionRadius = halfW / 3.5
         
         star.physicsBody = SKPhysicsBody(circleOfRadius: collisionRadius)
         star.physicsBody?.categoryBitMask = PhysicsCategory.redStar
