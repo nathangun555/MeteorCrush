@@ -102,10 +102,24 @@ struct MainMenuView: View {
 
                         // Default settings
                         SoundManager.shared.playLobbyMusic()
-                        UserDefaults.standard.set(1.0, forKey: "joystickSensitivity")
-                        UserDefaults.standard.set(false, forKey: "joystickVisibility")
-                        UserDefaults.standard.set(true, forKey: "hapticManager")
-                        UserDefaults.standard.set(true, forKey: "musicManager")
+
+                        let defaults = UserDefaults.standard
+
+                        if defaults.object(forKey: "joystickSensitivity") == nil {
+                            defaults.set(1.0, forKey: "joystickSensitivity")
+                        }
+
+                        if defaults.object(forKey: "joystickVisibility") == nil {
+                            defaults.set(false, forKey: "joystickVisibility")
+                        }
+
+                        if defaults.object(forKey: "hapticManager") == nil {
+                            defaults.set(true, forKey: "hapticManager")
+                        }
+
+                        if defaults.object(forKey: "musicManager") == nil {
+                            defaults.set(true, forKey: "musicManager")
+                        }
                     }
                 }
             }
