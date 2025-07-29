@@ -87,31 +87,53 @@ struct UserEntryView: View {
                                     .animation(.easeIn(duration: 0.4), value: fadeIn)
                             }
                         }
-                       
-                        
 
-                        // Continue Button
-                        Button(action: {
-                            withAnimation(.easeIn(duration: 0.15)) {
-                                animate = true
-                            }
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                animate = false
-                                handleSubmit()
-                            }
-                        }) {
+                        ZStack {
                             Image("buttonContinue")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 300)
-                                .scaleEffect(animate ? 0.95 : 1.0)
-                                .animation(.spring(response: 0.3, dampingFraction: 0.5), value: animate)
-                                
+
+                            Button(action: {
+                                withAnimation(.easeIn(duration: 0.15)) {
+                                    animate = true
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    animate = false
+                                    handleSubmit()
+                                }
+                            }) {
+                                Color.clear
+                                    .frame(width: 195, height: 35) // match image size
+                            }
+                            .scaleEffect(animate ? 0.95 : 1.0)
+                            .animation(.spring(response: 0.3, dampingFraction: 0.5), value: animate)
                         }
-                        .buttonStyle(PlainButtonStyle())
                         .opacity(fadeIn ? 1 : 0)
                         .offset(y: fadeIn ? -40 : -20)
                         .animation(.easeOut(duration: 0.6).delay(0.5), value: fadeIn)
+//                        // Continue Button
+//                        Button(action: {
+//                            withAnimation(.easeIn(duration: 0.15)) {
+//                                animate = true
+//                            }
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                                animate = false
+//                                handleSubmit()
+//                            }
+//                        }) {
+//                            Image("buttonContinue")
+//                                .resizable()
+//                                .scaledToFit()
+//                                .frame(width: 300)
+//                                .scaleEffect(animate ? 0.95 : 1.0)
+//                                .animation(.spring(response: 0.3, dampingFraction: 0.5), value: animate)
+//                                
+//                        }
+//                        .buttonStyle(PlainButtonStyle())
+//                        .opacity(fadeIn ? 1 : 0)
+//                        .offset(y: fadeIn ? -40 : -20)
+//                        .animation(.easeOut(duration: 0.6).delay(0.5), value: fadeIn)
                     
                     }
             
