@@ -51,8 +51,8 @@ struct PowerUpSpawner {
     static func recyclePowerup(in scene: GameScene, speed: CGFloat) {
         let offscreenY: CGFloat = -100
         let second = Int(floor(CGFloat(scene.distance / 5)))
-        let startingSecond = 1
-        let interval = 3
+        let startingSecond = 5
+        let interval = 20
         if(second >= startingSecond && (second - startingSecond) % interval == 0 && scene.powerups.count == 0){
             spawnPowerup(in: scene, y: scene.size.height)
         }

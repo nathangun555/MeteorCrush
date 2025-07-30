@@ -651,7 +651,7 @@ struct ObstacleSpawner {
 
 
     static func spawnFuel(in scene: GameScene, atY y: CGFloat) {
-        let fuelColors = ["fuel10", "fuel20", "fuel30", "fuel40"]
+        let fuelColors = ["fuel10", "fuel20", "fuel30", "fuel40", "fuel20", "fuel30", "fuel40", "fuel30", "fuel30", "fuel40"]
         let fuelPicker = fuelColors.randomElement()!
         let pickup = SKSpriteNode(imageNamed: fuelPicker)
         pickup.size = CGSize(width: 200, height: 200)
@@ -696,10 +696,10 @@ struct ObstacleSpawner {
         // Collision circle (for debugging or visual purposes)
         let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
         collisionCircle.position = .zero
-        collisionCircle.strokeColor = .yellow
+        collisionCircle.strokeColor = .clear
         collisionCircle.lineWidth = 2
         collisionCircle.fillColor = .clear
-        collisionCircle.zPosition = -1
+        collisionCircle.zPosition = -100
         pickup.addChild(collisionCircle)
 
         // Check for collisions with planets
@@ -884,7 +884,7 @@ struct ObstacleSpawner {
                         print("Issue in fuel! \(25) < \(scene.size.width-25)")
                     }
         //            print(f.size.width / 2, scene.size.width - f.size.width / 2)
-                    if f.position.y < offscreenY {
+                    if f.position.y < 0 {
                         let fuelRadius = f.size.width / 3.5
                         let newY = topY + CGFloat.random(in: 0...200)
                         
