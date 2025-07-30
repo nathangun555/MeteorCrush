@@ -58,10 +58,8 @@ struct MainMenuView: View {
                         }
                        
 
-                        Spacer()
-
                         // Buttons
-                        VStack(spacing: -120) {
+                        VStack {
                             animatedButton(imageName: "buttonStart", delay: 0.1) {
                                 SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
                                 showGame = true
@@ -71,23 +69,22 @@ struct MainMenuView: View {
                                 SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
                                 showLeaderboard = true
                             }
-                            .background(
-                                NavigationLink(destination: LeaderboardView().navigationBarBackButtonHidden(true), isActive: $showLeaderboard) {
-                                    EmptyView()
-                                }.hidden()
-                            )
-
+     
                             animatedButton(imageName: "buttonSettings", delay: 0.3) {
                                 SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
                                 showSettings = true
                             }
-                            .background(
-                                NavigationLink(destination: SettingsView().navigationBarBackButtonHidden(true), isActive: $showSettings) {
-                                    EmptyView()
-                                }.hidden()
-                            )
+                            
+                            NavigationLink(destination: LeaderboardView().navigationBarBackButtonHidden(true), isActive: $showLeaderboard) {
+                                EmptyView()
+                            }.hidden()
+
+                            NavigationLink(destination: SettingsView().navigationBarBackButtonHidden(true), isActive: $showSettings) {
+                                EmptyView()
+                            }.hidden()
                         }
-                        .padding(.top, -580)
+                        
+                        Spacer()
                        
                     }
                     .padding(.horizontal)
@@ -128,24 +125,22 @@ struct MainMenuView: View {
 
     @ViewBuilder
     private func animatedButton(imageName: String, delay: Double, action: @escaping () -> Void) -> some View {
-        ZStack {
+        
+        Button(action: action) {
             Image(imageName)
                 .resizable()
                 .scaledToFit()
-                .frame(width: 450)
+                .scaleEffect(2.5)
                 .opacity(animateEntrance ? 1 : 0)
-                .offset(y: animateEntrance ? 0 : 30)
+                .offset(y: animateEntrance ? 0 : -30)
                 .animation(.interpolatingSpring(stiffness: 100, damping: 12).delay(delay), value: animateEntrance)
-
-            Button(action: action) {
-                RoundedRectangle(cornerRadius: 100)
-                    .fill(Color.red.opacity(0.01)) // allows tap recognition
-                    .frame(width: 250, height: 50)
-            }
+                .frame(width: 450, height: 80)
         }
+        
     }
 }
 
 #Preview {
     MainMenuView()
+        .environmentObject(LeaderboardModel())
 }
