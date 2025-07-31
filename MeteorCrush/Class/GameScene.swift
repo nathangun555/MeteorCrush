@@ -130,6 +130,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let powerupWait = SKAction.wait(forDuration: 0.1)
         let powerupSequence = SKAction.sequence([powerupWait, powerupAction])
         run(SKAction.repeatForever(powerupSequence), withKey: "powerupTimer")
+        
+        // Spawn fuel every 5 seconds
+        let fuelSpawnAction = SKAction.run { [weak self] in
+            guard let self = self, !self.isGameOver else { return }
+            ObstacleSpawner.spawnFuel(in: self, atY: self.size.height)
+        }
+        
+        let fuelWait = SKAction.wait(forDuration: 5.0)
+        let fuelSequence = SKAction.sequence([fuelWait, fuelSpawnAction])
+        let fuelRepeatForever = SKAction.repeatForever(fuelSequence)
+        run(fuelRepeatForever, withKey: "fuelSpawnTimer")
     }
     
     private func TutorialOverlay() {

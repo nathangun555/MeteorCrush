@@ -14,6 +14,7 @@ struct UserEntryView: View {
     @State private var animate = false
     @State private var fadeIn = false
     @State private var bounce = false
+    @FocusState private var isTextFieldFocused: Bool
 
     @EnvironmentObject var leaderboardModel: LeaderboardModel
 
@@ -57,6 +58,9 @@ struct UserEntryView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 280, height: 70)
+                                    .onTapGesture {
+                                        isTextFieldFocused = true
+                                    }
 
                                 TextField("", text: $username)
                                     .padding(.horizontal, 20)
@@ -74,6 +78,7 @@ struct UserEntryView: View {
                                             .foregroundColor(.black.opacity(0.6))
                                             .font(.custom("Baloo2-ExtraBold", size: 20))
                                     }
+                                    .focused($isTextFieldFocused)
                             }
                             .opacity(fadeIn ? 1 : 0)
                             .offset(y: fadeIn ? 0 : 20)

@@ -140,8 +140,6 @@ struct CollisionHandler {
             if let index = scene.fuels.firstIndex(where: { $0 === other.node }) {
                 scene.fuels.remove(at: index)
             }
-            let fuelNewY = other.node?.position.y ?? 0 + scene.size.height * 1 + 200
-            ObstacleSpawner.spawnFuel(in: scene, atY: fuelNewY)
 
         case PhysicsCategory.redGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketRed")

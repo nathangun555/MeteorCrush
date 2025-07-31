@@ -677,12 +677,9 @@ struct ObstacleSpawner {
         let halfW = pickup.size.width / 2
         let collisionRadius = halfW / 3.5
         
-        // Find a valid position that doesn't collide with other collectibles
-        guard let validPosition = findValidPosition(in: scene, y: y, radius: collisionRadius) else {
-            return // Skip spawning if no valid position found
-        }
-        
-        pickup.position = validPosition
+        // Use random X position within screen bounds
+        let randomX = CGFloat.random(in: halfW...(scene.size.width - halfW))
+        pickup.position = CGPoint(x: randomX, y: y)
         pickup.zPosition = 5
         pickup.blendMode = .alpha
 
