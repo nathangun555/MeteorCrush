@@ -24,19 +24,19 @@ class LeaderboardModel: ObservableObject {
 
     func loadDummyData() {
         let dummyPlayers: [Player] = [
-            Player(name: "Nathan", score: 1037),
-            Player(name: "ABC", score: 1037),
-            Player(name: "PlayerSix", score: 1001),
-            Player(name: "PlayerSeven", score: 950),
-            Player(name: "PlayerEight", score: 900),
-            Player(name: "PlayerNine", score: 850),
-            Player(name: "PlayerTen", score: 800),
-            Player(name: "PlayerNine", score: 850),
-            Player(name: "PlayerNine2", score: 850),
-            Player(name: "PlayerNine3", score: 850),
-            Player(name: "PlayerNine4", score: 850),
-            Player(name: "PlayerNin5", score: 850),
-            Player(name: "PlayerNine6", score: 850)
+            Player(name: "Player1", score: 500),
+            Player(name: "ABC", score: 450),
+            Player(name: "Player2", score: 400),
+            Player(name: "Player3", score: 375),
+            Player(name: "Player4", score: 350),
+            Player(name: "Player5", score: 325),
+            Player(name: "Player6", score: 300),
+            Player(name: "Player7", score: 275),
+            Player(name: "Player8", score: 250),
+            Player(name: "Player9", score: 225),
+            Player(name: "Player10", score: 200),
+            Player(name: "Player11", score: 150),
+            Player(name: "Player12", score: 100)
         ]
 
         updateRanks(with: dummyPlayers)
