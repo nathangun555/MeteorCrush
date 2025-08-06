@@ -42,6 +42,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var multiplierTimer: CGFloat = 0
     var shieldTimer: CGFloat = 0
     var shieldEffect: SKSpriteNode?
+    
+    var onPause: (() -> Void)?
 
     // Track planet positioning for alternating pattern
     var planetIndex: Int = 0
@@ -72,9 +74,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         SoundManager.shared.playGameMusic()
         SoundManager.shared.playSFX(named: "rocketTakeOff", withExtension: "wav")
+        setupHUD()
         setupRocket()
         setupJoystick()
-        setupHUD()
         spawnInitialObstacles()
         
         
@@ -197,10 +199,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rocket.zPosition = 10
         if rocketPicker == "rocketRed" {
             rocket.color = .red
+            hud.star.texture = SKTexture(imageNamed: "starRed")
         } else if rocketPicker == "rocketGreen" {
             rocket.color = .green
+            hud.star.texture = SKTexture(imageNamed: "starGreen")
         } else {
             rocket.color = .blue
+            hud.star.texture = SKTexture(imageNamed: "starBlue")
         }
         
         let collisionBoxSize = CGSize(width: 35, height: 80)
@@ -239,6 +244,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     private func setupHUD() {
         hud = HUD(size: size)
+        hud.onPauseTapped = { [weak self] in
+               self?.showPaused()
+           }
         addChild(hud)
     }
     
@@ -294,7 +302,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let t = touches.first { joystick.begin(at: t.location(in: self)) }
+        guard let touch = touches.first else { return }
+           let location = touch.location(in: self)
+           if let node = self.atPoint(location) as? SKSpriteNode, node.name == "settingsOverlay" {
+               node.removeFromParent()
+               self.isPaused = false
+               return
+           }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -334,5 +348,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBegin(_ contact: SKPhysicsContact) {
         CollisionHandler.handle(contact, in: self, hud: hud)
     }
+    
+    func showPaused() {
+           self.isPaused = true
+           onPause?()
+       }
 }
 

@@ -8,8 +8,10 @@ class HUD: SKNode {
     private let fuelBarBackground = SKSpriteNode(color: .gray, size: CGSize(width: 55, height: 225)) // Background bar (vertikal)
     private let fuelBarFill = SKSpriteNode() // Correcting fuelBarFill to SKSpriteNode
     private let scoreBackground = SKSpriteNode()
+    private let pause  = SKSpriteNode()
+    var star  = SKSpriteNode()
 
-    
+    var onPauseTapped: (() -> Void)?
     
     private let shieldLabel = SKSpriteNode(imageNamed: "casingShield")
     private let shieldTimerLabel = SKShapeNode()
@@ -26,14 +28,23 @@ class HUD: SKNode {
     init(size: CGSize) {
         self.shieldPos = CGPoint(x: size.width - 50, y: size.height - 140)
         self.multiplierPos = CGPoint(x: self.shieldPos.x, y: self.shieldPos.y - powerupSize - 20)
-
+        
         super.init()
+        
+        self.isUserInteractionEnabled = true // Aktifkan sentuhan
         // Score Background
         scoreBackground.texture = SKTexture(imageNamed: "casingStar")
         scoreBackground.size = CGSize(width: 130, height: 60)
         scoreBackground.position = CGPoint(x: size.width - 80, y: size.height - 70)
         scoreBackground.zPosition = 10
         addChild(scoreBackground)
+        
+        // Star
+        star.texture = SKTexture(imageNamed: "starRed")
+        star.size = CGSize(width: 125, height: 125)
+        star.position = CGPoint(x: size.width - 113, y: size.height - 70)
+        star.zPosition = 10
+        addChild(star)
         
         // Score Label
         scoreLabel.fontName = "Baloo2-ExtraBold"
@@ -69,6 +80,14 @@ class HUD: SKNode {
         fuelBarFill.anchorPoint = CGPoint(x: 0.5, y: 0)
         addChild(fuelBarFill)
         
+        // Pause
+        pause.texture = SKTexture(imageNamed: "pause")
+        pause.size = CGSize(width: 50, height: 50) // Sesuaikan ukuran dengan tinggi fuel yang diinginkan
+        pause.position = CGPoint(x: size.width - 45, y: size.height - 160)
+        pause.zPosition = 11
+        pause.anchorPoint = CGPoint(x: 0.5, y: 0)
+        addChild(pause)
+        
         shieldLabel.size = CGSize(width: powerupSize, height: powerupSize)
         shieldLabel.position = shieldPos
         shieldLabel.zPosition = 20
@@ -96,6 +115,14 @@ class HUD: SKNode {
         multiplierTimerLabel.isHidden = true
         multiplierTimerLabel.alpha = 0.5
         addChild(multiplierTimerLabel)
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else { return }
+        let location = touch.location(in: self)
+        if pause.contains(location) {
+            onPauseTapped?() // panggil callback
+        }
     }
     
     required init?(coder aDecoder: NSCoder) {

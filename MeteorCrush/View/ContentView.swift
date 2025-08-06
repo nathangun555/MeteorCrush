@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var currentScore = 0
     @State private var bestScore = 0
     @State private var backToMenu = false
+    @State private var isPaused = false
 
     @EnvironmentObject var leaderboardModel: LeaderboardModel
     @State private var gameViewModel = GameViewModel()
@@ -63,6 +64,13 @@ struct ContentView: View {
                             }
                         }
                     }
+                    .onAppear {
+                                           if let myScene = gameViewModel.scene as? GameScene {
+                                               myScene.onPause = {
+                                                   isPaused = true
+                                               }
+                                           }
+                                       }
 
                 if isGameOver {
                     GameOverView(
@@ -79,6 +87,14 @@ struct ContentView: View {
                         }
                     )
                 }
+                if isPaused {
+                            PausedView(isPresented: $isPaused) {
+                                // resume game logic here
+                                if let myScene = gameViewModel.scene as? GameScene {
+                                                            myScene.isPaused = false
+                                                        }
+                            }
+                        }
             }
         }
     }

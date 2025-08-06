@@ -45,7 +45,7 @@ struct SettingsView: View {
                 VStack{
                     Image("bgSettings")
                         .resizable()
-                        .frame(width: 330, height: 450)
+                        .frame(width: 330, height: 380)
                         .overlay(
                             VStack{
                                 Text("SETTINGS")
@@ -65,11 +65,11 @@ struct SettingsView: View {
                                         isOn: $hapticFeedback
                                     )
                                     
-                                    SettingsToggleRow(
-                                        title: "Joystick Visibility",
-                                        icon: "gamecontroller",
-                                        isOn: $joystickVisibility
-                                    )
+//                                    SettingsToggleRow(
+//                                        title: "Joystick Visibility",
+//                                        icon: "gamecontroller",
+//                                        isOn: $joystickVisibility
+//                                    )
                                     SettingsSliderRow(
                                         title: "Joystick Sensitivity",
                                         icon: "slider.horizontal.3",
@@ -96,18 +96,15 @@ struct SettingsView: View {
                                     let newValue = !currentValue
                                     UserDefaults.standard.set(newValue, forKey: "hapticManager")
                                 }
-                                .onChange(of: joystickVisibility){
-                                    vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
-                                    let currentValue = UserDefaults.standard.bool(forKey: "joystickVisibility")
-                                    let newValue = !currentValue
-                                    UserDefaults.standard.set(newValue, forKey: "joystickVisibility")
-                                }
+//                                .onChange(of: joystickVisibility){
+//                                    vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
+//                                    let currentValue = UserDefaults.standard.bool(forKey: "joystickVisibility")
+//                                    let newValue = !currentValue
+//                                    UserDefaults.standard.set(newValue, forKey: "joystickVisibility")
+//                                }
                                 .onChange(of: joystickValue) { newValue in
                                     vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
-                                    if joystickValue == 0.0
-                                    {
-                                        UserDefaults.standard.set(0.0, forKey: "joystickSensitivity")
-                                    } else if joystickValue == 0.25 {
+                                   if joystickValue == 0.25 {
                                         UserDefaults.standard.set(0.5, forKey: "joystickSensitivity")
                                     } else if joystickValue == 0.5 {
                                         UserDefaults.standard.set(1.0, forKey: "joystickSensitivity")
@@ -177,10 +174,7 @@ struct SettingsView: View {
     }
     func valueSlider(){
         let checker = UserDefaults.standard.double(forKey: "joystickSensitivity")
-        if checker == 0.0
-        {
-            joystickValue = 0
-        } else if checker == 0.5
+        if checker == 0.5
         {
             joystickValue = 0.25
         } else if checker == 1.0
@@ -216,8 +210,8 @@ struct SettingsToggleRow: View {
             
             Text(title)
                 .font(fontSubTitle())
-                .foregroundColor(.white)
-            
+                .foregroundColor(.primary)
+
             Spacer()
             
             // Custom Checkbox
@@ -241,7 +235,7 @@ struct SettingsSliderRow: View {
     let icon: String
     @Binding var sliderValue: Double
     let sliderRange: ClosedRange<Double>
-    private let sensitivity = [0, 25, 50, 75, 100]
+    private let sensitivity = [25, 50, 75, 100]
     var body: some View {
         VStack(spacing: 8) {
             // Title Row
@@ -262,7 +256,7 @@ struct SettingsSliderRow: View {
             VStack(spacing: 4) {
                 GeometryReader { geometry in
                     ZStack {
-                        Slider(value: $sliderValue, in: sliderRange, step: (sliderRange.upperBound - sliderRange.lowerBound) / 4)
+                        Slider(value: $sliderValue, in: sliderRange, step: (sliderRange.upperBound - sliderRange.lowerBound) / 3)
                             .accentColor(Color(hex: "#8f85ff"))
                     }
                 }
@@ -278,7 +272,7 @@ struct SettingsSliderRow: View {
                     }
                 }
             }
-            .padding(.horizontal, 30)
+            .padding(.horizontal, 40)
         }
         .padding()
         .background(Color.white)
