@@ -12,7 +12,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var rocket: SKSpriteNode!
     var rocketFire: RocketFire!
     var meteorSpawner: FallingMeteorSpawner!
-    private var joystick: Joystick!
+    var joystick: Joystick!
     var sensitivity: CGFloat = UserDefaults.standard.double(forKey: "joystickSensitivity")
     private var hud: HUD!
     private var tutorialLabel: SKLabelNode!
@@ -246,6 +246,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hud = HUD(size: size)
         hud.onPauseTapped = { [weak self] in
                self?.showPaused()
+            self?.meteorSpawner.stopSpawning()
            }
         addChild(hud)
     }
@@ -303,12 +304,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first else { return }
-           let location = touch.location(in: self)
-           if let node = self.atPoint(location) as? SKSpriteNode, node.name == "settingsOverlay" {
-               node.removeFromParent()
-               self.isPaused = false
-               return
-           }
+        let location = touch.location(in: self)
+        if let node = self.atPoint(location) as? SKSpriteNode, node.name == "settingsOverlay" {
+            node.removeFromParent()
+            self.isPaused = false
+            return
+        }
+        // Hanya panggil joystick jika sentuhan BUKAN di settingsOverlay
+        joystick.begin(at: location)
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {

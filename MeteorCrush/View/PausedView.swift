@@ -11,10 +11,11 @@ struct PausedView: View {
     @State private var musicEnabled: Bool = UserDefaults.standard.bool(forKey: "musicManager")
     @State private var hapticFeedback: Bool = UserDefaults.standard.bool(forKey: "hapticManager")
     @State private var joystickVisibility: Bool = UserDefaults.standard.bool(forKey: "joystickVisibility")
-    @State private var joystickValue: Double = 0.0
+    @State private var joystickValue: Int = 0
 
     var onResume: () -> Void
-
+    var gameScene: GameScene
+    
     var body: some View {
         ZStack {
             Color.black.opacity(0.6).ignoresSafeArea()
@@ -32,7 +33,13 @@ struct PausedView: View {
                             VStack{
                                 SettingsToggleRow(title: "Music", icon: "music.note", isOn: $musicEnabled)
                                 SettingsToggleRow(title: "Haptic", icon: "iphone.gen1.radiowaves.left.and.right", isOn: $hapticFeedback)
-                                SettingsSliderRow(title: "Joystick Sensitivity", icon: "slider.horizontal.3", sliderValue: $joystickValue, sliderRange: 0...1)
+                                SettingsSliderRow(
+                                    title: "Joystick Sensitivity",
+                                    icon: "slider.horizontal.3",
+                                    selectedIndex: $joystickValue
+//                                        sliderRange: 0...1
+                                )
+
                             }
                            
                         }
@@ -48,19 +55,20 @@ struct PausedView: View {
                         .onChange(of: hapticFeedback) {
                             UserDefaults.standard.set(hapticFeedback, forKey: "hapticManager")
                         }
-                        .onChange(of: joystickValue) { newValue in
-                            if newValue == 0.0 {
-                                UserDefaults.standard.set(0.0, forKey: "joystickSensitivity")
-                            } else if newValue == 0.25 {
-                                UserDefaults.standard.set(0.5, forKey: "joystickSensitivity")
-                            } else if newValue == 0.5 {
-                                UserDefaults.standard.set(1.0, forKey: "joystickSensitivity")
-                            } else if newValue == 0.75 {
-                                UserDefaults.standard.set(1.5, forKey: "joystickSensitivity")
-                            } else if newValue == 1.0 {
-                                UserDefaults.standard.set(2.0, forKey: "joystickSensitivity")
+                            .onChange(of: joystickValue) { newValue in
+                                vibrateWithDelay(.medium, count: 1, delayInterval: 0.0)
+                                let sensitivity: Double
+                                switch newValue {
+                                case 0: sensitivity = 0.5
+                                case 1: sensitivity = 1.0
+                                case 2: sensitivity = 1.5
+                                case 3: sensitivity = 2.0
+                                default: sensitivity = 1.0
+                                }
+
+                                UserDefaults.standard.set(sensitivity, forKey: "joystickSensitivity")
+                                gameScene.joystick.sensitivity = sensitivity  // <- update yang benar
                             }
-                        }
                     )
 
                 Button(action: {
@@ -80,7 +88,8 @@ struct PausedView: View {
             .padding(40)
         }
         .onAppear {
-            loadSliderValue()
+            
+            valueSlider()
             valueHaptic()
             valueMusic()
         }
@@ -105,26 +114,20 @@ struct PausedView: View {
             hapticFeedback = false
         }
     }
-    private func loadSliderValue() {
-        let sensitivity = UserDefaults.standard.double(forKey: "joystickSensitivity")
-        switch sensitivity {
-        case 0.5: joystickValue = 0.25
-        case 1.0: joystickValue = 0.5
-        case 1.5: joystickValue = 0.75
-        case 2.0: joystickValue = 1.0
-        default: joystickValue = 0.5
+    private func valueSlider() {
+        let checker = UserDefaults.standard.double(forKey: "joystickSensitivity")
+        switch checker {
+        case 0.5:
+            joystickValue = 0
+        case 1.0:
+            joystickValue = 1
+        case 1.5:
+            joystickValue = 2
+        case 2.0:
+            joystickValue = 3
+        default:
+            joystickValue = 1 // fallback default
         }
     }
-}
 
-#Preview {
-    struct PreviewWrapper: View {
-        @State var isPresented = true
-        var body: some View {
-            PausedView(isPresented: $isPresented) {
-                // Preview only
-            }
-        }
-    }
-    return PreviewWrapper()
 }

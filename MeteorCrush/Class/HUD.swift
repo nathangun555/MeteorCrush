@@ -26,7 +26,7 @@ class HUD: SKNode {
     var multiplierPos: CGPoint
     
     init(size: CGSize) {
-        self.shieldPos = CGPoint(x: size.width - 50, y: size.height - 140)
+        self.shieldPos = CGPoint(x: size.width - 50, y: size.height - 150)
         self.multiplierPos = CGPoint(x: self.shieldPos.x, y: self.shieldPos.y - powerupSize - 20)
         
         super.init()
@@ -35,14 +35,14 @@ class HUD: SKNode {
         // Score Background
         scoreBackground.texture = SKTexture(imageNamed: "casingStar")
         scoreBackground.size = CGSize(width: 130, height: 60)
-        scoreBackground.position = CGPoint(x: size.width - 80, y: size.height - 70)
+        scoreBackground.position = CGPoint(x: size.width - 80, y: size.height - 80)
         scoreBackground.zPosition = 10
         addChild(scoreBackground)
         
         // Star
         star.texture = SKTexture(imageNamed: "starRed")
         star.size = CGSize(width: 125, height: 125)
-        star.position = CGPoint(x: size.width - 113, y: size.height - 70)
+        star.position = CGPoint(x: size.width - 113, y: size.height - 80)
         star.zPosition = 10
         addChild(star)
         
@@ -50,7 +50,7 @@ class HUD: SKNode {
         scoreLabel.fontName = "Baloo2-ExtraBold"
         scoreLabel.fontSize = 30
         scoreLabel.fontColor = .white
-        scoreLabel.position = CGPoint(x: size.width - 60, y: size.height - 80)
+        scoreLabel.position = CGPoint(x: size.width - 60, y: size.height - 90)
         scoreLabel.zPosition = 20
         scoreLabel.text = "0"
         addChild(scoreLabel)
@@ -59,7 +59,7 @@ class HUD: SKNode {
         fuelLabel.fontName = "Baloo2-ExtraBold"
         fuelLabel.fontSize = 24
         fuelLabel.fontColor = .yellow
-        fuelLabel.position = CGPoint(x: 40, y: size.height - 250)
+        fuelLabel.position = CGPoint(x: 40, y: size.height - 320)
         fuelLabel.zPosition = 20
         fuelLabel.text = "\(Int(fuel))"
         addChild(fuelLabel)
@@ -67,7 +67,7 @@ class HUD: SKNode {
         // Fuel Bar Background
         fuelBarBackground.texture = SKTexture(imageNamed: "casingFuel")
         fuelBarBackground.size = CGSize(width: 55, height: 225)
-        fuelBarBackground.position = CGPoint(x: 40, y: size.height - 160)
+        fuelBarBackground.position = CGPoint(x: 40, y: size.height - 230)
         fuelBarBackground.zPosition = 10
         addChild(fuelBarBackground)
         
@@ -75,15 +75,15 @@ class HUD: SKNode {
         let gradientTexture = SKTexture(imageNamed: "fuelLevel") // Gunakan file gambar gradasi Anda
         fuelBarFill.texture = gradientTexture
         fuelBarFill.size = CGSize(width: 24, height: 0) // Sesuaikan ukuran dengan tinggi fuel yang diinginkan
-        fuelBarFill.position = CGPoint(x: 40, y: size.height - 220)
+        fuelBarFill.position = CGPoint(x: 40, y: size.height - 290)
         fuelBarFill.zPosition = 11
         fuelBarFill.anchorPoint = CGPoint(x: 0.5, y: 0)
         addChild(fuelBarFill)
         
-        // Pause
-        pause.texture = SKTexture(imageNamed: "pause")
-        pause.size = CGSize(width: 50, height: 50) // Sesuaikan ukuran dengan tinggi fuel yang diinginkan
-        pause.position = CGPoint(x: size.width - 45, y: size.height - 160)
+        // Pause /  Settings
+        pause.texture = SKTexture(imageNamed: "buttonSettingsGame")
+        pause.size = CGSize(width: 60, height: 60) // Sesuaikan ukuran dengan tinggi fuel yang diinginkan
+        pause.position = CGPoint(x: 40, y: size.height - 110)
         pause.zPosition = 11
         pause.anchorPoint = CGPoint(x: 0.5, y: 0)
         addChild(pause)

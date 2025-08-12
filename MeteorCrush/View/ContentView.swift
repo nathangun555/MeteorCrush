@@ -88,13 +88,13 @@ struct ContentView: View {
                     )
                 }
                 if isPaused {
-                            PausedView(isPresented: $isPaused) {
-                                // resume game logic here
-                                if let myScene = gameViewModel.scene as? GameScene {
-                                                            myScene.isPaused = false
-                                                        }
-                            }
-                        }
+                    if let myScene = gameViewModel.scene as? GameScene {
+                        PausedView(isPresented: $isPaused, onResume: {
+                            myScene.meteorSpawner.startSpawning(after: 2)
+                            myScene.isPaused = false
+                        }, gameScene: myScene) // <- kirimkan scene aktif ke PausedView
+                    }
+                }
             }
         }
     }
