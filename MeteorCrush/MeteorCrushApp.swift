@@ -13,7 +13,7 @@ struct MeteorCrushApp: App {
 
     var body: some Scene {
         WindowGroup {
-            UserEntryView()
+            LoadingScreenView()
                 .environmentObject(leaderboardModel) // ✅ share it everywhere
         }
     }

@@ -68,6 +68,7 @@
 				View/GameOverView.swift,
 				View/GameViewController.swift,
 				View/LeaderboardView.swift,
+				View/LoadingScreenView.swift,
 				View/MainMenuView.swift,
 				View/SettingsView.swift,
 				View/UserEntryView.swift,
@@ -113,6 +114,7 @@
 				View/GameOverView.swift,
 				View/GameViewController.swift,
 				View/LeaderboardView.swift,
+				View/LoadingScreenView.swift,
 				View/MainMenuView.swift,
 				View/SettingsView.swift,
 				View/UserEntryView.swift,
@@ -491,7 +493,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZBZPAZFH4S;
+				DEVELOPMENT_TEAM = HRLF6YB843;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MeteorCrush/Info.plist;
@@ -521,7 +523,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZBZPAZFH4S;
+				DEVELOPMENT_TEAM = HRLF6YB843;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MeteorCrush/Info.plist;
