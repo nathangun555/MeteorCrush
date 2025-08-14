@@ -16,6 +16,35 @@ enum PowerupType: String {
 struct PowerUpSpawner {
     var lastSpawnTime: Int = 0
     
+    // Helper function to check if a position collides with gates
+    static func checkCollisionWithGates(in scene: GameScene, position: CGPoint, radius: CGFloat) -> Bool {
+        for gate in scene.gate {
+            let gateWidth = gate.size.width
+            let gateHeight = gate.size.height
+            let gateX = gate.position.x
+            let gateY = gate.position.y
+            
+            // Check if position is within gate bounds
+            let gateLeft = gateX - gateWidth / 2
+            let gateRight = gateX + gateWidth / 2
+            let gateTop = gateY + gateHeight / 2
+            let gateBottom = gateY - gateHeight / 2
+            
+            // Check if the circle intersects with the gate rectangle
+            let closestX = max(gateLeft, min(position.x, gateRight))
+            let closestY = max(gateBottom, min(position.y, gateTop))
+            
+            let distanceX = position.x - closestX
+            let distanceY = position.y - closestY
+            let distanceSquared = distanceX * distanceX + distanceY * distanceY
+            
+            if distanceSquared <= radius * radius {
+                return true
+            }
+        }
+        return false
+    }
+    
     static func spawnPowerup(in scene: GameScene, y: CGFloat) {
         let powerUpType: PowerupType = Bool.random() ? .doubleScore : .shield
 
@@ -28,6 +57,11 @@ struct PowerUpSpawner {
         // Find a valid position that doesn't collide with other collectibles
         guard let validPosition = ObstacleSpawner.findValidPosition(in: scene, y: y, radius: collisionRadius) else {
             return // Skip spawning if no valid position found
+        }
+        
+        // Additional check for gate collision
+        if checkCollisionWithGates(in: scene, position: validPosition, radius: collisionRadius) {
+            return // Skip spawning if collides with gates
         }
         
         powerup.position = validPosition

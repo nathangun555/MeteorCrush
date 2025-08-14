@@ -49,14 +49,7 @@ struct ObstacleSpawner {
             }
         }
         
-        // Check collision with fuels
-        for fuel in scene.fuels {
-            let fuelRadius = fuel.size.width / 3.5
-            if circlesCollide(center1: position, radius1: radius, 
-                            center2: fuel.position, radius2: fuelRadius) {
-                return true
-            }
-        }
+
         
         // Check collision with powerups
         for powerup in scene.powerups {
@@ -72,6 +65,32 @@ struct ObstacleSpawner {
             let planetRadius = planet.size.width / 3 // Using collision radius from planet spawn
             if circlesCollide(center1: position, radius1: radius, 
                             center2: planet.position, radius2: planetRadius) {
+                return true
+            }
+        }
+        
+        // Check collision with gates
+        for gate in scene.gate {
+            let gateWidth = gate.size.width
+            let gateHeight = gate.size.height
+            let gateX = gate.position.x
+            let gateY = gate.position.y
+            
+            // Check if position is within gate bounds
+            let gateLeft = gateX - gateWidth / 2
+            let gateRight = gateX + gateWidth / 2
+            let gateTop = gateY + gateHeight / 2
+            let gateBottom = gateY - gateHeight / 2
+            
+            // Check if the circle intersects with the gate rectangle
+            let closestX = max(gateLeft, min(position.x, gateRight))
+            let closestY = max(gateBottom, min(position.y, gateTop))
+            
+            let distanceX = position.x - closestX
+            let distanceY = position.y - closestY
+            let distanceSquared = distanceX * distanceX + distanceY * distanceY
+            
+            if distanceSquared <= radius * radius {
                 return true
             }
         }
@@ -131,16 +150,6 @@ struct ObstacleSpawner {
                 let blueRadius = blueStar.size.width / 3.5
                 if circlesCollide(center1: starPosition, radius1: starRadius, 
                                 center2: blueStar.position, radius2: blueRadius) {
-                    star.removeFromParent()
-                    return false
-                }
-            }
-            
-            // Check collision with fuels
-            for fuel in scene.fuels {
-                let fuelRadius = fuel.size.width / 3.5
-                if circlesCollide(center1: starPosition, radius1: starRadius, 
-                                center2: fuel.position, radius2: fuelRadius) {
                     star.removeFromParent()
                     return false
                 }
@@ -206,16 +215,6 @@ struct ObstacleSpawner {
                 }
             }
             
-            // Check collision with fuels
-            for fuel in scene.fuels {
-                let fuelRadius = fuel.size.width / 3.5
-                if circlesCollide(center1: starPosition, radius1: starRadius, 
-                                center2: fuel.position, radius2: fuelRadius) {
-                    star.removeFromParent()
-                    return false
-                }
-            }
-            
             // Check collision with powerups
             for powerup in scene.powerups {
                 let powerupRadius = powerup.size.width / 6
@@ -276,16 +275,6 @@ struct ObstacleSpawner {
                 }
             }
             
-            // Check collision with fuels
-            for fuel in scene.fuels {
-                let fuelRadius = fuel.size.width / 3.5
-                if circlesCollide(center1: starPosition, radius1: starRadius, 
-                                center2: fuel.position, radius2: fuelRadius) {
-                    star.removeFromParent()
-                    return false
-                }
-            }
-            
             // Check collision with powerups
             for powerup in scene.powerups {
                 let powerupRadius = powerup.size.width / 6
@@ -309,75 +298,7 @@ struct ObstacleSpawner {
             return true
         }
         
-        // Check for collisions between fuels and other collectibles
-        scene.fuels = scene.fuels.filter { fuel in
-            let fuelRadius = fuel.size.width / 3.5
-            let fuelPosition = fuel.position
-            
-            // Check collision with red stars
-            for redStar in scene.redStar {
-                let redRadius = redStar.size.width / 3.5
-                if circlesCollide(center1: fuelPosition, radius1: fuelRadius, 
-                                center2: redStar.position, radius2: redRadius) {
-                    fuel.removeFromParent()
-                    return false
-                }
-            }
-            
-            // Check collision with green stars
-            for greenStar in scene.greenStar {
-                let greenRadius = greenStar.size.width / 3.5
-                if circlesCollide(center1: fuelPosition, radius1: fuelRadius, 
-                                center2: greenStar.position, radius2: greenRadius) {
-                    fuel.removeFromParent()
-                    return false
-                }
-            }
-            
-            // Check collision with blue stars
-            for blueStar in scene.blueStar {
-                let blueRadius = blueStar.size.width / 3.5
-                if circlesCollide(center1: fuelPosition, radius1: fuelRadius, 
-                                center2: blueStar.position, radius2: blueRadius) {
-                    fuel.removeFromParent()
-                    return false
-                }
-            }
-            
-            // Check collision with other fuels
-            for otherFuel in scene.fuels {
-                if otherFuel !== fuel {
-                    let otherRadius = otherFuel.size.width / 3.5
-                    if circlesCollide(center1: fuelPosition, radius1: fuelRadius, 
-                                    center2: otherFuel.position, radius2: otherRadius) {
-                        fuel.removeFromParent()
-                        return false
-                    }
-                }
-            }
-            
-            // Check collision with powerups
-            for powerup in scene.powerups {
-                let powerupRadius = powerup.size.width / 6
-                if circlesCollide(center1: fuelPosition, radius1: fuelRadius, 
-                                center2: powerup.position, radius2: powerupRadius) {
-                    fuel.removeFromParent()
-                    return false
-                }
-            }
-            
-            // Check collision with planets
-            for planet in scene.planets {
-                let planetRadius = planet.size.width / 3
-                if circlesCollide(center1: fuelPosition, radius1: fuelRadius, 
-                                center2: planet.position, radius2: planetRadius) {
-                    fuel.removeFromParent()
-                    return false
-                }
-            }
-            
-            return true
-        }
+
         
         // Check for collisions between powerups and other collectibles
         scene.powerups = scene.powerups.filter { powerup in
@@ -409,16 +330,6 @@ struct ObstacleSpawner {
                 let blueRadius = blueStar.size.width / 3.5
                 if circlesCollide(center1: powerupPosition, radius1: powerupRadius, 
                                 center2: blueStar.position, radius2: blueRadius) {
-                    powerup.removeFromParent()
-                    return false
-                }
-            }
-            
-            // Check collision with fuels
-            for fuel in scene.fuels {
-                let fuelRadius = fuel.size.width / 3.5
-                if circlesCollide(center1: powerupPosition, radius1: powerupRadius, 
-                                center2: fuel.position, radius2: fuelRadius) {
                     powerup.removeFromParent()
                     return false
                 }
@@ -650,77 +561,7 @@ struct ObstacleSpawner {
     }
 
 
-    static func spawnFuel(in scene: GameScene, atY y: CGFloat) {
-        let fuelColors = ["fuel10", "fuel20", "fuel30", "fuel40", "fuel20", "fuel30", "fuel40", "fuel30", "fuel30", "fuel40"]
-        let fuelPicker = fuelColors.randomElement()!
-        let pickup = SKSpriteNode(imageNamed: fuelPicker)
-        pickup.size = CGSize(width: 200, height: 200)
 
-        // Assign the fuel value based on the name of the image
-        let fuelValue: Int
-        switch fuelPicker {
-        case "fuel10":
-            fuelValue = 10
-        case "fuel20":
-            fuelValue = 20
-        case "fuel30":
-            fuelValue = 30
-        case "fuel40":
-            fuelValue = 40
-        default:
-            fuelValue = 0
-        }
-
-        // Store the fuel value in the user data
-        pickup.userData = ["fuelValue": fuelValue]
-
-        let halfW = pickup.size.width / 2
-        let collisionRadius = halfW / 3.5
-        
-        // Use random X position within screen bounds
-        let randomX = CGFloat.random(in: halfW...(scene.size.width - halfW))
-        pickup.position = CGPoint(x: randomX, y: y)
-        pickup.zPosition = 5
-        pickup.blendMode = .alpha
-
-        // Setup physics body
-        pickup.physicsBody = SKPhysicsBody(circleOfRadius: collisionRadius)
-        pickup.physicsBody?.categoryBitMask = PhysicsCategory.Fuel
-        pickup.physicsBody?.contactTestBitMask = PhysicsCategory.Rocket
-        pickup.physicsBody?.collisionBitMask = PhysicsCategory.None
-        pickup.physicsBody?.affectedByGravity = false
-
-        // Collision circle (for debugging or visual purposes)
-        let collisionCircle = SKShapeNode(circleOfRadius: collisionRadius)
-        collisionCircle.position = .zero
-        collisionCircle.strokeColor = .clear
-        collisionCircle.lineWidth = 2
-        collisionCircle.fillColor = .clear
-        collisionCircle.zPosition = -100
-        pickup.addChild(collisionCircle)
-
-        // Check for collisions with planets
-        if let gs = scene as? GameScene {
-            let planetPadding: CGFloat = 30
-            for planet in gs.planets {
-                let lowBoundX = planet.position.x - planet.size.width / 2 - planetPadding
-                let highBoundX = planet.position.x + planet.size.width / 2 + planetPadding
-                let lowBoundY = planet.position.y - planet.size.height / 2 - planetPadding
-                let highBoundY = planet.position.y + planet.size.height / 2 + planetPadding
-
-                if pickup.position.x > lowBoundX && pickup.position.x < highBoundX {
-                    pickup.position.x = Int.random(in: 0...1) == 0 ? lowBoundX : highBoundX
-                }
-
-                if pickup.position.y > lowBoundY && pickup.position.y < highBoundY {
-                    pickup.position.y = Int.random(in: 0...1) == 0 ? lowBoundY : highBoundY
-                }
-            }
-            gs.fuels.append(pickup)
-        }
-
-        scene.addChild(pickup)
-    }
 
 
     static func spawnGate(in scene: GameScene, atY y: CGFloat) {
@@ -876,25 +717,7 @@ struct ObstacleSpawner {
             }
         }
         
-                scene.fuels.forEach { f in
-                    if 25 >= (scene.size.width-25) {
-                        print("Issue in fuel! \(25) < \(scene.size.width-25)")
-                    }
-        //            print(f.size.width / 2, scene.size.width - f.size.width / 2)
-                    if f.position.y < 0 {
-                        let fuelRadius = f.size.width / 3.5
-                        let newY = topY + CGFloat.random(in: 0...200)
-                        
-                        // Find a valid position that doesn't collide with other collectibles
-                        if let validPosition = findValidPosition(in: scene, y: newY, radius: fuelRadius) {
-                            f.position = validPosition
-                        } else {
-                            // If no valid position found, use a random position but mark for removal
-                            f.position.x = CGFloat.random(in: 25...(scene.size.width-25))
-                            f.position.y = newY
-                        }
-                    }
-                }
+
         
 
 

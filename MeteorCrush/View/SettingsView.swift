@@ -216,7 +216,7 @@ struct SettingsToggleRow: View {
             
             Text(title)
                 .font(fontSubTitle())
-                .foregroundColor(.white)
+                .foregroundColor(.black)
             
             Spacer()
             

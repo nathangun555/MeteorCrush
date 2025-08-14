@@ -134,7 +134,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Spawn fuel every 5 seconds
         let fuelSpawnAction = SKAction.run { [weak self] in
             guard let self = self, !self.isGameOver else { return }
-            ObstacleSpawner.spawnFuel(in: self, atY: self.size.height)
+            FuelSpawner.spawnFuel(in: self, atY: self.size.height)
         }
         
         let fuelWait = SKAction.wait(forDuration: 5.0)
@@ -288,7 +288,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for i in 0..<blueStarUnit     { ObstacleSpawner.spawnBlueStar(in: self, atY: CGFloat.random(in: self.upcomingGate...self.futureGate)) }
 //        for i in 0..<starUnit     { ObstacleSpawner.spawnStar(in: self, atY: startY + CGFloat(i) * starSpacing + 100) }
         let fuelSpacing = size.height / CGFloat(fuelCount)
-        for i in 0..<fuelCount { ObstacleSpawner.spawnFuel(in: self, atY: startY + CGFloat(i) * fuelSpacing + 200) }
+        for i in 0..<fuelCount { FuelSpawner.spawnFuel(in: self, atY: startY + CGFloat(i) * fuelSpacing + 200) }
         let gateSpacing = size.height / CGFloat(gateCount)
         for i in 0..<gateCount { ObstacleSpawner.spawnGate(in: self, atY: startY + self.upcomingGate) }
     }
@@ -325,6 +325,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hud.updatePowerupState(in: self)
         ObstacleSpawner.recycleOffscreen(in: self, speed: scrollSpeed)
         PowerUpSpawner.recyclePowerup(in: self, speed: scrollSpeed)
+        FuelSpawner.recycleFuel(in: self, speed: scrollSpeed)
         
         // Remove any colliding objects
         ObstacleSpawner.removeCollidingObjects(in: self)
