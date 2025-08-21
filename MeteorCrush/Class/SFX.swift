@@ -16,7 +16,7 @@ class SoundManager {
     private var wrongStar: AVAudioPlayer?
     private var collectPowerUp: AVAudioPlayer?
     private var collectFuel: AVAudioPlayer?
-
+    var meteor: AVAudioPlayer?
     
     var playSound = true
     func playSFX(named fileName: String, withExtension ext: String = "mp3") {
@@ -53,6 +53,13 @@ class SoundManager {
                     musicPlayer?.volume = 0.4
                     collectFuel?.prepareToPlay()
                     collectFuel?.play()
+                }
+                else if fileName == "incomingMeteor"
+                {
+                    meteor = try AVAudioPlayer(contentsOf: url)
+                    musicPlayer?.volume = 0.4
+                    meteor?.prepareToPlay()
+                    meteor?.play()
                 }
                 else {
                     if fileName == "buttonTap"
