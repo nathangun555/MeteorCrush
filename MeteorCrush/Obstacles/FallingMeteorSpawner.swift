@@ -17,7 +17,7 @@ class FallingMeteorSpawner {
         startSpawning(after: 2)
     }
 
-    private func startSpawning(after delay: TimeInterval) {
+    func startSpawning(after delay: TimeInterval) {
         startTime = CACurrentMediaTime()
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
             self?.scheduleMeteorSpawning()

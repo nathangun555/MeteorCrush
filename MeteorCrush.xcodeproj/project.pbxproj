@@ -54,6 +54,7 @@
 				Obstacles/PowerUpSpawner.swift,
 				Obstacles/StarSpawner.swift,
 				SFX/buttonTap.wav,
+				SFX/collectFuel.wav,
 				SFX/collectPowerUp.wav,
 				SFX/collectStar.wav,
 				SFX/gameOver.wav,
@@ -70,6 +71,7 @@
 				View/GameViewController.swift,
 				View/LeaderboardView.swift,
 				View/MainMenuView.swift,
+				View/PausedView.swift,
 				View/SettingsView.swift,
 				View/UserEntryView.swift,
 			);
@@ -100,6 +102,7 @@
 				Obstacles/PowerUpSpawner.swift,
 				Obstacles/StarSpawner.swift,
 				SFX/buttonTap.wav,
+				SFX/collectFuel.wav,
 				SFX/collectPowerUp.wav,
 				SFX/collectStar.wav,
 				SFX/gameOver.wav,
@@ -116,6 +119,7 @@
 				View/GameViewController.swift,
 				View/LeaderboardView.swift,
 				View/MainMenuView.swift,
+				View/PausedView.swift,
 				View/SettingsView.swift,
 				View/UserEntryView.swift,
 			);
@@ -493,7 +497,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZBZPAZFH4S;
+				DEVELOPMENT_TEAM = 8GYS2UJJ74;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MeteorCrush/Info.plist;
@@ -523,7 +527,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZBZPAZFH4S;
+				DEVELOPMENT_TEAM = 8GYS2UJJ74;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MeteorCrush/Info.plist;

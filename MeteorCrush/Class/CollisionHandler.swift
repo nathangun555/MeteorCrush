@@ -130,6 +130,7 @@ struct CollisionHandler {
             starScoring(scene.rocket.color, .green)
             removeStar(in: scene, star: &starNode, starColor: "greenStar")
         case PhysicsCategory.Fuel:
+            SoundManager.shared.playSFX(named: "collectFuel", withExtension: "wav")
             guard let starNode = other.node, starNode.parent != nil else { return }
             if let fuelValue = (starNode as? SKSpriteNode)?.userData?["fuelValue"] as? Int {
 
@@ -145,14 +146,17 @@ struct CollisionHandler {
             scene.rocket.texture = SKTexture(imageNamed: "rocketRed")
             scene.rocket.color = .red
             scene.rocket.colorBlendFactor = 0
+            hud.star.texture = SKTexture(imageNamed: "starRed")
         case PhysicsCategory.greenGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketGreen")
             scene.rocket.color = .green
             scene.rocket.colorBlendFactor = 0
+            hud.star.texture = SKTexture(imageNamed: "starGreen")
         case PhysicsCategory.blueGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketBlue")
             scene.rocket.color = .blue
             scene.rocket.colorBlendFactor = 0
+            hud.star.texture = SKTexture(imageNamed: "starBlue")
 //            print("lewat biru")
         case PhysicsCategory.powerUp:
             SoundManager.shared.playSFX(named: "collectPowerUp", withExtension: "wav")

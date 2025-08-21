@@ -15,7 +15,7 @@ class SoundManager {
     private var collectStar: AVAudioPlayer?
     private var wrongStar: AVAudioPlayer?
     private var collectPowerUp: AVAudioPlayer?
-
+    private var collectFuel: AVAudioPlayer?
 
     
     var playSound = true
@@ -46,6 +46,13 @@ class SoundManager {
                     musicPlayer?.volume = 0.4
                     collectPowerUp?.prepareToPlay()
                     collectPowerUp?.play()
+                }
+                else if fileName == "collectFuel"
+                {
+                    collectFuel = try AVAudioPlayer(contentsOf: url)
+                    musicPlayer?.volume = 0.4
+                    collectFuel?.prepareToPlay()
+                    collectFuel?.play()
                 }
                 else {
                     if fileName == "buttonTap"
