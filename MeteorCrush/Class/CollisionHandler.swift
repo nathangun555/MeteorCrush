@@ -204,20 +204,55 @@ struct CollisionHandler {
             print("Powerup activated!")
         default: break
         }
-        
-        func starScoring(_ rocketColor: UIColor, _ starColor: UIColor){
-            //            print(rocketColor, starColor)
-            if (rocketColor == .red && starColor == .red) || (rocketColor == .green && starColor == .green) || (rocketColor == .blue && starColor == .blue)
+      
+
+        func starScoring(_ rocketColor: UIColor, _ starColor: UIColor) {
+            let rocketPos = scene.rocket.position
+
+            if (rocketColor == .red && starColor == .red) ||
+                (rocketColor == .green && starColor == .green) ||
+                (rocketColor == .blue && starColor == .blue)
             {
                 SoundManager.shared.playSFX(named: "collectStar", withExtension: "wav")
-                hud.score += 5 * scene.multiplier
-            } else
-            {
-                if hud.score > 0{
+                let bonus = 5 * scene.multiplier
+                hud.score += bonus
+
+                // Tambahkan efek teks langsung di sini (tanpa fungsi)
+                let label = SKLabelNode(text: "+\(bonus)")
+                label.fontName = "Baloo2-ExtraBold"
+                label.fontSize = 28
+                label.fontColor = .white
+                label.position = rocketPos
+                label.zPosition = 999
+                scene.addChild(label)
+
+                let moveUp = SKAction.moveBy(x: 0, y: 50, duration: 0.8)
+                let fadeOut = SKAction.fadeOut(withDuration: 0.8)
+                let group = SKAction.group([moveUp, fadeOut])
+                let remove = SKAction.removeFromParent()
+                label.run(SKAction.sequence([group, remove]))
+
+            } else {
+                if hud.score > 0 {
                     SoundManager.shared.playSFX(named: "wrongStar", withExtension: "wav")
                     hud.score -= 1
+
+                    let label = SKLabelNode(text: "-1")
+                    label.fontName = "Baloo2-ExtraBold"
+                    label.fontSize = 28
+                    label.fontColor = .red
+                    label.position = rocketPos
+                    label.zPosition = 999
+                    scene.addChild(label)
+
+                    let moveUp = SKAction.moveBy(x: 0, y: 50, duration: 0.8)
+                    let fadeOut = SKAction.fadeOut(withDuration: 0.8)
+                    let group = SKAction.group([moveUp, fadeOut])
+                    let remove = SKAction.removeFromParent()
+                    label.run(SKAction.sequence([group, remove]))
                 }
             }
         }
+
     }
 }

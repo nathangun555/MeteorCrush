@@ -30,7 +30,7 @@ class BackgroundNode: SKNode {
         children.filter { $0.name == "scrollingBackground" }.forEach { $0.removeFromParent() }
         backgroundNodes.removeAll()
         
-        let textureNames = [SKTexture(imageNamed: "bg1"), SKTexture(imageNamed: "bg2"), SKTexture(imageNamed: "bg3")]
+        let textureNames = [SKTexture(imageNamed: "bgNew1"), SKTexture(imageNamed: "bgNew2"), SKTexture(imageNamed: "bgNew3")]
         
         // Hitung tinggi total dari satu set background
         let singleSetHeight = textureNames.reduce(0) { $0 + $1.size().height }

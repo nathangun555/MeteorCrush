@@ -25,19 +25,19 @@ struct GameOverView: View {
             GeometryReader { geometry in
                 Text("\(bestScore)")
                     .font(.custom("Baloo2-ExtraBold", size: 25))
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(red: 89/255, green: 81/255, blue: 180/255))
                     .position(x: geometry.size.width / 2, y: geometry.size.height / 2.13)
                 
                 Text("\(currentScore)")
                     .font(.custom("Baloo2-ExtraBold", size: 30))
-                    .foregroundStyle(Color(red: 89/255, green: 81/255, blue: 180/255))
-                    .position(x: geometry.size.width / 2, y: geometry.size.height / 1.68)
+                    .foregroundStyle(Color(red: 247/255, green: 195/255, blue: 133/255))
+                    .position(x: geometry.size.width / 2, y: geometry.size.height / 1.69)
                 // ZStack untuk Play Again dan Quit dengan lapisan yang sama
                 ZStack {
                     // Tombol Play Again
                     Button(action: {
                         SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
-                        onPlayAgain()
+                        onQuit()
                     }) {
                         RoundedRectangle(cornerRadius: 50)
                             .fill(Color.red)
@@ -50,7 +50,8 @@ struct GameOverView: View {
                     // Tombol Quit
                     Button(action: {
                         SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
-                        onQuit()
+                       
+                        onPlayAgain()
                     }) {
                         RoundedRectangle(cornerRadius: 50)
                             .fill(Color.red)
