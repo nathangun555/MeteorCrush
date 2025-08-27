@@ -14,7 +14,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var meteorSpawner: FallingMeteorSpawner!
     var joystick: Joystick!
     var sensitivity: CGFloat = UserDefaults.standard.double(forKey: "joystickSensitivity")
-    private var hud: HUD!
+    var hud: HUD!
     private var tutorialLabel: SKLabelNode!
     private var tutorialBackground: SKSpriteNode!
     private var hand: SKSpriteNode!
@@ -246,6 +246,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hud = HUD(size: size)
         hud.onPauseTapped = { [weak self] in
                self?.showPaused()
+            SoundManager.shared.meteor?.pause()
             self?.meteorSpawner.stopSpawning()
            }
         addChild(hud)
