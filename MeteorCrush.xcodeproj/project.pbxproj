@@ -49,24 +49,30 @@
 				"Font/Baloo2-ExtraBold.ttf",
 				MeteorCrushApp.swift,
 				Obstacles/FallingMeteorSpawner.swift,
+				Obstacles/FuelSpawner.swift,
 				Obstacles/ObstacleSpawner.swift,
 				Obstacles/PowerUpSpawner.swift,
 				Obstacles/StarSpawner.swift,
 				SFX/buttonTap.wav,
+				SFX/collectFuel.wav,
 				SFX/collectPowerUp.wav,
 				SFX/collectStar.wav,
 				SFX/gameOver.wav,
 				SFX/incomingMeteor.wav,
 				SFX/lobbyMusic.wav,
+				SFX/newHighScore.wav,
 				SFX/rocketTakeOff.wav,
 				SFX/starGame.wav,
+				SFX/wrongStar.wav,
 				View/BackgroundNode.swift,
 				View/ContentView.swift,
 				View/galaxyGameView.swift,
 				View/GameOverView.swift,
 				View/GameViewController.swift,
 				View/LeaderboardView.swift,
+				View/LoadingScreenView.swift,
 				View/MainMenuView.swift,
+				View/PausedView.swift,
 				View/SettingsView.swift,
 				View/UserEntryView.swift,
 			);
@@ -92,24 +98,30 @@
 				Info.plist,
 				MeteorCrushApp.swift,
 				Obstacles/FallingMeteorSpawner.swift,
+				Obstacles/FuelSpawner.swift,
 				Obstacles/ObstacleSpawner.swift,
 				Obstacles/PowerUpSpawner.swift,
 				Obstacles/StarSpawner.swift,
 				SFX/buttonTap.wav,
+				SFX/collectFuel.wav,
 				SFX/collectPowerUp.wav,
 				SFX/collectStar.wav,
 				SFX/gameOver.wav,
 				SFX/incomingMeteor.wav,
 				SFX/lobbyMusic.wav,
+				SFX/newHighScore.wav,
 				SFX/rocketTakeOff.wav,
 				SFX/starGame.wav,
+				SFX/wrongStar.wav,
 				View/BackgroundNode.swift,
 				View/ContentView.swift,
 				View/galaxyGameView.swift,
 				View/GameOverView.swift,
 				View/GameViewController.swift,
 				View/LeaderboardView.swift,
+				View/LoadingScreenView.swift,
 				View/MainMenuView.swift,
+				View/PausedView.swift,
 				View/SettingsView.swift,
 				View/UserEntryView.swift,
 			);
@@ -487,7 +499,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZBZPAZFH4S;
+				DEVELOPMENT_TEAM = 8GYS2UJJ74;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MeteorCrush/Info.plist;
@@ -517,7 +529,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = ZBZPAZFH4S;
+				DEVELOPMENT_TEAM = 8GYS2UJJ74;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MeteorCrush/Info.plist;

@@ -130,6 +130,7 @@ struct CollisionHandler {
             starScoring(scene.rocket.color, .green)
             removeStar(in: scene, star: &starNode, starColor: "greenStar")
         case PhysicsCategory.Fuel:
+            SoundManager.shared.playSFX(named: "collectFuel", withExtension: "wav")
             guard let starNode = other.node, starNode.parent != nil else { return }
             if let fuelValue = (starNode as? SKSpriteNode)?.userData?["fuelValue"] as? Int {
 
@@ -140,21 +141,22 @@ struct CollisionHandler {
             if let index = scene.fuels.firstIndex(where: { $0 === other.node }) {
                 scene.fuels.remove(at: index)
             }
-            let fuelNewY = scene.size.height * 1 + 200
-            ObstacleSpawner.spawnFuel(in: scene, atY: fuelNewY)
 
         case PhysicsCategory.redGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketRed")
             scene.rocket.color = .red
             scene.rocket.colorBlendFactor = 0
+            hud.star.texture = SKTexture(imageNamed: "starRed")
         case PhysicsCategory.greenGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketGreen")
             scene.rocket.color = .green
             scene.rocket.colorBlendFactor = 0
+            hud.star.texture = SKTexture(imageNamed: "starGreen")
         case PhysicsCategory.blueGate:
             scene.rocket.texture = SKTexture(imageNamed: "rocketBlue")
             scene.rocket.color = .blue
             scene.rocket.colorBlendFactor = 0
+            hud.star.texture = SKTexture(imageNamed: "starBlue")
 //            print("lewat biru")
         case PhysicsCategory.powerUp:
             SoundManager.shared.playSFX(named: "collectPowerUp", withExtension: "wav")
@@ -202,20 +204,55 @@ struct CollisionHandler {
             print("Powerup activated!")
         default: break
         }
-        
-        func starScoring(_ rocketColor: UIColor, _ starColor: UIColor){
-            //            print(rocketColor, starColor)
-            if (rocketColor == .red && starColor == .red) || (rocketColor == .green && starColor == .green) || (rocketColor == .blue && starColor == .blue)
+      
+
+        func starScoring(_ rocketColor: UIColor, _ starColor: UIColor) {
+            let rocketPos = scene.rocket.position
+
+            if (rocketColor == .red && starColor == .red) ||
+                (rocketColor == .green && starColor == .green) ||
+                (rocketColor == .blue && starColor == .blue)
             {
                 SoundManager.shared.playSFX(named: "collectStar", withExtension: "wav")
-                hud.score += 5 * scene.multiplier
-            } else
-            {
-                if hud.score > 0{
+                let bonus = 5 * scene.multiplier
+                hud.score += bonus
+
+                // Tambahkan efek teks langsung di sini (tanpa fungsi)
+                let label = SKLabelNode(text: "+\(bonus)")
+                label.fontName = "Baloo2-ExtraBold"
+                label.fontSize = 28
+                label.fontColor = .white
+                label.position = rocketPos
+                label.zPosition = 999
+                scene.addChild(label)
+
+                let moveUp = SKAction.moveBy(x: 0, y: 50, duration: 0.8)
+                let fadeOut = SKAction.fadeOut(withDuration: 0.8)
+                let group = SKAction.group([moveUp, fadeOut])
+                let remove = SKAction.removeFromParent()
+                label.run(SKAction.sequence([group, remove]))
+
+            } else {
+                if hud.score > 0 {
                     SoundManager.shared.playSFX(named: "wrongStar", withExtension: "wav")
                     hud.score -= 1
+
+                    let label = SKLabelNode(text: "-1")
+                    label.fontName = "Baloo2-ExtraBold"
+                    label.fontSize = 28
+                    label.fontColor = .red
+                    label.position = rocketPos
+                    label.zPosition = 999
+                    scene.addChild(label)
+
+                    let moveUp = SKAction.moveBy(x: 0, y: 50, duration: 0.8)
+                    let fadeOut = SKAction.fadeOut(withDuration: 0.8)
+                    let group = SKAction.group([moveUp, fadeOut])
+                    let remove = SKAction.removeFromParent()
+                    label.run(SKAction.sequence([group, remove]))
                 }
             }
         }
+
     }
 }

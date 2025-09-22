@@ -17,7 +17,7 @@ class FallingMeteorSpawner {
         startSpawning(after: 2)
     }
 
-    private func startSpawning(after delay: TimeInterval) {
+    func startSpawning(after delay: TimeInterval) {
         startTime = CACurrentMediaTime()
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
             self?.scheduleMeteorSpawning()
@@ -92,7 +92,7 @@ class FallingMeteorSpawner {
         let anim = SKAction.animate(with: textures, timePerFrame: 0.1)
         meteor.run(SKAction.repeatForever(anim), withKey: "meteorAnim")
 
-        let move = SKAction.move(to: CGPoint(x: targetX, y: targetY), duration: 2)
+        let move = SKAction.move(to: CGPoint(x: targetX, y: targetY), duration: 2) // 0.5
         let remove = SKAction.removeFromParent()
         meteor.run(SKAction.sequence([move, remove]), withKey: "falling")
 

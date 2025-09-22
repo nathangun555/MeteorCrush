@@ -14,6 +14,7 @@ struct ContentView: View {
     @State private var currentScore = 0
     @State private var bestScore = 0
     @State private var backToMenu = false
+    @State private var isPaused = false
 
     @EnvironmentObject var leaderboardModel: LeaderboardModel
     @State private var gameViewModel = GameViewModel()
@@ -63,6 +64,13 @@ struct ContentView: View {
                             }
                         }
                     }
+                    .onAppear {
+                                           if let myScene = gameViewModel.scene as? GameScene {
+                                               myScene.onPause = {
+                                                   isPaused = true
+                                               }
+                                           }
+                                       }
 
                 if isGameOver {
                     GameOverView(
@@ -78,6 +86,14 @@ struct ContentView: View {
                             backToMenu = true
                         }
                     )
+                }
+                if isPaused {
+                    if let myScene = gameViewModel.scene as? GameScene {
+                        PausedView(isPresented: $isPaused, onResume: {
+                            myScene.meteorSpawner.startSpawning(after: 2)
+                            myScene.isPaused = false
+                        }, gameScene: myScene) // <- kirimkan scene aktif ke PausedView
+                    }
                 }
             }
         }
