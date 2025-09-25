@@ -20,6 +20,8 @@ struct MainMenuView: View {
     @State private var showSettings = false
     @State private var rotateRocket = 0.0
     @State private var animateEntrance = false
+    
+    @EnvironmentObject var leaderboardModel: LeaderboardModel
 
     let radius: CGFloat = 270
 
@@ -35,6 +37,24 @@ struct MainMenuView: View {
                         .ignoresSafeArea()
 
                     VStack {
+                        // Guest Mode Indicator
+                        if leaderboardModel.isGuest {
+                            HStack {
+                                Image(systemName: "person.circle")
+                                    .foregroundColor(.orange)
+                                Text("Playing as Guest")
+                                    .font(fontSubTitle())
+                                    .foregroundColor(.white)
+                                Spacer()
+                                Button("Sign In") {
+                                    leaderboardModel.retryAuthentication()
+                                }
+                                .font(fontSubTitle())
+                                .foregroundColor(.blue)
+                            }
+                            .padding(.horizontal, 20)
+                            .padding(.top, 10)
+                        }
                         // Logo & Rocket
                         ZStack {
                             Image("logoMeteorCrushHomeFix")

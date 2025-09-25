@@ -21,15 +21,122 @@ struct LeaderboardView: View {
                 .resizable()
                 .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                Text("LEADERBOARD")
-                    .font(fontTitle())
-                    .foregroundColor(.white)
-                    .padding(.top, 100)
-                    .padding(.bottom, 20)
-                    .opacity(fadeIn ? 1 : 0)
-                    .offset(y: fadeIn ? 0 : -20)
-                    .animation(.easeOut(duration: 0.6), value: fadeIn)
+            if leaderboardModel.isGuest {
+                // Guest Mode - No Leaderboard Access
+                VStack(spacing: 30) {
+                    Text("GUEST MODE")
+                        .font(fontTitle())
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 100)
+                    
+                    Text("Sign in to Game Center to view global leaderboards")
+                        .font(fontSubTitle())
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 40)
+                    
+                    Button(action: {
+                        leaderboardModel.retryAuthentication()
+                    }) {
+                        ZStack {
+                            Image("buttonContinue")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 200, height: 60)
+                            Text("SIGN IN")
+                                .font(fontSubTitle())
+                                .foregroundColor(.white)
+                                .fontWeight(.bold)
+                        }
+                    }
+                    
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        ZStack {
+                            Image("buttonBack")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 200, height: 60)
+                            Text("BACK")
+                                .font(fontSubTitle())
+                                .foregroundColor(.white)
+                                .fontWeight(.bold)
+                        }
+                    }
+                }
+            } else if leaderboardModel.isLoading {
+                // Loading State
+                VStack(spacing: 20) {
+                    Text("LEADERBOARD")
+                        .font(fontTitle())
+                        .foregroundColor(.white)
+                        .padding(.top, 100)
+                    
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                        .scaleEffect(1.5)
+                    
+                    Text("Loading scores...")
+                        .font(fontSubTitle())
+                        .foregroundColor(.white)
+                }
+            } else if leaderboardModel.hasError {
+                // Error State
+                VStack(spacing: 30) {
+                    Text("ERROR")
+                        .font(fontTitle())
+                        .foregroundColor(.white)
+                        .padding(.top, 100)
+                    
+                    Text(leaderboardModel.errorMessage ?? "Failed to load leaderboard")
+                        .font(fontSubTitle())
+                        .foregroundColor(.white)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 40)
+                    
+                    Button(action: {
+                        leaderboardModel.refreshLeaderboard()
+                    }) {
+                        ZStack {
+                            Image("buttonContinue")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 200, height: 60)
+                            Text("RETRY")
+                                .font(fontSubTitle())
+                                .foregroundColor(.white)
+                                .fontWeight(.bold)
+                        }
+                    }
+                    
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        ZStack {
+                            Image("buttonBack")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 200, height: 60)
+                            Text("BACK")
+                                .font(fontSubTitle())
+                                .foregroundColor(.white)
+                                .fontWeight(.bold)
+                        }
+                    }
+                }
+            } else {
+                // Normal Leaderboard View
+                VStack(spacing: 20) {
+                    Text("LEADERBOARD")
+                        .font(fontTitle())
+                        .foregroundColor(.white)
+                        .padding(.top, 100)
+                        .padding(.bottom, 20)
+                        .opacity(fadeIn ? 1 : 0)
+                        .offset(y: fadeIn ? 0 : -20)
+                        .animation(.easeOut(duration: 0.6), value: fadeIn)
 
                 // Top 3
                 HStack(alignment: .bottom, spacing: 30) {
@@ -109,27 +216,29 @@ struct LeaderboardView: View {
                 .offset(y: fadeIn ? 0 : 10)
                 .animation(.easeOut(duration: 0.6).delay(0.2), value: fadeIn)
 
-                ZStack{
-                    Image("buttonBack")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 320, height: 300)
-                    Button(action: {
-                        SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
-                        dismiss()
-                    }) {
-                        RoundedRectangle(cornerRadius: 100)
-                            .fill(Color.clear)
-                            .frame(width: 180, height: 40)
-                    }
-                }.padding(.top, -100)
-            }.padding(.top, 20)
+                    ZStack{
+                        Image("buttonBack")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 320, height: 300)
+                        Button(action: {
+                            SoundManager.shared.playSFX(named: "buttonTap", withExtension: "wav")
+                            dismiss()
+                        }) {
+                            RoundedRectangle(cornerRadius: 100)
+                                .fill(Color.clear)
+                                .frame(width: 180, height: 40)
+                        }
+                    }.padding(.top, -100)
+                }.padding(.top, 20)
+            }
         }
         .onAppear {
             withAnimation {
                 fadeIn = true
             }
             animateStars = true
+            leaderboardModel.refreshLeaderboard()
         }
     }
 

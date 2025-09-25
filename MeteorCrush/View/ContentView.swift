@@ -41,20 +41,10 @@ struct ContentView: View {
                         if let score = notif.object as? Int {
                             currentScore = score
 
-                            // Get player name from UserDefaults
-                            let playerName = UserDefaults.standard.string(forKey: "username") ?? "Player"
+                            // Submit score to Game Center immediately
+                            leaderboardModel.submitScore(score)
 
-                            // Update leaderboard
-                            if leaderboardModel.players.contains(where: { $0.name == playerName }) {
-                                let oldScore = leaderboardModel.players.first(where: { $0.name == playerName })?.score ?? 0
-                                if currentScore > oldScore {
-                                    leaderboardModel.updatePlayer(name: playerName, newScore: currentScore)
-                                }
-                            } else {
-                                leaderboardModel.addPlayer(name: playerName, score: currentScore)
-                            }
-
-                            // Update best score locally
+                            // Update best score locally for display purposes
                             bestScore = max(currentScore, UserDefaults.standard.integer(forKey: "bestScore"))
                             if currentScore >= bestScore && currentScore != 0 {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {

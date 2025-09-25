@@ -7,67 +7,98 @@
 
 import Foundation
 import SwiftUI
+import GameKit
+import Combine
 
 struct Player: Identifiable, Equatable {
     let id = UUID()
     var name: String
     var score: Int
+    var playerID: String?
+    
+    init(name: String, score: Int, playerID: String? = nil) {
+        self.name = name
+        self.score = score
+        self.playerID = playerID
+    }
 }
 
 class LeaderboardModel: ObservableObject {
     @Published var players: [(rank: Int, name: String, score: Int)] = []
-    @Published var newlyAddedPlayers: [Player] = [] // ✅ New list to track added players
-
+    @Published var isLoading = false
+    @Published var errorMessage: String?
+    @Published var isAuthenticated = false
+    @Published var isGuest = false
+    
+    private let gameCenterManager = GameCenterManager.shared
+    
     init() {
-        loadDummyData()
+        setupGameCenterObservers()
+        loadGameCenterData()
     }
-
-    func loadDummyData() {
-        let dummyPlayers: [Player] = [
-            Player(name: "Player1", score: 500),
-            Player(name: "ABC", score: 450),
-            Player(name: "Player2", score: 400),
-            Player(name: "Player3", score: 375),
-            Player(name: "Player4", score: 350),
-            Player(name: "Player5", score: 325),
-            Player(name: "Player6", score: 300),
-            Player(name: "Player7", score: 275),
-            Player(name: "Player8", score: 250),
-            Player(name: "Player9", score: 225),
-            Player(name: "Player10", score: 200),
-            Player(name: "Player11", score: 150),
-            Player(name: "Player12", score: 100)
-        ]
-
-        updateRanks(with: dummyPlayers)
+    
+    private func setupGameCenterObservers() {
+        // Observe Game Center authentication status
+        gameCenterManager.$isAuthenticated
+            .assign(to: &$isAuthenticated)
+        
+        // Observe guest mode status
+        gameCenterManager.$isGuest
+            .assign(to: &$isGuest)
+        
+        // Observe loading state
+        gameCenterManager.$isLoading
+            .assign(to: &$isLoading)
+        
+        // Observe error messages
+        gameCenterManager.$errorMessage
+            .assign(to: &$errorMessage)
+        
+        // Observe leaderboard scores changes
+        gameCenterManager.$leaderboardScores
+            .sink { [weak self] scores in
+                self?.updatePlayersFromGameCenter(scores)
+            }
+            .store(in: &cancellables)
     }
-
-    func addPlayer(name: String, score: Int) {
-        var currentPlayers = players.map { Player(name: $0.name, score: $0.score) }
-
-        let newPlayer = Player(name: name, score: score)
-
-        if !currentPlayers.contains(where: { $0.name == newPlayer.name }) {
-            currentPlayers.append(newPlayer)
-            newlyAddedPlayers.append(newPlayer) // ✅ Track the added player
-        }
-
-        updateRanks(with: currentPlayers)
-    }
-
-    func updatePlayer(name: String, newScore: Int) {
-        var currentPlayers = players.map { Player(name: $0.name, score: $0.score) }
-
-        if let index = currentPlayers.firstIndex(where: { $0.name == name }) {
-            currentPlayers[index].score = newScore
-            updateRanks(with: currentPlayers)
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    private func loadGameCenterData() {
+        if gameCenterManager.isAuthenticated {
+            gameCenterManager.loadLeaderboardScores()
         }
     }
-
-    private func updateRanks(with players: [Player]) {
-        let sorted = players.sorted { $0.score > $1.score }
-        self.players = sorted.enumerated().map { index, player in
-            (rank: index + 1, name: player.name, score: player.score)
+    
+    func submitScore(_ score: Int) {
+        gameCenterManager.submitScore(score)
+    }
+    
+    func refreshLeaderboard() {
+        gameCenterManager.loadLeaderboardScores()
+    }
+    
+    func retryAuthentication() {
+        gameCenterManager.retryAuthentication()
+    }
+    
+    private func updatePlayersFromGameCenter(_ scores: [GKLeaderboard.Entry]) {
+        players = scores.enumerated().map { index, entry in
+            let playerName = entry.player.displayName.isEmpty ? "Anonymous" : entry.player.displayName
+            return (rank: index + 1, name: playerName, score: entry.score)
         }
+    }
+    
+    // MARK: - Computed Properties
+    var currentPlayerRank: Int? {
+        gameCenterManager.getPlayerRank()
+    }
+    
+    var currentPlayerScore: Int? {
+        gameCenterManager.getPlayerScore()
+    }
+    
+    var hasError: Bool {
+        errorMessage != nil
     }
 }
